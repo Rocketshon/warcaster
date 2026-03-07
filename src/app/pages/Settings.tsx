@@ -1,0 +1,588 @@
+import { useState, useRef, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Share2,
+  ChevronRight,
+  Moon,
+  Sun,
+  Download,
+  Upload,
+  Database,
+  Info,
+  Pencil,
+  LogOut
+} from "lucide-react";
+import { useCrusade } from "../../lib/CrusadeContext";
+import { getAllFactionSlugs, getAllUnits } from "../../data";
+
+export default function Settings() {
+  const navigate = useNavigate();
+  const { user, setUser, campaign, currentPlayer, units, battles, leaveCampaign } = useCrusade();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [fontSize, setFontSize] = useState(() => {
+    const stored = document.documentElement.style.getPropertyValue("--app-font-size");
+    return stored ? parseInt(stored, 10) : 16;
+  });
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
+  const [showShareSuccess, setShowShareSuccess] = useState(false);
+  const [showExportSuccess, setShowExportSuccess] = useState(false);
+  const [showImportSuccess, setShowImportSuccess] = useState(false);
+
+  // Profile state
+  const displayName = user?.display_name ?? "Commander";
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState(displayName);
+  const [showSignOutDialog, setShowSignOutDialog] = useState(false);
+  const userEmail = user?.email ?? "";
+
+  // Database stats from real data layer
+  const dbStats = useMemo(() => {
+    const factionCount = getAllFactionSlugs().length;
+    const datasheetCount = getAllUnits().length;
+    return { factionCount, datasheetCount };
+  }, []);
+
+  // Get initials from name
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map(word => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const handleLeaveCampaign = () => {
+    setShowLeaveDialog(false);
+    leaveCampaign();
+    navigate("/home");
+  };
+
+  const handleSignOut = () => {
+    setShowSignOutDialog(false);
+    setUser(null);
+    navigate("/sign-in");
+  };
+
+  const handleSaveName = () => {
+    if (user) {
+      setUser({ ...user, display_name: tempName });
+    }
+    setIsEditingName(false);
+  };
+
+  const handleCancelEdit = () => {
+    setTempName(displayName);
+    setIsEditingName(false);
+  };
+
+  const handleShareJoinCode = () => {
+    if (campaign?.join_code) {
+      navigator.clipboard.writeText(campaign.join_code);
+    }
+    setShowShareSuccess(true);
+    setTimeout(() => setShowShareSuccess(false), 2000);
+  };
+
+  const handleToggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--app-font-size", `${fontSize}`);
+  }, [fontSize]);
+
+  const handleExportData = () => {
+    const exportPayload = {
+      campaign,
+      currentPlayer,
+      units,
+      battles,
+      exportDate: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `crusade-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportSuccess(true);
+    setTimeout(() => setShowExportSuccess(false), 2000);
+  };
+
+  const handleImportData = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string);
+        // Restore campaign, units, battles via localStorage then reload
+        if (data.campaign) localStorage.setItem("crusade_campaign", JSON.stringify(data.campaign));
+        if (data.currentPlayer) localStorage.setItem("crusade_player", JSON.stringify(data.currentPlayer));
+        if (data.units) localStorage.setItem("crusade_units", JSON.stringify(data.units));
+        if (data.battles) localStorage.setItem("crusade_battles", JSON.stringify(data.battles));
+        setShowImportSuccess(true);
+        setTimeout(() => {
+          setShowImportSuccess(false);
+          window.location.reload();
+        }, 1500);
+      } catch {
+        alert("Failed to parse import file.");
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so the same file can be re-selected
+    e.target.value = "";
+  };
+
+  const getFontSizeLabel = () => {
+    if (fontSize <= 14) return "Small";
+    if (fontSize <= 16) return "Medium";
+    if (fontSize <= 18) return "Large";
+    return "Extra Large";
+  };
+
+  return (
+    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
+      {/* Dark ambient glow effects */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-[100px] pointer-events-none" />
+
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        className="hidden"
+        onChange={handleFileSelected}
+      />
+
+      <div className="relative z-10 w-full max-w-2xl mx-auto">
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-stone-400 hover:text-emerald-500 transition-colors mb-6"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-sm">Back</span>
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+            Settings
+          </h1>
+          <p className="text-stone-500 text-sm mt-1">Manage your campaign and app preferences</p>
+        </div>
+
+        {/* Profile Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            Profile
+          </h2>
+          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
+            {/* Avatar and Name */}
+            <div className="flex items-center gap-4 mb-5">
+              {/* Avatar Circle */}
+              <div className="w-16 h-16 rounded-full bg-stone-700 flex items-center justify-center">
+                <span className="text-2xl font-bold text-stone-300">
+                  {getInitials(displayName)}
+                </span>
+              </div>
+
+              {/* Name and Edit */}
+              <div className="flex-1">
+                {isEditingName ? (
+                  <div>
+                    <input
+                      type="text"
+                      value={tempName}
+                      onChange={(e) => setTempName(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-stone-700 bg-stone-900 text-stone-300 focus:outline-none focus:border-emerald-500"
+                    />
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={handleSaveName}
+                        className="px-3 py-1 text-sm rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 text-black font-bold hover:from-emerald-500 hover:to-emerald-400 transition-all"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="px-3 py-1 text-sm rounded-lg border border-stone-700 text-stone-400 hover:text-stone-300 hover:border-stone-600 transition-all"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-stone-200">
+                        {displayName}
+                      </h3>
+                      <button
+                        onClick={() => {
+                          setTempName(displayName);
+                          setIsEditingName(true);
+                        }}
+                        className="p-1 rounded hover:bg-stone-800 transition-colors"
+                      >
+                        <Pencil className="w-4 h-4 text-stone-500" />
+                      </button>
+                    </div>
+                    <p className="text-sm text-stone-500 mt-1">{userEmail}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sign Out Button */}
+            <button
+              onClick={() => setShowSignOutDialog(true)}
+              className="w-full relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4"
+            >
+              <div className="flex items-center justify-center gap-3">
+                <LogOut className="w-5 h-5 text-red-500" />
+                <span className="text-red-400 font-semibold">Sign Out</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Campaign Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            Campaign
+          </h2>
+          <div className="space-y-2">
+            {/* Leave Campaign */}
+            <button
+              onClick={() => setShowLeaveDialog(true)}
+              disabled={!campaign}
+              className="w-full relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="w-5 h-5 text-red-500" />
+                  <span className="text-stone-300 font-semibold">Leave Campaign</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Share Join Code */}
+            <button
+              onClick={handleShareJoinCode}
+              disabled={!campaign}
+              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Share2 className="w-5 h-5 text-emerald-500" />
+                  <span className="text-stone-300 font-semibold">Share Join Code</span>
+                </div>
+                {showShareSuccess && (
+                  <span className="text-emerald-400 text-sm">Copied!</span>
+                )}
+              </div>
+            </button>
+
+            {/* Campaign History */}
+            <button
+              onClick={() => navigate("/campaign-history")}
+              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Database className="w-5 h-5 text-emerald-500" />
+                  <span className="text-stone-300 font-semibold">Campaign History</span>
+                </div>
+                <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Appearance Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            Appearance
+          </h2>
+          <div className="space-y-2">
+            {/* Dark Mode Toggle */}
+            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {darkMode ? (
+                    <Moon className="w-5 h-5 text-purple-400" />
+                  ) : (
+                    <Sun className="w-5 h-5 text-amber-400" />
+                  )}
+                  <span className="text-stone-300 font-semibold">Dark Mode</span>
+                </div>
+                <button
+                  onClick={handleToggleDarkMode}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    darkMode ? "bg-emerald-600" : "bg-stone-700"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                      darkMode ? "translate-x-7" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Font Size Slider */}
+            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-stone-300 font-semibold">Font Size</span>
+                  <span className="text-emerald-400 text-sm font-mono">{getFontSizeLabel()}</span>
+                </div>
+                <input
+                  type="range"
+                  min="12"
+                  max="20"
+                  step="2"
+                  value={fontSize}
+                  onChange={(e) => setFontSize(Number(e.target.value))}
+                  className="w-full h-2 bg-stone-800 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+              {/* Preview Text */}
+              <div className="pt-3 border-t border-stone-800">
+                <p className="text-stone-400 text-xs mb-1">Preview:</p>
+                <p className="text-stone-300" style={{ fontSize: `${fontSize}px` }}>
+                  The Emperor protects
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Data Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            Data
+          </h2>
+          <div className="space-y-2">
+            {/* Export Crusade Data */}
+            <button
+              onClick={handleExportData}
+              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Download className="w-5 h-5 text-blue-400" />
+                  <span className="text-stone-300 font-semibold">Export Crusade Data</span>
+                </div>
+                {showExportSuccess && (
+                  <span className="text-emerald-400 text-sm">Exported!</span>
+                )}
+              </div>
+            </button>
+
+            {/* Import Crusade Data */}
+            <button
+              onClick={handleImportData}
+              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Upload className="w-5 h-5 text-blue-400" />
+                  <span className="text-stone-300 font-semibold">Import Crusade Data</span>
+                </div>
+                {showImportSuccess && (
+                  <span className="text-emerald-400 text-sm">Imported!</span>
+                )}
+              </div>
+            </button>
+
+            {/* Database Stats */}
+            <div className="relative overflow-hidden rounded-lg border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
+              <div className="flex items-start gap-3">
+                <Database className="w-5 h-5 text-purple-400 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="text-stone-300 font-semibold mb-2">Database Statistics</h3>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-stone-500">Factions:</span>
+                      <span className="text-stone-400 font-mono">{dbStats.factionCount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-stone-500">Datasheets:</span>
+                      <span className="text-stone-400 font-mono">{dbStats.datasheetCount.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* About Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            About
+          </h2>
+          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
+            <div className="flex items-start gap-3 mb-4">
+              <Info className="w-5 h-5 text-emerald-500 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="text-stone-200 font-bold text-lg mb-1">
+                  Crusade Commander
+                </h3>
+                <p className="text-stone-500 text-xs font-mono">Version 1.0.0 (Build 2026.03)</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div>
+                <h4 className="text-stone-400 font-semibold mb-1">Credits</h4>
+                <p className="text-stone-500 text-xs leading-relaxed">
+                  Designed and developed for the Warhammer 40,000 Crusade gaming community.
+                  Built with React, TypeScript, and Tailwind CSS.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-stone-400 font-semibold mb-1">Disclaimer</h4>
+                <p className="text-stone-500 text-xs leading-relaxed">
+                  This is an unofficial fan-made app. Warhammer 40,000 is a registered trademark
+                  of Games Workshop Limited. All rights reserved to their respective owners.
+                  This app is not affiliated with, endorsed by, or sponsored by Games Workshop.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-stone-400 font-semibold mb-1">Data Sources</h4>
+                <p className="text-stone-500 text-xs leading-relaxed">
+                  Game rules and statistics are provided for reference purposes only.
+                  Always refer to official rulebooks and errata for tournament play.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Leave Campaign Confirmation Dialog */}
+      {showLeaveDialog && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="relative w-full max-w-md rounded-lg border border-red-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-6 shadow-2xl">
+            <div className="flex items-start gap-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-xl font-bold text-stone-100 mb-2">Leave Campaign?</h3>
+                <p className="text-stone-400 text-sm leading-relaxed">
+                  Are you sure you want to leave "{campaign?.name ?? "this campaign"}"? Your roster and battle history will be archived, but you'll no longer receive updates from this campaign.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowLeaveDialog(false)}
+                className="flex-1 px-4 py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLeaveCampaign}
+                className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 text-black font-bold hover:from-red-500 hover:to-red-400 transition-all"
+              >
+                Leave Campaign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign Out Confirmation Dialog */}
+      {showSignOutDialog && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="relative w-full max-w-md rounded-lg border border-red-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-6 shadow-2xl">
+            <div className="flex items-start gap-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-xl font-bold text-stone-100 mb-2">Sign Out?</h3>
+                <p className="text-stone-400 text-sm leading-relaxed">
+                  Are you sure you want to sign out of your account? You will be redirected to the sign-in page.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowSignOutDialog(false)}
+                className="flex-1 px-4 py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 text-black font-bold hover:from-red-500 hover:to-red-400 transition-all"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom slider styles */}
+      <style>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgb(16, 185, 129);
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .slider::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgb(16, 185, 129);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .slider::-webkit-slider-track {
+          background: linear-gradient(to right, rgb(16, 185, 129) 0%, rgb(16, 185, 129) var(--slider-progress, 50%), rgb(41, 37, 36) var(--slider-progress, 50%), rgb(41, 37, 36) 100%);
+        }
+
+        .slider::-moz-range-track {
+          background: rgb(41, 37, 36);
+        }
+
+        .slider::-moz-range-progress {
+          background: rgb(16, 185, 129);
+        }
+      `}</style>
+    </div>
+  );
+}

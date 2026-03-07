@@ -1,15 +1,15 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
 # dependencies
 node_modules/
 
-# Expo
-.expo/
+# build output
 dist/
 web-build/
+
+# Expo (legacy)
+.expo/
 expo-env.d.ts
 
-# Native
+# Native (legacy)
 .kotlin/
 *.orig.*
 *.jks
@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Non-essential project files
+_backup/
+Crusader App Design/
+assets/
+guidelines/

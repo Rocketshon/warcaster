@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="background-color" content="#000000" />
+    <meta name="description" content="Warhammer 40K Crusade Campaign Manager - Track your crusade forces, battles, and glory." />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Crusade Command" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+
+    <title>Crusade Command</title>
+
+    <!-- Prevent flash of white on dark app -->
+    <style>
+      html, body, #root {
+        background-color: #000000;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          // Detect base path for GitHub Pages support
+          var basePath = document.querySelector('link[rel="manifest"]')?.href?.replace(/manifest\.json$/, '') || '/';
+          var swUrl = new URL('sw.js', basePath).href;
+          navigator.serviceWorker.register(swUrl, { scope: basePath }).then(
+            (registration) => {
+              console.log('SW registered:', registration.scope);
+            },
+            (error) => {
+              console.log('SW registration failed:', error);
+            }
+          );
+        });
+      }
+    </script>
+  </body>
+</html>
