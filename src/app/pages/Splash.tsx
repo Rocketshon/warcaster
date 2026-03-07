@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-const SPLASH_VIDEOS = ['/videos/splash_1.mp4', '/videos/splash_2.mp4'];
+const base = import.meta.env.BASE_URL;
+const SPLASH_VIDEOS = [`${base}videos/splash_1.mp4`, `${base}videos/splash_2.mp4`];
 
 export default function Splash() {
   const navigate = useNavigate();
