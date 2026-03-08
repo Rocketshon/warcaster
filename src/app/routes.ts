@@ -15,6 +15,7 @@ import CodexHome from "./pages/CodexHome";
 import SpaceMarinesChapters from "./pages/SpaceMarinesChapters";
 import FactionCodex from "./pages/FactionCodex";
 import DatasheetView from "./pages/DatasheetView";
+import GameTracker from "./pages/GameTracker";
 import Settings from "./pages/Settings";
 import CampaignHistory from "./pages/CampaignHistory";
 import SignUp from "./pages/SignUp";
@@ -22,20 +23,19 @@ import SignIn from "./pages/SignIn";
 import PostBattleWizard from "./pages/PostBattleWizard";
 import RequisitionSpending from "./pages/RequisitionSpending";
 import BattleDetail from "./pages/BattleDetail";
-import Splash from "./pages/Splash";
+import { redirect } from "react-router";
 
 // Detect GitHub Pages base path from Vite's import.meta.env.BASE_URL
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 
 export const router = createBrowserRouter(
   [
-    // Splash screen — no nav bar
-    { path: "/", Component: Splash },
-
-    // All other pages wrapped in AppLayout (includes bottom nav)
+    // All pages wrapped in AppLayout (includes bottom nav + splash overlay)
     {
       Component: AppLayout,
       children: [
+        // Root redirects to home
+        { path: "/", loader: () => redirect("/home") },
         // Campaign
         { path: "/home", Component: CampaignHub },
         { path: "/sign-up", Component: SignUp },
@@ -59,6 +59,8 @@ export const router = createBrowserRouter(
         // Rules (no campaign required)
         { path: "/rules", Component: RulesBrowser },
         { path: "/rule/:ruleId", Component: RuleDetail },
+        // Game Tracker (standalone, no campaign required)
+        { path: "/tracker", Component: GameTracker },
         // Settings
         { path: "/settings", Component: Settings },
         { path: "/campaign-history", Component: CampaignHistory },

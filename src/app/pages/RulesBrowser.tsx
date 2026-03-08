@@ -7,11 +7,16 @@ import { useCrusade } from '../../lib/CrusadeContext';
 import { getFactionName } from '../../lib/factions';
 import type { RulesSection, FactionId } from '../../types';
 
+/** Strip leading "N. " numbering from section names (e.g. "1. Command" -> "Command") */
+function stripSectionNumber(name: string): string {
+  return name.replace(/^\d+\.\s+/, '');
+}
+
 // Build rule items from a rules document's sections
 function buildRuleItems(sections: RulesSection[], category: string) {
   return sections.map((section, idx) => ({
     id: `${category}-${idx}`,
-    title: section.name,
+    title: stripSectionNumber(section.name),
     subtitle: section.subsections.length > 0 ? `${section.subsections.length} subsections` : undefined,
     category,
   }));
@@ -20,7 +25,7 @@ function buildRuleItems(sections: RulesSection[], category: string) {
 export default function RulesBrowser() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedSections, setExpandedSections] = useState<string[]>(["core", "crusade", "faction"]);
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const { currentPlayer } = useCrusade();
 
   // Build rules from real data

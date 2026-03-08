@@ -67,6 +67,37 @@ export default function UnitDetail() {
     return enhancements;
   }, [currentPlayer]);
 
+  // Filter enhancements by unit keyword eligibility
+  const filteredEnhancements = useMemo(() => {
+    if (!datasheet) return factionEnhancements;
+    const unitKeywords = [...(datasheet.keywords || []), ...(datasheet.faction_keywords || [])].map(k => k.toUpperCase());
+
+    return factionEnhancements.filter(enh => {
+      // Match "KEYWORD model only" or "KEYWORD1 or KEYWORD2 model only" at start of text
+      const match = enh.text.match(/^(.+?)\s+model only\b/i);
+      if (!match) return true; // No restriction = available to all
+
+      // Split on " or " and ", " to get individual required keywords
+      const restrictions = match[1]
+        .split(/\s*(?:,\s*|\bor\b)\s*/i)
+        .map(s => s.trim().toUpperCase())
+        .filter(Boolean);
+
+      // Check if any restriction keyword matches any unit keyword
+      return restrictions.some(restriction => {
+        // Direct match
+        if (unitKeywords.includes(restriction)) return true;
+        // Compound keyword: check if all parts exist across unit keywords
+        const parts = restriction.split(/\s+/);
+        if (parts.length > 1) {
+          return parts.every(part => unitKeywords.some(kw => kw.includes(part)));
+        }
+        // Check if any unit keyword contains the restriction
+        return unitKeywords.some(kw => kw === restriction);
+      });
+    });
+  }, [factionEnhancements, datasheet]);
+
   if (!campaign || !currentPlayer) return null;
 
   if (!unit) {
@@ -406,7 +437,7 @@ export default function UnitDetail() {
                 Battle Honors
               </h3>
               <div className="flex items-center gap-3">
-                {factionEnhancements.length > 0 && (
+                {filteredEnhancements.length > 0 && (
                   <button
                     onClick={() => setShowEnhancementPicker(true)}
                     className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors flex items-center gap-1"
@@ -630,7 +661,7 @@ export default function UnitDetail() {
               </p>
 
               <div className="space-y-3">
-                {factionEnhancements.map((enh, idx) => (
+                {filteredEnhancements.map((enh, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleAssignEnhancement(enh)}

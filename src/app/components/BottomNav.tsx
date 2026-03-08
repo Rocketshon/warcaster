@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from 'react-router';
-import { Swords, BookOpen, ScrollText, Settings } from 'lucide-react';
+import { Swords, BookOpen, ScrollText, Target, Settings } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/home', label: 'Campaign', icon: Swords },
   { path: '/codex', label: 'Codex', icon: BookOpen },
   { path: '/rules', label: 'Rules', icon: ScrollText },
+  { path: '/tracker', label: 'Tracker', icon: Target },
   { path: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 
@@ -46,6 +47,9 @@ export default function BottomNav() {
         location.pathname.startsWith('/rule/')
       );
     }
+    if (item.path === '/tracker') {
+      return location.pathname === '/tracker';
+    }
     return location.pathname === item.path;
   })?.path ?? '/home';
 
@@ -60,7 +64,7 @@ export default function BottomNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-0.5 px-4 py-1 rounded-lg transition-colors ${
+              className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors ${
                 isActive
                   ? 'text-emerald-400'
                   : 'text-stone-500 active:text-stone-300'

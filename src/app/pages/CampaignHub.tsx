@@ -1,11 +1,62 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Skull, Swords, ArrowRight } from "lucide-react";
+import { Swords, ArrowRight } from "lucide-react";
+import { Skull } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
+import { SpaceMarineHelmet } from "../components/SpaceMarineHelmet";
+
+// Weighted quote pools: 50% neutral lore, 40% faction jokes, 10% rare easter eggs
+const LORE_QUOTES = [
+  "The Emperor protects.",
+  "Hope is not a strategy. Reloading is.",
+  "Failure is heresy. Suspicion is a virtue.",
+  "Appeasing the Machine Spirit\u2026",
+  "Consulting the Omnissiah\u2026",
+  "Rolling ones is part of the experience.",
+];
+
+const FACTION_QUOTES = [
+  "Don't Pet The Space Wolves.",
+  "Blood Angels request more red paint.",
+  "The Ruinous Powers are watching.",
+  "Please wash your hands. Mortarion will not.",
+  "Dark Angels deny everything.",
+];
+
+const RARE_QUOTES = [
+  "The Emperor noticed you.",
+  "Hydra Dominatus.",
+  "You are Alpharius.",
+];
+
+function pickWeightedQuote(lastQuote: string): string {
+  const roll = Math.random();
+  const pool = roll < 0.5 ? LORE_QUOTES : roll < 0.9 ? FACTION_QUOTES : RARE_QUOTES;
+  let pick = pool[Math.floor(Math.random() * pool.length)];
+  // Avoid repeating the same quote back-to-back
+  while (pick === lastQuote && pool.length > 1) {
+    pick = pool[Math.floor(Math.random() * pool.length)];
+  }
+  return pick;
+}
 
 export default function CampaignHub() {
   const navigate = useNavigate();
   const { campaign, currentPlayer } = useCrusade();
+  const [quote, setQuote] = useState(() => pickWeightedQuote(""));
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setQuote((prev) => pickWeightedQuote(prev));
+        setFade(true);
+      }, 400);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-between p-6 relative overflow-hidden">
@@ -19,9 +70,9 @@ export default function CampaignHub() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="relative">
-              <Skull className="w-16 h-16 text-emerald-500/80" strokeWidth={1.5} />
+              <SpaceMarineHelmet className="w-20 h-20 text-emerald-500/80" />
               <div className="absolute inset-0 blur-md">
-                <Skull className="w-16 h-16 text-emerald-500/40" strokeWidth={1.5} />
+                <SpaceMarineHelmet className="w-20 h-20 text-emerald-500/40" />
               </div>
             </div>
           </div>
@@ -115,11 +166,15 @@ export default function CampaignHub() {
         </div>
       </div>
 
-      {/* Bottom decorative element */}
+      {/* Bottom rotating quote */}
       <div className="relative z-10 mt-8 text-center">
         <div className="flex items-center justify-center gap-2 text-stone-600 text-xs tracking-wider">
           <div className="w-8 h-px bg-gradient-to-r from-transparent to-stone-700" />
-          <span className="uppercase">For the Emperor</span>
+          <span
+            className={`uppercase italic max-w-xs text-center transition-opacity duration-400 ${fade ? "opacity-100" : "opacity-0"}`}
+          >
+            {quote}
+          </span>
           <div className="w-8 h-px bg-gradient-to-l from-transparent to-stone-700" />
         </div>
       </div>
