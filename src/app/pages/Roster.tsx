@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Plus, Sword, Skull, Award, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Plus, Sword, Skull, Award, AlertTriangle, ChevronDown, ScrollText } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
-import { getFactionName } from "../../lib/factions";
+import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
+import { getRulesForFaction } from "../../data";
 
 export default function Roster() {
   const navigate = useNavigate();
-  const { campaign, currentPlayer, units, removeUnit } = useCrusade();
+  const { campaign, currentPlayer, units, removeUnit, setDetachment } = useCrusade();
   const [showRemove, setShowRemove] = useState<string | null>(null);
+  const [showDetachmentPicker, setShowDetachmentPicker] = useState(false);
 
   // If no campaign, redirect to /home
   useEffect(() => {
@@ -20,6 +22,11 @@ export default function Roster() {
   if (!campaign || !currentPlayer) return null;
 
   const factionName = getFactionName(currentPlayer.faction_id);
+  const dataFactionId = getDataFactionId(currentPlayer.faction_id);
+  const factionRules = getRulesForFaction(dataFactionId);
+  const detachments = factionRules?.detachments ?? [];
+  const currentDetachment = detachments.find(d => d.name === currentPlayer.detachment_id);
+
   const supplyUsed = units.reduce((sum, u) => sum + u.points_cost, 0);
   const supplyLimit = campaign.supply_limit;
   const supplyPercent = supplyLimit > 0 ? (supplyUsed / supplyLimit) * 100 : 0;
@@ -161,6 +168,71 @@ export default function Roster() {
             </div>
           </div>
         </div>
+
+        {/* Detachment Picker */}
+        {detachments.length > 0 && (
+          <div className="mb-6">
+            <div className="relative">
+              <button
+                onClick={() => setShowDetachmentPicker(!showDetachmentPicker)}
+                className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4 text-left hover:border-emerald-500/40 transition-all"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+                <div className="relative flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-stone-500 uppercase tracking-wider block mb-1">
+                      Detachment
+                    </span>
+                    <span className="text-sm font-semibold text-stone-100">
+                      {currentDetachment?.name ?? 'Select Detachment...'}
+                    </span>
+                  </div>
+                  <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform ${showDetachmentPicker ? 'rotate-180' : ''}`} />
+                </div>
+              </button>
+
+              {showDetachmentPicker && (
+                <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-lg border border-emerald-500/30 bg-stone-950/98 backdrop-blur-sm shadow-xl max-h-64 overflow-y-auto">
+                  {detachments.map((det) => (
+                    <button
+                      key={det.name}
+                      onClick={() => {
+                        setDetachment(det.name);
+                        setShowDetachmentPicker(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 hover:bg-emerald-500/10 transition-colors border-b border-stone-800/50 last:border-b-0 ${
+                        det.name === currentPlayer.detachment_id ? 'bg-emerald-500/10 text-emerald-400' : 'text-stone-300'
+                      }`}
+                    >
+                      <span className="text-sm font-medium">{det.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tactical Cheat Sheet Button */}
+        {currentDetachment && units.length > 0 && (
+          <button
+            onClick={() => navigate('/cheat-sheet')}
+            className="w-full mb-6 relative overflow-hidden rounded-lg border border-amber-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-4 hover:border-amber-500/50 transition-all group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent group-hover:from-amber-500/10 transition-all" />
+            <div className="relative flex items-center gap-3">
+              <ScrollText className="w-5 h-5 text-amber-500" />
+              <div className="text-left">
+                <span className="text-sm font-semibold text-stone-100 block">
+                  Tactical Cheat Sheet
+                </span>
+                <span className="text-xs text-stone-500">
+                  Phase-by-phase triggers for {currentDetachment.name}
+                </span>
+              </div>
+            </div>
+          </button>
+        )}
 
         {/* Units List */}
         <div className="space-y-3 mb-6">

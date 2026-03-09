@@ -30,7 +30,8 @@ export default function BottomNav() {
         location.pathname.startsWith('/requisition') ||
         location.pathname.startsWith('/roster') ||
         location.pathname.startsWith('/add-unit') ||
-        location.pathname.startsWith('/unit')
+        location.pathname.startsWith('/unit') ||
+        location.pathname.startsWith('/cheat-sheet')
       );
     }
     if (item.path === '/codex') {

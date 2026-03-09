@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, FactionId, UnitRank } from '../types';
 import * as storage from './storage';
 import { getRankFromXP } from './ranks';
+import { getFactionName, getFactionIcon } from './factions';
 
 interface CrusadeState {
   // Auth
@@ -17,6 +18,7 @@ interface CrusadeState {
   createCampaign: (name: string, supplyLimit: number, startingRp: number, playerName: string, factionId: FactionId) => void;
   joinCampaign: (code: string, playerName: string, factionId: FactionId) => { success: boolean; error?: string };
   leaveCampaign: () => void;
+  setDetachment: (detachmentId: string) => void;
 
   // Actions — Roster
   units: CrusadeUnit[];
@@ -133,8 +135,8 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
         id: campaign.id,
         name: campaign.name,
         faction_id: currentPlayer.faction_id,
-        faction_name: currentPlayer.faction_id,
-        faction_icon: '',
+        faction_name: getFactionName(currentPlayer.faction_id),
+        faction_icon: getFactionIcon(currentPlayer.faction_id),
         start_date: campaign.created_at,
         end_date: new Date().toISOString(),
         wins: currentPlayer.battles_won,
@@ -145,12 +147,13 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       storage.archiveCampaign(archive);
       setCampaignHistory(storage.loadCampaignHistory());
     }
+    // Clear storage first to prevent stale data from useEffect persistence
+    storage.clearCampaign();
     setCampaign(null);
     setCurrentPlayer(null);
     setPlayers([]);
     setUnits([]);
     setBattles([]);
-    storage.clearCampaign();
   }, [campaign, currentPlayer]);
 
   const addUnitFn = useCallback((datasheetName: string, customName: string, pointsCost: number, equipment: string, modelCount?: number) => {
@@ -264,11 +267,17 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     return true;
   }, [currentPlayer]);
 
+  const setDetachment = useCallback((detachmentId: string) => {
+    if (currentPlayer) {
+      setCurrentPlayer({ ...currentPlayer, detachment_id: detachmentId });
+    }
+  }, [currentPlayer]);
+
   return (
     <CrusadeContext.Provider value={{
       user, setUser,
       campaign, players, currentPlayer,
-      createCampaign, joinCampaign, leaveCampaign,
+      createCampaign, joinCampaign, leaveCampaign, setDetachment,
       units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,
       battles, logBattle, getPlayerBattles,
       awardXP, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, spendRequisition,

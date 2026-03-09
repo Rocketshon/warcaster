@@ -11,10 +11,14 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const DATASHEETS_ROOT = path.resolve('C:/Users/dshon/Projects/Warhammer/datasheets');
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'src', 'data');
@@ -152,6 +156,8 @@ interface RawFactionRules {
     }[];
     other: unknown[];
   }[];
+  crusade_rules?: { name: string; text: string }[];
+  boarding_actions?: unknown[];
 }
 
 function processFactionRules(): Map<string, RawFactionRules & { faction_id: string }> {

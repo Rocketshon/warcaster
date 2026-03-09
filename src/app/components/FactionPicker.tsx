@@ -46,7 +46,7 @@ export default function FactionPicker({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center p-0 sm:p-6">
       <div
         className="relative w-full max-w-2xl rounded-t-2xl sm:rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-stone-900 to-stone-950 shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}

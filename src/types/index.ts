@@ -58,6 +58,7 @@ export interface CampaignPlayer {
   user_id: string;
   name: string;
   faction_id: FactionId;
+  detachment_id?: string;
   supply_used: number;
   requisition_points: number;
   battles_played: number;

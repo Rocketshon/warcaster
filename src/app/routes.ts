@@ -23,6 +23,7 @@ import SignIn from "./pages/SignIn";
 import PostBattleWizard from "./pages/PostBattleWizard";
 import RequisitionSpending from "./pages/RequisitionSpending";
 import BattleDetail from "./pages/BattleDetail";
+import TacticalCheatSheet from "./pages/TacticalCheatSheet";
 import { redirect } from "react-router";
 
 // Detect GitHub Pages base path from Vite's import.meta.env.BASE_URL
@@ -51,6 +52,7 @@ export const router = createBrowserRouter(
         { path: "/roster", Component: Roster },
         { path: "/add-unit", Component: AddUnit },
         { path: "/unit/:unitId", Component: UnitDetail },
+        { path: "/cheat-sheet", Component: TacticalCheatSheet },
         // Codex (browse any faction — no campaign required)
         { path: "/codex", Component: CodexHome },
         { path: "/space-marines-chapters", Component: SpaceMarinesChapters },
