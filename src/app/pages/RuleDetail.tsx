@@ -3,7 +3,7 @@ import { ArrowLeft, BookOpen, Shield, Award } from "lucide-react";
 import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
 import { getRulesForFaction } from '../../data';
 import { useCrusade } from '../../lib/CrusadeContext';
-import { getFactionName } from '../../lib/factions';
+import { getFactionName, getDataFactionId } from '../../lib/factions';
 import { FormattedRuleText, toTitleCase, getStratagemTypeColor } from '../../lib/formatText';
 import type { RulesSection } from '../../types';
 
@@ -32,7 +32,7 @@ function lookupRule(
 
   // Faction rules
   if (ruleId.startsWith('faction-') && factionId) {
-    const factionRules = getRulesForFaction(factionId as any);
+    const factionRules = getRulesForFaction(getDataFactionId(factionId as any));
     if (!factionRules) return null;
     const factionName = getFactionName(factionId as any);
 

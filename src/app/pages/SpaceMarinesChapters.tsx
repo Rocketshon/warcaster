@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft, Shield, ChevronRight } from "lucide-react";
-import { SPACE_MARINE_CHAPTERS } from '../../lib/factions';
+import { SPACE_MARINE_CHAPTERS, getDataFactionId } from '../../lib/factions';
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
 import type { FactionId } from '../../types';
 
@@ -24,8 +24,9 @@ export default function SpaceMarinesChapters() {
 
   // Build chapter list from real data
   const chapters = SPACE_MARINE_CHAPTERS.map((ch) => {
-    const datasheets = getUnitsForFaction(ch.id as FactionId)?.length ?? ch.uniqueDatasheets;
-    const detachments = getRulesForFaction(ch.id as FactionId)?.detachments.length ?? ch.detachments;
+    const dataId = getDataFactionId(ch.id as FactionId);
+    const datasheets = getUnitsForFaction(dataId)?.length ?? ch.uniqueDatasheets;
+    const detachments = getRulesForFaction(dataId)?.detachments.length ?? ch.detachments;
     const bgGlow = CHAPTER_COLORS[ch.id]?.bgGlow ?? 'from-blue-400/10';
     return {
       ...ch,

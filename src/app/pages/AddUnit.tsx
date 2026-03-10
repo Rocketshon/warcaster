@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { ArrowLeft, Search, Plus, X, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
-import { getFactionName } from "../../lib/factions";
+import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getUnitsForFaction } from "../../data";
 import { toTitleCase } from "../../lib/formatText";
 import type { Datasheet } from "../../types";
@@ -33,7 +33,7 @@ export default function AddUnit() {
   const factionName = getFactionName(factionId);
 
   // Load real datasheets for this faction
-  const allFactionUnits = useMemo(() => getUnitsForFaction(factionId), [factionId]);
+  const allFactionUnits = useMemo(() => getUnitsForFaction(getDataFactionId(factionId)), [factionId]);
 
   // Filter units based on search (name + keywords)
   const filteredUnits = useMemo(() => {

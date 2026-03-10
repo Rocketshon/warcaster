@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft, ChevronRight, BookOpen } from "lucide-react";
-import { FACTIONS } from '../../lib/factions';
+import { FACTIONS, getDataFactionId } from '../../lib/factions';
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
 import type { FactionId } from '../../types';
 
@@ -35,8 +35,9 @@ export default function CodexHome() {
   // Build faction list dynamically from real data
   const factionList = FACTIONS.map((f) => {
     const colors = getFactionColors(f.color);
-    const datasheets = getUnitsForFaction(f.id).length;
-    const detachments = getRulesForFaction(f.id)?.detachments.length ?? 0;
+    const dataId = getDataFactionId(f.id);
+    const datasheets = getUnitsForFaction(dataId).length;
+    const detachments = getRulesForFaction(dataId)?.detachments.length ?? 0;
     return {
       id: f.id,
       name: f.name,

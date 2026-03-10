@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, Plus, Shield, Zap } from "lucide-react";
 import { getUnitsForFaction } from '../../data';
-import { getFaction } from '../../lib/factions';
+import { getFaction, getDataFactionId } from '../../lib/factions';
 import { useCrusade } from '../../lib/CrusadeContext';
 import { toTitleCase, FormattedRuleText } from '../../lib/formatText';
 import type { FactionId, Datasheet } from '../../types';
@@ -16,7 +16,7 @@ export default function DatasheetView() {
   const { campaign, addUnit } = useCrusade();
 
   // Look up real datasheet
-  const units = factionId ? getUnitsForFaction(factionId as FactionId) : [];
+  const units = factionId ? getUnitsForFaction(getDataFactionId(factionId as FactionId)) : [];
   const datasheet: Datasheet | undefined = datasheetName
     ? units.find((u) => u.name === decodeURIComponent(datasheetName))
     : undefined;

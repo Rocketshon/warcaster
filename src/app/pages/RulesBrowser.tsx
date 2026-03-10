@@ -4,7 +4,7 @@ import { ArrowLeft, Search, BookOpen, ChevronDown, ChevronRight, Shield } from "
 import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
 import { getRulesForFaction } from '../../data';
 import { useCrusade } from '../../lib/CrusadeContext';
-import { getFactionName } from '../../lib/factions';
+import { getFactionName, getDataFactionId } from '../../lib/factions';
 import type { RulesSection, FactionId } from '../../types';
 
 /** Strip leading "N. " numbering from section names (e.g. "1. Command" -> "Command") */
@@ -33,7 +33,7 @@ export default function RulesBrowser() {
   const crusadeRuleItems = CRUSADE_RULES ? buildRuleItems(CRUSADE_RULES.sections, "crusade") : [];
 
   // Build faction rules if the player has an active campaign
-  const factionRulesData = currentPlayer ? getRulesForFaction(currentPlayer.faction_id) : undefined;
+  const factionRulesData = currentPlayer ? getRulesForFaction(getDataFactionId(currentPlayer.faction_id)) : undefined;
   const factionRuleItems: { id: string; title: string; subtitle?: string; category: string }[] = [];
   if (factionRulesData) {
     // Army rules as a single entry

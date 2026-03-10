@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, Shield, Edit, Plus, Award, AlertTriangle, Skull, ChevronDown, ChevronUp, Star, Trash2, Sparkles, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
-import { getFactionName } from "../../lib/factions";
+import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
 import { getUnitsForFaction, getRulesForFaction } from "../../data";
 import type { Datasheet } from "../../types";
@@ -49,14 +49,14 @@ export default function UnitDetail() {
   // Load matching datasheet from faction data
   const datasheet: Datasheet | undefined = useMemo(() => {
     if (!currentPlayer || !unit) return undefined;
-    const factionUnits = getUnitsForFaction(currentPlayer.faction_id);
+    const factionUnits = getUnitsForFaction(getDataFactionId(currentPlayer.faction_id));
     return factionUnits.find((ds) => ds.name === unit.datasheet_name);
   }, [currentPlayer, unit]);
 
   // Load faction enhancements from all detachments
   const factionEnhancements = useMemo(() => {
     if (!currentPlayer) return [];
-    const rules = getRulesForFaction(currentPlayer.faction_id);
+    const rules = getRulesForFaction(getDataFactionId(currentPlayer.faction_id));
     if (!rules) return [];
     const enhancements: { detachment: string; name: string; cost: string; text: string }[] = [];
     for (const det of rules.detachments) {
@@ -103,7 +103,7 @@ export default function UnitDetail() {
   // Match stratagems whose target field references this unit's keywords
   const matchingStratagems = useMemo(() => {
     if (!currentPlayer || !datasheet) return [];
-    const rules = getRulesForFaction(currentPlayer.faction_id);
+    const rules = getRulesForFaction(getDataFactionId(currentPlayer.faction_id));
     if (!rules) return [];
 
     // Collect unit keywords (uppercase)

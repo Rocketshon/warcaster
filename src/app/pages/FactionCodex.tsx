@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, ChevronDown, ChevronRight, Search, Shield, Swords, BookOpen, Award, Zap } from "lucide-react";
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
-import { getFaction } from '../../lib/factions';
+import { getFaction, getDataFactionId } from '../../lib/factions';
 import { FormattedRuleText, toTitleCase, getStratagemTypeColor } from '../../lib/formatText';
 import type { FactionId, DetachmentData, Datasheet } from '../../types';
 
@@ -186,10 +186,11 @@ export default function FactionCodex() {
   const [expandedStratagems, setExpandedStratagems] = useState<string[]>([]);
   const [datasheetSearch, setDatasheetSearch] = useState("");
 
-  // Load real data
+  // Load real data — use getDataFactionId to map chapters (e.g. space_wolves) to parent data (space_marines)
   const factionMeta = factionId ? getFaction(factionId as FactionId) : undefined;
-  const rules = factionId ? getRulesForFaction(factionId as FactionId) : undefined;
-  const units = factionId ? getUnitsForFaction(factionId as FactionId) : [];
+  const dataFaction = factionId ? getDataFactionId(factionId as FactionId) : (factionId as FactionId);
+  const rules = dataFaction ? getRulesForFaction(dataFaction) : undefined;
+  const units = dataFaction ? getUnitsForFaction(dataFaction) : [];
 
   if (!factionMeta) {
     return (
