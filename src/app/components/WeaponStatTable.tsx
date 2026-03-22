@@ -43,7 +43,7 @@ function WeaponCard({ weapon, type, compact }: { weapon: WeaponProfile; type: "r
         </h4>
 
         {/* Stats Row */}
-        <div className={`grid ${compact ? 'grid-cols-6' : 'grid-cols-6'} gap-1 mb-2`}>
+        <div className="grid grid-cols-6 gap-1 mb-2">
           {[
             { label: isRanged ? "Range" : "Range", value: weapon.range },
             { label: "A", value: weapon.A },
@@ -57,7 +57,7 @@ function WeaponCard({ weapon, type, compact }: { weapon: WeaponProfile; type: "r
                 {stat.label}
               </div>
               <div className={`${compact ? 'text-xs' : 'text-sm'} font-bold text-stone-100 font-mono`}>
-                {stat.value}
+                {stat.value ?? '-'}
               </div>
             </div>
           ))}
@@ -66,8 +66,8 @@ function WeaponCard({ weapon, type, compact }: { weapon: WeaponProfile; type: "r
         {/* Trait Badges */}
         {weapon.traits.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {weapon.traits.map((trait, idx) => (
-              <TraitBadge key={idx} trait={trait} />
+            {weapon.traits.map((trait) => (
+              <TraitBadge key={trait} trait={trait} />
             ))}
           </div>
         )}
@@ -94,8 +94,8 @@ export default function WeaponStatTable({ weapons, type, compact }: WeaponStatTa
         </span>
       </h2>
       <div className="space-y-2">
-        {weapons.map((weapon, idx) => (
-          <WeaponCard key={idx} weapon={weapon} type={type} compact={compact} />
+        {weapons.map((weapon) => (
+          <WeaponCard key={weapon.name} weapon={weapon} type={type} compact={compact} />
         ))}
       </div>
     </div>

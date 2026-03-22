@@ -15,6 +15,7 @@ import {
   LogOut
 } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { saveCampaign, savePlayer, saveUnits, saveBattles } from "../../lib/storage";
 import { getAllFactionSlugs, getAllUnits } from "../../data";
 
 export default function Settings() {
@@ -133,10 +134,10 @@ export default function Settings() {
       try {
         const data = JSON.parse(reader.result as string);
         // Restore campaign, units, battles via localStorage then reload
-        if (data.campaign) localStorage.setItem("crusade_campaign", JSON.stringify(data.campaign));
-        if (data.currentPlayer) localStorage.setItem("crusade_player", JSON.stringify(data.currentPlayer));
-        if (data.units) localStorage.setItem("crusade_units", JSON.stringify(data.units));
-        if (data.battles) localStorage.setItem("crusade_battles", JSON.stringify(data.battles));
+        if (data.campaign) saveCampaign(data.campaign);
+        if (data.currentPlayer) savePlayer(data.currentPlayer);
+        if (data.units) saveUnits(data.units);
+        if (data.battles) saveBattles(data.battles);
         setShowImportSuccess(true);
         setTimeout(() => {
           setShowImportSuccess(false);

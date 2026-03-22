@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crusade-command-v1';
+const CACHE_NAME = 'crusade-command-v2';
 
 // Assets to precache on install
 const PRECACHE_URLS = [

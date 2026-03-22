@@ -37,7 +37,8 @@ function isGarbageContent(text: string): boolean {
 /**
  * Render inline keywords: ALL CAPS phrases (2+ chars) wrapped in bold emerald spans.
  */
-function renderInlineKeywords(text: string, key: string | number): ReactNode {
+function renderInlineKeywords(text: string | null | undefined, key: string | number): ReactNode {
+  if (!text) return null;
   // Match [KEYWORD] patterns and standalone ALL CAPS keywords (2+ words or single keyword)
   const parts = text.split(/(\[[A-Z][A-Z\s\-]+\d*\])/g);
   if (parts.length === 1) return text;
@@ -282,7 +283,8 @@ export function parseRuleText(text: string): ReactNode[] {
  * Render a rules text block as formatted content.
  * Drop-in replacement for `<p className="whitespace-pre-line">{text}</p>`
  */
-export function FormattedRuleText({ text, className }: { text: string; className?: string }) {
+export function FormattedRuleText({ text, className }: { text: string | null | undefined; className?: string }) {
+  if (!text) return null;
   const elements = parseRuleText(text);
   if (elements.length === 0) return null;
   return <div className={className}>{elements}</div>;

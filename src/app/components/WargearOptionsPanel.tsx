@@ -131,8 +131,12 @@ export default function WargearOptionsPanel({
     const map = new Map<string, { group: WargearGroup; originalIdx: number }[]>();
     groups.forEach((group, idx) => {
       const modelType = extractModelType(group.description);
-      if (!map.has(modelType)) map.set(modelType, []);
-      map.get(modelType)!.push({ group, originalIdx: idx });
+      const existing = map.get(modelType);
+      if (existing) {
+        existing.push({ group, originalIdx: idx });
+      } else {
+        map.set(modelType, [{ group, originalIdx: idx }]);
+      }
     });
     return Array.from(map.entries());
   }, [groups]);
