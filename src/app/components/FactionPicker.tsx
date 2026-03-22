@@ -59,7 +59,7 @@ export default function FactionPicker({
         role="dialog"
         aria-modal="true"
         aria-labelledby="faction-picker-title"
-        className="relative w-full max-w-2xl rounded-t-2xl sm:rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-stone-900 to-stone-950 shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[80vh]"
+        className="relative w-full max-w-2xl rounded-t-sm sm:rounded-sm border border-emerald-500/30 bg-gradient-to-br from-stone-900 to-stone-950 shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -106,7 +106,7 @@ export default function FactionPicker({
                     <button
                       key={faction.id}
                       onClick={() => handleFactionClick(faction.id)}
-                      className={`w-full relative overflow-hidden rounded-lg border transition-all group ${
+                      className={`w-full relative overflow-hidden rounded-sm border transition-all group ${
                         tempSelectedId === faction.id
                           ? "border-emerald-500/60 bg-gradient-to-br from-emerald-950/40 to-stone-950"
                           : "border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5"

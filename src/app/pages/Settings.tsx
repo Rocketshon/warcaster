@@ -193,7 +193,7 @@ export default function Settings() {
           <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
             Profile
           </h2>
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-5">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-5">
             {/* Avatar and Name */}
             <div className="flex items-center gap-4 mb-5">
               {/* Avatar Circle */}
@@ -253,7 +253,7 @@ export default function Settings() {
             {/* Sign Out Button */}
             <button
               onClick={() => setShowSignOutDialog(true)}
-              className="w-full relative overflow-hidden rounded-xl border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-sm border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-center gap-3">
                 <LogOut className="w-5 h-5 text-red-500" />
@@ -273,7 +273,7 @@ export default function Settings() {
             <button
               onClick={() => setShowLeaveDialog(true)}
               disabled={!campaign}
-              className="w-full relative overflow-hidden rounded-xl border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full relative overflow-hidden rounded-sm border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -287,7 +287,7 @@ export default function Settings() {
             <button
               onClick={handleShareJoinCode}
               disabled={!campaign}
-              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -303,7 +303,7 @@ export default function Settings() {
             {/* Campaign History */}
             <button
               onClick={() => navigate("/campaign-history")}
-              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -323,7 +323,7 @@ export default function Settings() {
           </h2>
           <div className="space-y-2">
             {/* Dark Mode Toggle */}
-            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {darkMode ? (
@@ -349,7 +349,7 @@ export default function Settings() {
             </div>
 
             {/* Font Size Slider */}
-            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-stone-300 font-semibold">Font Size</span>
@@ -385,7 +385,7 @@ export default function Settings() {
             {/* Export Crusade Data */}
             <button
               onClick={handleExportData}
-              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -401,7 +401,7 @@ export default function Settings() {
             {/* Import Crusade Data */}
             <button
               onClick={handleImportData}
-              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -415,7 +415,7 @@ export default function Settings() {
             </button>
 
             {/* Database Stats */}
-            <div className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
+            <div className="relative overflow-hidden rounded-sm border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
               <div className="flex items-start gap-3">
                 <Database className="w-5 h-5 text-purple-400 mt-0.5" />
                 <div className="flex-1">
@@ -441,7 +441,7 @@ export default function Settings() {
           <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
             About
           </h2>
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-5">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-5">
             <div className="flex items-start gap-3 mb-4">
               <Info className="w-5 h-5 text-emerald-500 mt-0.5" />
               <div className="flex-1">
@@ -485,7 +485,7 @@ export default function Settings() {
       {/* Leave Campaign Confirmation Dialog */}
       {showLeaveDialog && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-          <div className="relative w-full max-w-md rounded-xl border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
+          <div className="relative w-full max-w-md rounded-sm border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
@@ -499,7 +499,7 @@ export default function Settings() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowLeaveDialog(false)}
-                className="flex-1 px-4 py-3 rounded-xl border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
+                className="flex-1 px-4 py-3 rounded-sm border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
               >
                 Cancel
               </button>
@@ -517,7 +517,7 @@ export default function Settings() {
       {/* Sign Out Confirmation Dialog */}
       {showSignOutDialog && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-          <div className="relative w-full max-w-md rounded-xl border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
+          <div className="relative w-full max-w-md rounded-sm border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
@@ -531,7 +531,7 @@ export default function Settings() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowSignOutDialog(false)}
-                className="flex-1 px-4 py-3 rounded-xl border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
+                className="flex-1 px-4 py-3 rounded-sm border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
               >
                 Cancel
               </button>

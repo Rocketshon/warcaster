@@ -210,6 +210,7 @@ export interface DetachmentData {
 export interface CrusadeRule {
   name: string;
   text: string;
+  sub_sections?: Array<{ name: string; text: string }>;
 }
 
 export interface FactionRulesData {

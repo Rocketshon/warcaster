@@ -128,7 +128,7 @@ export default function BattleDetail() {
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Result Banner */}
           <div
-            className={`rounded-lg border ${resultColors.border} ${resultColors.bg} p-6 text-center ${resultColors.glow}`}
+            className={`rounded-sm border ${resultColors.border} ${resultColors.bg} p-6 text-center ${resultColors.glow}`}
           >
             <h2 className={`text-4xl font-bold ${resultColors.text} tracking-wider mb-4 uppercase`}>
               {resultLabel}
@@ -151,7 +151,7 @@ export default function BattleDetail() {
             <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
               Opponent
             </h3>
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <h4 className="text-lg font-bold text-stone-300 mb-2">
                 {battle.opponent_name}
               </h4>
@@ -178,7 +178,7 @@ export default function BattleDetail() {
                     <div
                       key={unit.id}
                       onClick={() => navigate(`/unit/${unit.id}`)}
-                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-4 cursor-pointer hover:border-emerald-500/50 transition-all"
+                      className="rounded-sm border border-stone-700/60 bg-stone-900 p-4 cursor-pointer hover:border-emerald-500/50 transition-all"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-semibold text-stone-300">{unit.custom_name}</h4>
@@ -225,7 +225,7 @@ export default function BattleDetail() {
                   {fieldedUnits.map((unit) => (
                     <div
                       key={unit.id}
-                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
+                      className="rounded-sm border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                     >
                       <span className="text-sm text-stone-400">{unit.custom_name}</span>
                       <span className="font-bold text-emerald-400">{unit.experience_points} XP</span>
@@ -249,7 +249,7 @@ export default function BattleDetail() {
                       unit.battle_honours.map((honour) => (
                         <div
                           key={`${unit.id}-${honour.id}`}
-                          className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
+                          className="rounded-sm border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                         >
                           <span className="text-sm text-stone-400">{unit.custom_name}</span>
                           <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
@@ -276,7 +276,7 @@ export default function BattleDetail() {
                       unit.battle_scars.map((scar) => (
                         <div
                           key={`${unit.id}-${scar.id}`}
-                          className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
+                          className="rounded-sm border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                         >
                           <span className="text-sm text-stone-400">{unit.custom_name}</span>
                           <span className="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-semibold">
@@ -296,7 +296,7 @@ export default function BattleDetail() {
               <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
                 Battle Notes
               </h3>
-              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+              <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
                 <div className="flex items-start gap-3">
                   <FileText className="w-4 h-4 text-stone-500 mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-stone-400 italic leading-relaxed whitespace-pre-line">

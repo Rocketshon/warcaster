@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import BottomNav from './BottomNav';
+import TutorialOverlay from './TutorialOverlay';
 
 const base = import.meta.env.BASE_URL;
 const SPLASH_VIDEOS = [`${base}videos/splash_1.mp4`, `${base}videos/splash_2.mp4`];
@@ -53,10 +54,14 @@ export default function AppLayout() {
   const [showSplash, setShowSplash] = useState(
     () => !sessionStorage.getItem(SPLASH_KEY)
   );
+  const location = useLocation();
+  const isAuthPage = ['/sign-in', '/sign-up'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-black">
       {showSplash && <SplashOverlay onDone={() => setShowSplash(false)} />}
+      {/* Tutorial overlay — shown once after first sign-in, not on auth pages or during splash */}
+      {!showSplash && !isAuthPage && <TutorialOverlay />}
       {/* Page content with bottom padding for nav bar */}
       <div className="pb-20">
         <Outlet />

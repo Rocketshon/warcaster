@@ -3,8 +3,8 @@ import { ArrowLeft, BookOpen, Shield, Award } from "lucide-react";
 import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
 import { getRulesForFaction } from '../../data';
 import { useCrusade } from '../../lib/CrusadeContext';
-import { getFactionName, getDataFactionId } from '../../lib/factions';
-import { FormattedRuleText, toTitleCase, getStratagemTypeColor } from '../../lib/formatText';
+import { getFaction, getFactionName, getDataFactionId } from '../../lib/factions';
+import { FormattedRuleText, toTitleCase, getStratagemTypeColor, getEnhancementCardColors } from '../../lib/formatText';
 import type { RulesSection } from '../../types';
 
 // Parse a rule ID like "core-5" or "crusade-2" or "faction-det-1" etc.
@@ -172,7 +172,7 @@ export default function RuleDetail() {
       <div className="space-y-6">
         {/* Main text content */}
         {parsed.paragraphs.length > 0 && (
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative space-y-2">
               {parsed.paragraphs.map((p, idx) => (
                 <p key={idx} className="text-stone-300 leading-relaxed">{p}</p>
@@ -183,7 +183,7 @@ export default function RuleDetail() {
 
         {/* Bullet points */}
         {parsed.bullets.length > 0 && (
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <ul className="relative space-y-2">
               {parsed.bullets.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-stone-300">
@@ -201,7 +201,7 @@ export default function RuleDetail() {
             <h2 className="text-xl font-bold text-stone-200 tracking-wide">
               Subsections
             </h2>
-            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <ul className="relative space-y-2">
                 {section.subsections.map((sub, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-stone-300">
@@ -227,7 +227,7 @@ export default function RuleDetail() {
           {rule.factionData.rules.map((ruleText: string, idx: number) => (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4"
+              className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4"
             >
               <div className="relative">
                 <FormattedRuleText text={ruleText} />
@@ -247,7 +247,7 @@ export default function RuleDetail() {
             <h2 className="text-xl font-bold text-stone-200 tracking-wide mb-3">
               {det.rule.name}
             </h2>
-            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="relative">
                 <FormattedRuleText text={det.rule.text} />
               </div>
@@ -261,18 +261,22 @@ export default function RuleDetail() {
                 Enhancements
               </h2>
               <div className="space-y-3">
-                {det.enhancements.map((enh: any, idx: number) => (
+                {det.enhancements.map((enh: any, idx: number) => {
+                  const factionMeta = currentPlayer?.faction_id ? getFaction(currentPlayer.faction_id as any) : undefined;
+                  const enhColors = getEnhancementCardColors(factionMeta?.color ?? 'emerald');
+                  return (
                   <div
                     key={idx}
-                    className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4"
+                    className={`relative overflow-hidden rounded-sm border ${enhColors.card} p-4`}
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-sm font-bold text-emerald-400">{enh.name}</h3>
-                      <span className="text-xs font-bold text-emerald-500 font-mono">{enh.cost} pts</span>
+                      <h3 className={`text-sm font-bold ${enhColors.nameText}`}>{enh.name}</h3>
+                      <span className={`text-xs font-bold ${enhColors.costText} font-mono`}>{enh.cost} pts</span>
                     </div>
                     <FormattedRuleText text={enh.text} className="text-sm" />
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -287,7 +291,7 @@ export default function RuleDetail() {
                 {det.stratagems.map((strat: any, idx: number) => (
                   <div
                     key={idx}
-                    className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4"
+                    className="relative overflow-hidden rounded-sm border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-sm font-bold text-purple-400">{strat.name}</h3>
@@ -332,7 +336,7 @@ export default function RuleDetail() {
           {rule.factionData.rules.map((cr: any, idx: number) => (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-xl border border-amber-500/20 bg-stone-900 p-4"
+              className="relative overflow-hidden rounded-sm border border-amber-500/20 bg-stone-900 p-4"
             >
               <div className="relative">
                 {cr.name && (

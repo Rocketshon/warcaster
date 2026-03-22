@@ -88,7 +88,7 @@ export default function GameTracker() {
         </div>
 
         {/* Round Tracker */}
-        <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-3 mb-6">
+        <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-3 mb-6">
           <div className="relative flex items-center justify-between">
             <button
               onClick={() => update({ currentRound: Math.max(1, state.currentRound - 1) })}
@@ -123,7 +123,7 @@ export default function GameTracker() {
             const cpKey = isP1 ? "player1CP" : "player2CP";
 
             return (
-              <div key={player} className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900" style={{ borderLeftWidth: '4px', borderLeftColor: isP1 ? 'rgb(16, 185, 129)' : 'rgb(245, 158, 11)' }}>
+              <div key={player} className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900" style={{ borderLeftWidth: '4px', borderLeftColor: isP1 ? 'rgb(16, 185, 129)' : 'rgb(245, 158, 11)' }}>
                 <div className="relative p-4">
                   {/* Player Name */}
                   <div className="mb-4">
@@ -248,7 +248,7 @@ export default function GameTracker() {
       {/* Reset Confirmation Modal */}
       {showReset && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-          <div className="w-full max-w-sm relative overflow-hidden rounded-xl border border-red-500/30 bg-stone-900 p-6">
+          <div className="w-full max-w-sm relative overflow-hidden rounded-sm border border-red-500/30 bg-stone-900 p-6">
             <div className="relative">
               <div className="flex justify-center mb-4">
                 <RotateCcw className="w-12 h-12 text-red-500" strokeWidth={1.5} />

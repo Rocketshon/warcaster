@@ -60,17 +60,17 @@ export default function CampaignHistory() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="relative overflow-hidden rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-stone-950 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-stone-950 p-4">
             <div className="text-xs text-stone-400 font-semibold mb-1">Total Campaigns</div>
             <div className="text-2xl font-bold text-amber-400">{totalCampaigns}</div>
           </div>
-          <div className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-emerald-500/20 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-4">
             <div className="text-xs text-stone-400 font-semibold mb-1">Total Battles</div>
             <div className="text-2xl font-bold text-emerald-400">
               {totalBattles}
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
             <div className="text-xs text-stone-400 font-semibold mb-1">Factions Played</div>
             <div className="text-2xl font-bold text-purple-400">
               {factionsPlayed}
@@ -89,7 +89,7 @@ export default function CampaignHistory() {
               <button
                 key={campaign.id}
                 onClick={() => handleCampaignClick(campaign.id)}
-                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
               >
 
                 <div className="relative p-4">

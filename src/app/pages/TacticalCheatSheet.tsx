@@ -263,7 +263,7 @@ function EntryCard({
 
   return (
     <div
-      className={`rounded-xl border bg-stone-900 overflow-hidden transition-all ${PHASE_ACCENT[phase]}`}
+      className={`rounded-sm border bg-stone-900 overflow-hidden transition-all ${PHASE_ACCENT[phase]}`}
     >
       {/* Header - always visible */}
       <button

@@ -171,7 +171,7 @@ export default function JoinCampaign() {
           </button>
 
           {/* Help Text */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4 mt-6">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4 mt-6">
             <p className="text-xs text-stone-400">
               <span className="font-semibold text-stone-400">Need a join code?</span> Ask the campaign host to share their 6-character campaign code with you.
             </p>

@@ -81,7 +81,7 @@ export default function DatasheetView() {
               {datasheet.points.map((tier, idx) => (
                 <div
                   key={idx}
-                  className="px-3 py-1.5 rounded-xl border border-stone-700/60 bg-stone-900"
+                  className="px-3 py-1.5 rounded-sm border border-stone-700/60 bg-stone-900"
                 >
                   <span className="text-stone-400 text-xs">{tier.models} models:</span>
                   <span className="text-emerald-400 text-sm font-bold ml-2 font-mono">{tier.cost} pts</span>
@@ -96,7 +96,7 @@ export default function DatasheetView() {
               {Object.entries(datasheet.stats).map(([stat, value]) => (
                 <div
                   key={stat}
-                  className="flex-1 min-w-[70px] px-3 py-2 rounded-xl border border-stone-700/60 bg-stone-900"
+                  className="flex-1 min-w-[70px] px-3 py-2 rounded-sm border border-stone-700/60 bg-stone-900"
                 >
                   <div className="text-xs text-stone-400 font-semibold">{stat}</div>
                   <div className="text-lg font-bold text-stone-100">{value}</div>
@@ -174,7 +174,7 @@ export default function DatasheetView() {
           {datasheet.abilities.other.map((ability: [string, string], idx: number) => (
             <div
               key={idx}
-              className="mb-3 rounded-xl border border-stone-700/60 bg-stone-900 p-4"
+              className="mb-3 rounded-sm border border-stone-700/60 bg-stone-900 p-4"
             >
               <h3 className="text-sm font-bold text-emerald-400 mb-2">{ability[0]}</h3>
               <FormattedRuleText text={ability[1]} className="text-xs" />
@@ -186,7 +186,7 @@ export default function DatasheetView() {
         {datasheet.unit_composition && (
           <div className="mb-6">
             <h2 className="text-lg font-bold text-stone-200 mb-3">Unit Composition</h2>
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <p className="text-sm text-stone-300 whitespace-pre-line">{datasheet.unit_composition}</p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function DatasheetView() {
         {datasheet.damaged && (
           <div className="mb-6">
             <h2 className="text-lg font-bold text-stone-200 mb-3">Damaged Profile</h2>
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <FormattedRuleText text={datasheet.damaged} className="text-sm text-amber-300" />
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function DatasheetView() {
             {datasheet.keywords.map((keyword: string, idx: number) => (
               <span
                 key={idx}
-                className="px-3 py-1.5 rounded-xl border border-stone-700/60 bg-stone-900 text-stone-300 text-xs font-semibold"
+                className="px-3 py-1.5 rounded-sm border border-stone-700/60 bg-stone-900 text-stone-300 text-xs font-semibold"
               >
                 {toTitleCase(keyword)}
               </span>
@@ -234,7 +234,7 @@ export default function DatasheetView() {
               {datasheet.faction_keywords.map((keyword: string, idx: number) => (
                 <span
                   key={idx}
-                  className="px-3 py-1.5 rounded-xl border border-stone-700/60 bg-stone-900 text-red-400 text-xs font-semibold"
+                  className="px-3 py-1.5 rounded-sm border border-stone-700/60 bg-stone-900 text-red-400 text-xs font-semibold"
                 >
                   {toTitleCase(keyword)}
                 </span>
@@ -247,16 +247,15 @@ export default function DatasheetView() {
         {datasheet.leader && (
           <div className="mb-6">
             <h2 className="text-lg font-bold text-stone-200 mb-3">Leader</h2>
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <FormattedRuleText text={datasheet.leader} className="text-sm text-purple-300" />
             </div>
           </div>
         )}
       </div>
 
-      {/* Sticky Add to Roster Button */}
-      <div className="fixed bottom-16 left-0 right-0 z-20 px-6">
-        <div className="max-w-2xl mx-auto">
+      {/* Add to Roster Button — flows with content, above footer */}
+      <div className="relative z-10 w-full max-w-2xl mx-auto mt-6">
           <button
             onClick={handleAddToRoster}
             className={`w-full py-4 rounded-lg font-bold text-base transition-all ${
@@ -276,7 +275,6 @@ export default function DatasheetView() {
               </span>
             )}
           </button>
-        </div>
       </div>
     </div>
   );

@@ -162,7 +162,7 @@ export default function WargearOptionsPanel({
     return (
       <div
         key={idx}
-        className="relative overflow-hidden rounded-lg border border-orange-500/20 bg-gradient-to-br from-stone-900 to-stone-950"
+        className="relative overflow-hidden rounded-sm border border-orange-500/20 bg-gradient-to-br from-stone-900 to-stone-950"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent" />
 
@@ -305,7 +305,7 @@ export function WargearAbilitiesPanel({ abilities }: WargearAbilitiesPanelProps)
           return (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-lg border border-cyan-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-3"
+              className="relative overflow-hidden rounded-sm border border-cyan-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-3"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent" />
               <div className="relative">

@@ -98,7 +98,7 @@ export default function CampaignHub() {
             onClick={() => navigate("/campaign/active")}
             className="group w-full relative overflow-hidden mb-4"
           >
-            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]" style={{ borderLeftWidth: '4px', borderLeftColor: 'rgb(245, 158, 11)' }} />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-sm transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]" style={{ borderLeftWidth: '4px', borderLeftColor: 'rgb(245, 158, 11)' }} />
             <div className="relative px-6 py-5 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="text-xs text-emerald-500/70 uppercase tracking-wider mb-1">
@@ -124,7 +124,7 @@ export default function CampaignHub() {
             onClick={() => navigate('/create-campaign')}
             className="group w-full relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-sm transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
             <div className="relative px-6 py-6 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="flex items-center gap-3 mb-1">
@@ -147,7 +147,7 @@ export default function CampaignHub() {
             onClick={() => navigate('/join-campaign')}
             className="group w-full relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-sm transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
             <div className="relative px-6 py-6 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="flex items-center gap-3 mb-1">

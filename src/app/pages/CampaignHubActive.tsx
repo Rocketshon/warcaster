@@ -100,7 +100,7 @@ export default function CampaignHubActive() {
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           {/* Current Round */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {campaign.current_round}
@@ -112,7 +112,7 @@ export default function CampaignHubActive() {
           </div>
 
           {/* Total Battles */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {totalBattles}
@@ -124,7 +124,7 @@ export default function CampaignHubActive() {
           </div>
 
           {/* Player Count */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {displayPlayers.length}
@@ -158,10 +158,10 @@ export default function CampaignHubActive() {
               <button
                 key={player.id}
                 onClick={() => handlePlayerClick(player.id)}
-                className="group w-full relative overflow-hidden rounded-xl"
+                className="group w-full relative overflow-hidden rounded-sm"
               >
                 {/* Card background */}
-                <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
+                <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-sm transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
 
                 {/* Content */}
                 <div className="relative p-4">
@@ -228,7 +228,7 @@ export default function CampaignHubActive() {
           </div>
 
           {recentBattles.length === 0 ? (
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6 text-center">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-6 text-center">
               <Swords className="w-10 h-10 text-stone-700 mx-auto mb-3" strokeWidth={1.5} />
               <p className="text-stone-500 text-sm">No battles logged yet</p>
               <p className="text-stone-600 text-xs mt-1">
@@ -241,7 +241,7 @@ export default function CampaignHubActive() {
                 <button
                   key={battle.id}
                   onClick={() => navigate(`/battle/${battle.id}`)}
-                  className="group w-full rounded-xl border border-stone-700/60 bg-stone-900 p-3 text-left hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all"
+                  className="group w-full rounded-sm border border-stone-700/60 bg-stone-900 p-3 text-left hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">

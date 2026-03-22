@@ -34,7 +34,7 @@ function WeaponCard({ weapon, type, compact }: { weapon: WeaponProfile; type: "r
   const bgGlow = isRanged ? "from-emerald-500/5" : "from-red-500/5";
 
   return (
-    <div className={`relative overflow-hidden rounded-lg border ${borderColor} bg-gradient-to-br from-stone-900 to-stone-950`}>
+    <div className={`relative overflow-hidden rounded-sm border ${borderColor} bg-gradient-to-br from-stone-900 to-stone-950`}>
       <div className={`absolute inset-0 bg-gradient-to-br ${bgGlow} to-transparent`} />
       <div className="relative p-3">
         {/* Weapon Name */}

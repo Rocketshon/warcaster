@@ -321,7 +321,7 @@ export default function LogBattle() {
                       key={unit.id}
                       type="button"
                       onClick={() => toggleUnitSelection(unit.id)}
-                      className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
+                      className={`w-full text-left rounded-sm px-4 py-3 transition-all ${
                         isSelected
                           ? "bg-gradient-to-br from-emerald-900/40 to-emerald-950/30 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
                           : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"
@@ -387,7 +387,7 @@ export default function LogBattle() {
                 <button
                   type="button"
                   onClick={() => setMarkedForGreatness(null)}
-                  className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
+                  className={`w-full text-left rounded-sm px-4 py-3 transition-all ${
                     markedForGreatness === null
                       ? "bg-gradient-to-br from-stone-800 to-stone-900 border border-stone-500/40"
                       : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"
@@ -416,7 +416,7 @@ export default function LogBattle() {
                       key={unit.id}
                       type="button"
                       onClick={() => setMarkedForGreatness(unit.id)}
-                      className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
+                      className={`w-full text-left rounded-sm px-4 py-3 transition-all ${
                         isMarked
                           ? "bg-gradient-to-br from-amber-900/30 to-amber-950/20 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.15)]"
                           : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"

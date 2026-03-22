@@ -96,7 +96,7 @@ export default function PlayerDetail() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           {/* Supply */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Supply
               </div>
@@ -106,7 +106,7 @@ export default function PlayerDetail() {
           </div>
 
           {/* Requisition */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Requisition
               </div>
@@ -116,7 +116,7 @@ export default function PlayerDetail() {
           </div>
 
           {/* Battles */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Battles
               </div>
@@ -126,7 +126,7 @@ export default function PlayerDetail() {
           </div>
 
           {/* Record — now showing W-L-D */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Record
               </div>
@@ -169,7 +169,7 @@ export default function PlayerDetail() {
               <div
                 key={unit.id}
                 onClick={() => navigate(`/unit/${unit.id}`)}
-                className="rounded-xl border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
+                className="rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
               >
                 <div className="p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -222,7 +222,7 @@ export default function PlayerDetail() {
                 <div
                   key={battle.id}
                   onClick={() => navigate(`/battle/${battle.id}`)}
-                  className="rounded-xl border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
+                  className="rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
                 >
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-3 mb-2">

@@ -301,7 +301,7 @@ export default function PostBattleWizard() {
                     <button
                       key={unit.id}
                       onClick={() => toggleDestroyed(unit.id)}
-                      className={`w-full rounded-xl border transition-all p-4 text-left ${
+                      className={`w-full rounded-sm border transition-all p-4 text-left ${
                         isDestroyed
                           ? "border-red-500/40 bg-gradient-to-br from-red-950/40 to-stone-950"
                           : "border-stone-700/60 bg-stone-900 hover:border-emerald-500/50"
@@ -359,7 +359,7 @@ export default function PostBattleWizard() {
                   return (
                     <div
                       key={unit.id}
-                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-4"
+                      className="rounded-sm border border-stone-700/60 bg-stone-900 p-4"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <h3 className="font-semibold text-stone-300">{unit.custom_name}</h3>
@@ -422,7 +422,7 @@ export default function PostBattleWizard() {
               </p>
 
               {destroyedUnits.length === 0 ? (
-                <div className="rounded-xl border border-emerald-500/30 bg-stone-900 p-6 text-center">
+                <div className="rounded-sm border border-emerald-500/30 bg-stone-900 p-6 text-center">
                   <Check className="w-12 h-12 text-emerald-500 mx-auto mb-3" strokeWidth={1.5} />
                   <h3 className="text-lg font-semibold text-emerald-400 mb-2">No Casualties</h3>
                   <p className="text-stone-400 text-sm">No scars to assign this battle</p>
@@ -437,7 +437,7 @@ export default function PostBattleWizard() {
                     return (
                       <div
                         key={unit.id}
-                        className="rounded-xl border border-red-500/30 bg-stone-900 p-4"
+                        className="rounded-sm border border-red-500/30 bg-stone-900 p-4"
                       >
                         <div className="flex items-center gap-2 mb-3">
                           <Skull className="w-4 h-4 text-red-500" />
@@ -447,7 +447,7 @@ export default function PostBattleWizard() {
                         <div className="relative">
                           <button
                             onClick={() => setScarPickerOpen(scarPickerOpen === unit.id ? null : unit.id)}
-                            className="w-full rounded-xl border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
+                            className="w-full rounded-sm border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
                           >
                             {selectedScar ? (
                               <div>
@@ -461,7 +461,7 @@ export default function PostBattleWizard() {
                           </button>
 
                           {scarPickerOpen === unit.id && (
-                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-xl overflow-hidden shadow-2xl">
+                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-sm overflow-hidden shadow-2xl">
                               {BATTLE_SCARS.map((scar) => (
                                 <button
                                   key={scar.id}
@@ -498,7 +498,7 @@ export default function PostBattleWizard() {
               </p>
 
               {rankedUpUnits.length === 0 ? (
-                <div className="rounded-xl border border-stone-700/50 bg-stone-900 p-6 text-center">
+                <div className="rounded-sm border border-stone-700/50 bg-stone-900 p-6 text-center">
                   <Award className="w-12 h-12 text-stone-500 mx-auto mb-3" strokeWidth={1.5} />
                   <h3 className="text-lg font-semibold text-stone-400 mb-2">No Rank Ups</h3>
                   <p className="text-stone-500 text-sm">No units ranked up this battle</p>
@@ -514,7 +514,7 @@ export default function PostBattleWizard() {
                     return (
                       <div
                         key={unit.id}
-                        className="rounded-xl border border-emerald-500/30 bg-stone-900 p-4"
+                        className="rounded-sm border border-emerald-500/30 bg-stone-900 p-4"
                       >
                         <div className="flex items-center gap-2 mb-3">
                           <Award className="w-4 h-4 text-amber-400" />
@@ -527,7 +527,7 @@ export default function PostBattleWizard() {
                         <div className="relative">
                           <button
                             onClick={() => setHonorPickerOpen(honorPickerOpen === unit.id ? null : unit.id)}
-                            className="w-full rounded-xl border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
+                            className="w-full rounded-sm border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
                           >
                             {selectedHonor ? (
                               <div>
@@ -546,7 +546,7 @@ export default function PostBattleWizard() {
                           </button>
 
                           {honorPickerOpen === unit.id && (
-                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-xl overflow-hidden shadow-2xl max-h-80 overflow-y-auto">
+                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-sm overflow-hidden shadow-2xl max-h-80 overflow-y-auto">
                               {BATTLE_HONORS.map((honor) => (
                                 <button
                                   key={honor.id}
@@ -588,7 +588,7 @@ export default function PostBattleWizard() {
               </p>
 
               {/* Campaign stats */}
-              <div className="rounded-xl border border-emerald-500/30 bg-stone-900 p-5 mb-6">
+              <div className="rounded-sm border border-emerald-500/30 bg-stone-900 p-5 mb-6">
                 <h3 className="text-sm font-semibold text-stone-400 uppercase tracking-wider mb-3">
                   Campaign Update
                 </h3>
@@ -622,7 +622,7 @@ export default function PostBattleWizard() {
                   if (!state) return null;
                   const newRankColor = getRankColor(getRankFromXP(state.newTotalXP));
                   return (
-                    <div key={unit.id} className="rounded-xl border border-stone-700/50 bg-stone-900 p-3">
+                    <div key={unit.id} className="rounded-sm border border-stone-700/50 bg-stone-900 p-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="font-semibold text-stone-300 text-sm">{unit.custom_name}</p>

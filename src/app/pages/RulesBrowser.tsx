@@ -139,7 +139,7 @@ export default function RulesBrowser() {
         {/* Rules Sections */}
         <div className="space-y-4">
           {/* Core Rules Section */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900">
             <button
               onClick={() => toggleSection("core")}
               className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"
@@ -190,7 +190,7 @@ export default function RulesBrowser() {
           </div>
 
           {/* Crusade Rules Section */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900">
             <button
               onClick={() => toggleSection("crusade")}
               className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"
@@ -242,7 +242,7 @@ export default function RulesBrowser() {
 
           {/* Faction Rules Section */}
           {factionRuleItems.length > 0 && (
-            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
+            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900">
               <button
                 onClick={() => toggleSection("faction")}
                 className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"

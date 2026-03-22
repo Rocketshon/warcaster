@@ -165,7 +165,7 @@ export default function RequisitionSpending() {
           </h1>
 
           {/* RP Balance */}
-          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-5 text-center">
+          <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-5 text-center">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
               Available Points
             </p>
@@ -230,7 +230,7 @@ export default function RequisitionSpending() {
       {/* Confirmation Dialog */}
       {confirmDialogOpen && selectedRequisition && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-stone-700/60 bg-stone-900 p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-sm border border-stone-700/60 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-4 mb-6">
               <div className="p-3 rounded-lg bg-emerald-500/10">
                 <selectedRequisition.icon className="w-6 h-6 text-emerald-500" />
@@ -266,7 +266,7 @@ export default function RequisitionSpending() {
       {/* Unit Picker Dialog (for Repair and Recuperate) */}
       {unitPickerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-stone-700/60 bg-stone-900 shadow-2xl overflow-hidden">
+          <div className="w-full max-w-md rounded-sm border border-stone-700/60 bg-stone-900 shadow-2xl overflow-hidden">
             <div className="p-6 border-b border-stone-800">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-stone-100">Select Unit</h2>
@@ -290,7 +290,7 @@ export default function RequisitionSpending() {
                 <button
                   key={unit.id}
                   onClick={() => handleSelectUnit(unit)}
-                  className="w-full rounded-xl border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-emerald-500/50 transition-all"
+                  className="w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-emerald-500/50 transition-all"
                 >
                   <h3 className="font-semibold text-stone-300 mb-2">{unit.name}</h3>
                   <div className="flex flex-wrap gap-2">
@@ -313,7 +313,7 @@ export default function RequisitionSpending() {
       {/* Scar Picker Dialog */}
       {scarPickerOpen && selectedUnit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-stone-700/60 bg-stone-900 shadow-2xl overflow-hidden">
+          <div className="w-full max-w-md rounded-sm border border-stone-700/60 bg-stone-900 shadow-2xl overflow-hidden">
             <div className="p-6 border-b border-stone-800">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-stone-100">Remove Scar</h2>
@@ -337,7 +337,7 @@ export default function RequisitionSpending() {
                 <button
                   key={scar.id}
                   onClick={() => handleSelectScar(scar.id, scar.name)}
-                  className="w-full rounded-xl border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-red-500/50 transition-all"
+                  className="w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-red-500/50 transition-all"
                 >
                   <h3 className="font-semibold text-red-400">{scar.name}</h3>
                 </button>

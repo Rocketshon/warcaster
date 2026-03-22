@@ -104,7 +104,7 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>
@@ -143,7 +143,7 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>
@@ -175,7 +175,7 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>

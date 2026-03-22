@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, ChevronDown, ChevronRight, Search, Shield, Swords, BookOpen, Award, Zap } from "lucide-react";
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
 import { getFaction, getDataFactionId } from '../../lib/factions';
-import { FormattedRuleText, toTitleCase, getStratagemTypeColor } from '../../lib/formatText';
+import { FormattedRuleText, toTitleCase, getStratagemTypeColor, getEnhancementCardColors } from '../../lib/formatText';
 import type { FactionId, DetachmentData, Datasheet } from '../../types';
 
 // Determine animation type based on faction id
@@ -347,7 +347,7 @@ export default function FactionCodex() {
         {/* Army Rule Tab */}
         {activeTab === "army" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
+            <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-6">
                 <h2 className="text-xl font-bold text-red-400 mb-4">Army Rules</h2>
                 {rules?.army_rules && rules.army_rules.length > 0 ? (
                   rules.army_rules.map((rule, idx) => (
@@ -369,7 +369,7 @@ export default function FactionCodex() {
               rules.detachments.map((detachment: DetachmentData) => (
                 <div
                   key={detachment.name}
-                  className="rounded-xl border border-stone-700/60 bg-stone-900"
+                  className="rounded-sm border border-stone-700/60 bg-stone-900"
                 >
                   {/* Detachment Header */}
                   <button
@@ -410,18 +410,21 @@ export default function FactionCodex() {
                           </button>
                           {expandedEnhancements.includes(detachment.name) && (
                             <div className="space-y-2">
-                              {detachment.enhancements.map((enh, idx) => (
+                              {detachment.enhancements.map((enh, idx) => {
+                                const enhColors = getEnhancementCardColors(factionMeta.color);
+                                return (
                                 <div
                                   key={idx}
-                                  className="rounded-xl border border-stone-700/60 bg-stone-900 p-3"
+                                  className={`rounded-sm border ${enhColors.card} p-3`}
                                 >
                                   <div className="flex items-start justify-between gap-3 mb-1">
-                                    <h4 className="text-sm font-semibold text-emerald-400">{enh.name}</h4>
-                                    <span className="text-xs font-bold text-emerald-500 font-mono">{enh.cost} pts</span>
+                                    <h4 className={`text-sm font-semibold ${enhColors.nameText}`}>{enh.name}</h4>
+                                    <span className={`text-xs font-bold ${enhColors.costText} font-mono`}>{enh.cost} pts</span>
                                   </div>
                                   <FormattedRuleText text={enh.text} className="text-sm" />
                                 </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           )}
                         </div>
@@ -448,7 +451,7 @@ export default function FactionCodex() {
                               {detachment.stratagems.map((strat, idx) => (
                                 <div
                                   key={idx}
-                                  className="rounded-xl border border-stone-700/60 bg-stone-900 p-3"
+                                  className="rounded-sm border border-stone-700/60 bg-stone-900 p-3"
                                 >
                                   <div className="flex items-start justify-between gap-3 mb-1">
                                     <div className="flex items-center gap-2">
@@ -519,7 +522,7 @@ export default function FactionCodex() {
                 <button
                   key={unit.name}
                   onClick={() => handleDatasheetClick(unit)}
-                  className="w-full rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+                  className="w-full rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
                 >
                   <div className="p-3 flex items-center justify-between gap-3">
                     <div className="flex-1 text-left">
@@ -569,7 +572,7 @@ export default function FactionCodex() {
         {activeTab === "crusade" && (
           <div className="space-y-4">
             {rules?.crusade_rules && rules.crusade_rules.length > 0 ? (
-              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
+              <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-6">
                 <h2 className="text-xl font-bold text-amber-400 mb-4">Crusade Rules</h2>
                 {rules.crusade_rules.map((cr, idx) => (
                   <div key={idx} className="mb-4 last:mb-0">
@@ -583,7 +586,7 @@ export default function FactionCodex() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
+              <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-6">
                 <div className="text-center py-4">
                   <p className="text-stone-400 italic">No crusade rules available for this faction.</p>
                 </div>

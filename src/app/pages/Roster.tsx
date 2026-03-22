@@ -126,7 +126,7 @@ export default function Roster() {
         {/* Supply and Requisition */}
         <div className="mb-6 space-y-4">
           {/* Supply Bar */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-stone-500 uppercase tracking-wider">
@@ -148,7 +148,7 @@ export default function Roster() {
           </div>
 
           {/* Requisition Points */}
-          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative flex items-center justify-between">
               <span className="text-xs text-stone-500 uppercase tracking-wider">
                 Requisition Points
@@ -166,7 +166,7 @@ export default function Roster() {
             <div className="relative">
               <button
                 onClick={() => setShowDetachmentPicker(!showDetachmentPicker)}
-                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-emerald-500/50 transition-all"
+                className="w-full relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-emerald-500/50 transition-all"
               >
                 <div className="relative flex items-center justify-between">
                   <div>
@@ -182,7 +182,7 @@ export default function Roster() {
               </button>
 
               {showDetachmentPicker && (
-                <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-xl border border-stone-700/60 bg-stone-950/98 backdrop-blur-sm shadow-xl max-h-64 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-sm border border-stone-700/60 bg-stone-950/98 backdrop-blur-sm shadow-xl max-h-64 overflow-y-auto">
                   {detachments.map((det) => (
                     <button
                       key={det.name}
@@ -207,7 +207,7 @@ export default function Roster() {
         {currentDetachment && units.length > 0 && (
           <button
             onClick={() => navigate('/cheat-sheet')}
-            className="w-full mb-6 relative overflow-hidden rounded-xl border border-amber-500/30 bg-stone-900 p-4 hover:border-amber-500/50 transition-all group"
+            className="w-full mb-6 relative overflow-hidden rounded-sm border border-amber-500/30 bg-stone-900 p-4 hover:border-amber-500/50 transition-all group"
           >
             <div className="relative flex items-center gap-3">
               <ScrollText className="w-5 h-5 text-amber-500" />
@@ -240,7 +240,7 @@ export default function Roster() {
                     e.preventDefault();
                     handleLongPress(unit.id);
                   }}
-                  className={`w-full text-left relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 transition-all ${
+                  className={`w-full text-left relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 transition-all ${
                     unit.is_destroyed
                       ? "opacity-60"
                       : "hover:border-emerald-500/50"
@@ -349,7 +349,7 @@ export default function Roster() {
 
                 {/* Remove action overlay */}
                 {showRemove === unit.id && (
-                  <div className="absolute inset-0 bg-red-950/95 rounded-xl flex items-center justify-center backdrop-blur-sm border border-red-500/30 z-10">
+                  <div className="absolute inset-0 bg-red-950/95 rounded-sm flex items-center justify-center backdrop-blur-sm border border-red-500/30 z-10">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

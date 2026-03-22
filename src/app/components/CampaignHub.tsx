@@ -34,10 +34,10 @@ export function CampaignHub() {
           {/* Create Campaign Card */}
           <button
             onClick={() => navigate("/create-campaign")}
-            className="group w-full bg-gradient-to-br from-zinc-900 to-zinc-950 border border-emerald-900/30 rounded-lg p-6 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.98]"
+            className="group w-full bg-gradient-to-br from-zinc-900 to-zinc-950 border border-emerald-900/30 rounded-sm p-6 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.98]"
           >
             <div className="flex items-center space-x-4">
-              <div className="bg-emerald-950/50 border border-emerald-900/50 rounded-lg p-3 group-hover:border-emerald-500/50 transition-colors group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <div className="bg-emerald-950/50 border border-emerald-900/50 rounded-sm p-3 group-hover:border-emerald-500/50 transition-colors group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                 <Swords className="w-6 h-6 text-emerald-500" strokeWidth={1.5} />
               </div>
               <div className="flex-1 text-left">
@@ -59,10 +59,10 @@ export function CampaignHub() {
           {/* Join Campaign Card */}
           <button
             onClick={() => navigate("/join-campaign")}
-            className="group w-full bg-gradient-to-br from-zinc-900 to-zinc-950 border border-emerald-900/30 rounded-lg p-6 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.98]"
+            className="group w-full bg-gradient-to-br from-zinc-900 to-zinc-950 border border-emerald-900/30 rounded-sm p-6 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.98]"
           >
             <div className="flex items-center space-x-4">
-              <div className="bg-emerald-950/50 border border-emerald-900/50 rounded-lg p-3 group-hover:border-emerald-500/50 transition-colors group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <div className="bg-emerald-950/50 border border-emerald-900/50 rounded-sm p-3 group-hover:border-emerald-500/50 transition-colors group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                 <Users className="w-6 h-6 text-emerald-500" strokeWidth={1.5} />
               </div>
               <div className="flex-1 text-left">

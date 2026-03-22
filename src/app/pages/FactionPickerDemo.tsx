@@ -43,7 +43,7 @@ export default function FactionPickerDemo() {
 
         {/* Selected Faction Display */}
         {selectedFaction && (
-          <div className="mb-6 relative overflow-hidden rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-6">
+          <div className="mb-6 relative overflow-hidden rounded-sm border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-6">
             <div className="flex items-center gap-4">
               <span className="text-5xl">{selectedFaction.icon}</span>
               <div>
@@ -72,7 +72,7 @@ export default function FactionPickerDemo() {
         </button>
 
         {/* Info */}
-        <div className="mt-8 rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
+        <div className="mt-8 rounded-sm border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
           <h3 className="text-stone-300 font-semibold mb-3">Faction Picker Features:</h3>
           <ul className="space-y-2 text-sm text-stone-500">
             <li className="flex items-start gap-2">

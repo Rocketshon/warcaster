@@ -77,7 +77,7 @@ export default function SpaceMarinesChapters() {
             <button
               key={chapter.id}
               onClick={() => handleChapterClick(chapter)}
-              className="w-full rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+              className="w-full rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${chapter.bgGlow} to-transparent opacity-50`} />
               <div className="relative p-4 flex items-center gap-4">

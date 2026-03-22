@@ -321,6 +321,37 @@ export function getStratagemTypeColor(type: string): string {
 }
 
 /**
+ * Enhancement card styling based on faction color.
+ * Returns { border, bg, nameText, costText } classes for the card.
+ */
+export function getEnhancementCardColors(factionColor: string): {
+  card: string;
+  nameText: string;
+  costText: string;
+} {
+  const map: Record<string, { card: string; nameText: string; costText: string }> = {
+    blue:    { card: 'border-blue-500/20 bg-gradient-to-br from-blue-950/20 to-stone-950',       nameText: 'text-blue-400',    costText: 'text-blue-500' },
+    cyan:    { card: 'border-cyan-400/20 bg-gradient-to-br from-cyan-950/20 to-stone-950',       nameText: 'text-cyan-400',    costText: 'text-cyan-500' },
+    slate:   { card: 'border-slate-400/20 bg-gradient-to-br from-slate-900/30 to-stone-950',     nameText: 'text-slate-300',   costText: 'text-slate-400' },
+    red:     { card: 'border-red-500/20 bg-gradient-to-br from-red-950/20 to-stone-950',         nameText: 'text-red-400',     costText: 'text-red-500' },
+    amber:   { card: 'border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-stone-950',     nameText: 'text-amber-400',   costText: 'text-amber-500' },
+    orange:  { card: 'border-orange-500/20 bg-gradient-to-br from-orange-950/20 to-stone-950',   nameText: 'text-orange-400',  costText: 'text-orange-500' },
+    green:   { card: 'border-green-500/20 bg-gradient-to-br from-green-950/20 to-stone-950',     nameText: 'text-green-400',   costText: 'text-green-500' },
+    yellow:  { card: 'border-yellow-500/20 bg-gradient-to-br from-yellow-950/20 to-stone-950',   nameText: 'text-yellow-400',  costText: 'text-yellow-500' },
+    purple:  { card: 'border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950',   nameText: 'text-purple-400',  costText: 'text-purple-500' },
+    zinc:    { card: 'border-zinc-400/20 bg-gradient-to-br from-zinc-900/30 to-stone-950',       nameText: 'text-zinc-300',    costText: 'text-zinc-400' },
+    lime:    { card: 'border-lime-500/20 bg-gradient-to-br from-lime-950/20 to-stone-950',       nameText: 'text-lime-400',    costText: 'text-lime-500' },
+    rose:    { card: 'border-rose-500/20 bg-gradient-to-br from-rose-950/20 to-stone-950',       nameText: 'text-rose-400',    costText: 'text-rose-500' },
+    stone:   { card: 'border-stone-500/20 bg-gradient-to-br from-stone-800/30 to-stone-950',     nameText: 'text-stone-300',   costText: 'text-stone-400' },
+    emerald: { card: 'border-emerald-500/20 bg-gradient-to-br from-emerald-950/20 to-stone-950', nameText: 'text-emerald-400', costText: 'text-emerald-500' },
+    violet:  { card: 'border-violet-500/20 bg-gradient-to-br from-violet-950/20 to-stone-950',   nameText: 'text-violet-400',  costText: 'text-violet-500' },
+    sky:     { card: 'border-sky-500/20 bg-gradient-to-br from-sky-950/20 to-stone-950',         nameText: 'text-sky-400',     costText: 'text-sky-500' },
+    indigo:  { card: 'border-indigo-500/20 bg-gradient-to-br from-indigo-950/20 to-stone-950',   nameText: 'text-indigo-400',  costText: 'text-indigo-500' },
+  };
+  return map[factionColor] ?? map.emerald;
+}
+
+/**
  * Display-friendly result label with consistent formatting
  */
 export function getResultLabel(result: 'victory' | 'defeat' | 'draw'): string {
