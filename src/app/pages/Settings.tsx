@@ -83,10 +83,13 @@ export default function Settings() {
 
   const handleShareJoinCode = () => {
     if (campaign?.join_code) {
-      navigator.clipboard.writeText(campaign.join_code);
+      navigator.clipboard.writeText(campaign.join_code)
+        .then(() => {
+          setShowShareSuccess(true);
+          setTimeout(() => setShowShareSuccess(false), 2000);
+        })
+        .catch(() => { /* clipboard write failed silently */ });
     }
-    setShowShareSuccess(true);
-    setTimeout(() => setShowShareSuccess(false), 2000);
   };
 
   const handleToggleDarkMode = () => {

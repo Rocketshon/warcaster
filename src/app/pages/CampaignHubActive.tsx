@@ -34,12 +34,15 @@ export default function CampaignHubActive() {
   const recentBattles = battles.slice(0, 5);
 
   const handleCopyJoinCode = () => {
-    navigator.clipboard.writeText(campaign.join_code);
-    setCopied(true);
-    toast.success("Join code copied to clipboard!", {
-      duration: 2000,
-    });
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(campaign.join_code)
+      .then(() => {
+        setCopied(true);
+        toast.success("Join code copied to clipboard!", {
+          duration: 2000,
+        });
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => { /* clipboard write failed silently */ });
   };
 
   const handlePlayerClick = (playerId: string) => {

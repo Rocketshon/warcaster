@@ -54,7 +54,23 @@
       "Bash(node scripts/fix-aircraft-stats.cjs)",
       "Bash(git checkout:*)",
       "Bash(grep -iE '[A-Z]{2,}\\(WOUNDS|HITS|FIRE|LINKED|COVER|SHOT|ATTACKS\\)')",
-      "Bash(node scripts/fix-remaining.cjs)"
+      "Bash(node scripts/fix-remaining.cjs)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/factions/orks/\" -o /tmp/orks_page.html)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/factions/orks/\" -o orks_full.html)",
+      "Bash(pip install:*)",
+      "Bash(python -m pip install beautifulsoup4 requests)",
+      "Bash(python -c \"from bs4 import BeautifulSoup; print\\(''''OK''''\\)\")",
+      "Bash(python -c \":*)",
+      "Bash(python rescrape_ba_crusade.py)",
+      "Bash(node scripts/update-rules-data.js)",
+      "Bash(mv scripts/update-rules-data.js scripts/update-rules-data.cjs)",
+      "Bash(node scripts/update-rules-data.cjs)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/the-rules/core-rules/\" -o /tmp/core_rules.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/the-rules/crusade-rules/\" -o /tmp/crusade_rules.html)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/the-rules/core-rules/\" -o core_rules.html)",
+      "Bash(curl -s \"https://wahapedia.ru/wh40k10ed/the-rules/crusade-rules/\" -o crusade_rules.html)",
+      "Bash(python scripts/rescrape-general.py)"
     ]
   }
 }

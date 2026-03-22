@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Check, ChevronDown, X, Award, Zap, Skull, TrendingUp, Trophy } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
@@ -41,7 +41,7 @@ interface UnitState {
 
 export default function PostBattleWizard() {
   const navigate = useNavigate();
-  const { battles, units, currentPlayer, awardXP, addBattleScar, addBattleHonour, markDestroyed } = useCrusade();
+  const { battles, units, currentPlayer, awardXP, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
 
   // Get the most recent battle
   const latestBattle = battles[0] ?? null;
@@ -76,6 +76,32 @@ export default function PostBattleWizard() {
       return acc;
     }, {} as Record<string, UnitState>)
   );
+
+  // Track the fielded unit IDs at mount time to detect if units change
+  const initialUnitIdsRef = useRef(fieldedUnits.map(u => u.id).join(','));
+
+  // Re-initialize unitStates if the fielded units change (e.g. from stale data)
+  useEffect(() => {
+    const currentIds = fieldedUnits.map(u => u.id).join(',');
+    if (currentIds !== initialUnitIdsRef.current) {
+      initialUnitIdsRef.current = currentIds;
+      setUnitStates(
+        fieldedUnits.reduce((acc, unit) => {
+          acc[unit.id] = {
+            id: unit.id,
+            destroyed: false,
+            xpGained: 0,
+            newTotalXP: unit.experience_points,
+            rankedUp: false,
+            newRank: unit.rank,
+            selectedScar: null,
+            selectedHonor: null,
+          };
+          return acc;
+        }, {} as Record<string, UnitState>)
+      );
+    }
+  }, [fieldedUnits]);
 
   // Track whether step 5 changes have been applied
   const [changesApplied, setChangesApplied] = useState(false);
@@ -185,6 +211,11 @@ export default function PostBattleWizard() {
         }
       }
     });
+
+    // Award RP for winning
+    if (battleWon) {
+      awardRequisition(1);
+    }
 
     setChangesApplied(true);
   };

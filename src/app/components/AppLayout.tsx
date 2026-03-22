@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import BottomNav from './BottomNav';
 import TutorialOverlay from './TutorialOverlay';
@@ -11,18 +11,20 @@ function SplashOverlay({ onDone }: { onDone: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoIndex] = useState(() => Math.floor(Math.random() * SPLASH_VIDEOS.length));
   const [fadeOut, setFadeOut] = useState(false);
+  const completedRef = useRef(false);
 
-  const handleComplete = () => {
-    if (fadeOut) return;
+  const handleComplete = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
     setFadeOut(true);
     sessionStorage.setItem(SPLASH_KEY, '1');
     setTimeout(onDone, 600);
-  };
+  }, [onDone]);
 
   useEffect(() => {
     const timer = setTimeout(handleComplete, 8000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [handleComplete]);
 
   return (
     <div
@@ -66,7 +68,7 @@ export default function AppLayout() {
       <div className="pb-20">
         <Outlet />
       </div>
-      <BottomNav />
+      {!showSplash && <BottomNav />}
     </div>
   );
 }

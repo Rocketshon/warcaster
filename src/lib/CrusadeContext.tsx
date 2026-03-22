@@ -38,6 +38,7 @@ interface CrusadeState {
   removeBattleScar: (unitId: string, scarId: string) => void;
   markDestroyed: (unitId: string) => void;
   spendRequisition: (amount: number) => boolean;
+  awardRequisition: (amount: number) => void;
 
   // Campaign History
   campaignHistory: storage.ArchivedCampaign[];
@@ -129,36 +130,36 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const leaveCampaign = useCallback(() => {
-    // Use functional updaters to read the latest state without closure deps
-    setCampaign(prevCampaign => {
-      setCurrentPlayer(prevPlayer => {
-        if (prevCampaign && prevPlayer) {
-          const archive: storage.ArchivedCampaign = {
-            id: prevCampaign.id,
-            name: prevCampaign.name,
-            faction_id: prevPlayer.faction_id,
-            faction_name: getFactionName(prevPlayer.faction_id),
-            faction_icon: getFactionIcon(prevPlayer.faction_id),
-            start_date: prevCampaign.created_at,
-            end_date: new Date().toISOString(),
-            wins: prevPlayer.battles_won,
-            losses: prevPlayer.battles_lost,
-            draws: prevPlayer.battles_drawn,
-            total_battles: prevPlayer.battles_played,
-          };
-          storage.archiveCampaign(archive);
-          setCampaignHistory(storage.loadCampaignHistory());
-        }
-        return null;
-      });
-      return null;
-    });
+    // Read current state for archiving before clearing
+    const prevCampaign = campaign;
+    const prevPlayer = currentPlayer;
+
+    if (prevCampaign && prevPlayer) {
+      const archive: storage.ArchivedCampaign = {
+        id: prevCampaign.id,
+        name: prevCampaign.name,
+        faction_id: prevPlayer.faction_id,
+        faction_name: getFactionName(prevPlayer.faction_id),
+        faction_icon: getFactionIcon(prevPlayer.faction_id),
+        start_date: prevCampaign.created_at,
+        end_date: new Date().toISOString(),
+        wins: prevPlayer.battles_won,
+        losses: prevPlayer.battles_lost,
+        draws: prevPlayer.battles_drawn,
+        total_battles: prevPlayer.battles_played,
+      };
+      storage.archiveCampaign(archive);
+      setCampaignHistory(storage.loadCampaignHistory());
+    }
+
+    setCampaign(null);
+    setCurrentPlayer(null);
     // Clear storage to prevent stale data from useEffect persistence
     storage.clearCampaign();
     setPlayers([]);
     setUnits([]);
     setBattles([]);
-  }, []);
+  }, [campaign, currentPlayer]);
 
   const addUnitFn = useCallback((datasheetName: string, customName: string, pointsCost: number, equipment: string, modelCount?: number) => {
     setCurrentPlayer(cp => {
@@ -189,7 +190,17 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateUnitFn = useCallback((unitId: string, updates: Partial<CrusadeUnit>) => {
-    setUnits(prev => prev.map(u => u.id === unitId ? { ...u, ...updates } : u));
+    setUnits(prev => {
+      const oldUnit = prev.find(u => u.id === unitId);
+      if (oldUnit && updates.points_cost !== undefined && updates.points_cost !== oldUnit.points_cost) {
+        const delta = updates.points_cost - oldUnit.points_cost;
+        setCurrentPlayer(cp => {
+          if (!cp) return cp;
+          return { ...cp, supply_used: Math.max(0, (cp.supply_used || 0) + delta) };
+        });
+      }
+      return prev.map(u => u.id === unitId ? { ...u, ...updates } : u);
+    });
   }, []);
 
   const removeUnitFn = useCallback((unitId: string) => {
@@ -270,13 +281,19 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const spendRequisition = useCallback((amount: number) => {
-    let success = false;
+    if (!currentPlayer || currentPlayer.requisition_points < amount) return false;
     setCurrentPlayer(cp => {
       if (!cp || cp.requisition_points < amount) return cp;
-      success = true;
       return { ...cp, requisition_points: cp.requisition_points - amount };
     });
-    return success;
+    return true;
+  }, [currentPlayer]);
+
+  const awardRequisition = useCallback((amount: number) => {
+    setCurrentPlayer(cp => {
+      if (!cp) return cp;
+      return { ...cp, requisition_points: cp.requisition_points + amount };
+    });
   }, []);
 
   const setDetachment = useCallback((detachmentId: string) => {
@@ -293,7 +310,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       createCampaign, joinCampaign, leaveCampaign, setDetachment,
       units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,
       battles, logBattle, getPlayerBattles,
-      awardXP, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, spendRequisition,
+      awardXP, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, spendRequisition, awardRequisition,
       campaignHistory,
     }}>
       {children}

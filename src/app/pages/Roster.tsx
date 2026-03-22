@@ -27,7 +27,7 @@ export default function Roster() {
   const detachments = factionRules?.detachments ?? [];
   const currentDetachment = detachments.find(d => d.name === currentPlayer.detachment_id);
 
-  const supplyUsed = units.reduce((sum, u) => sum + u.points_cost, 0);
+  const supplyUsed = units.filter(u => u.player_id === currentPlayer.id).reduce((sum, u) => sum + u.points_cost, 0);
   const supplyLimit = campaign.supply_limit;
   const supplyPercent = supplyLimit > 0 ? (supplyUsed / supplyLimit) * 100 : 0;
 

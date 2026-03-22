@@ -53,7 +53,3 @@ export function getXPThresholdForRank(rank: UnitRank): number {
     case 'Battle-ready': default: return 0;
   }
 }
-
-export function formatRecord(player: { battles_won: number; battles_lost: number; battles_drawn: number }): string {
-  return `${player.battles_won}W - ${player.battles_lost}L - ${player.battles_drawn}D`;
-}

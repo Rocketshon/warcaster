@@ -48,11 +48,13 @@ export default function DatasheetView() {
     if (campaign && datasheet) {
       const pointsCost = datasheet.points.length > 0 ? parseInt(datasheet.points[0].cost, 10) || 0 : 0;
       addUnit(datasheet.name, datasheet.name, pointsCost, '');
+      setShowAddSuccess(true);
+      setTimeout(() => {
+        setShowAddSuccess(false);
+      }, 2000);
+    } else {
+      alert('No active campaign. Join or create a campaign first.');
     }
-    setShowAddSuccess(true);
-    setTimeout(() => {
-      setShowAddSuccess(false);
-    }, 2000);
   };
 
   return (

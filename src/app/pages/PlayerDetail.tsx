@@ -162,10 +162,10 @@ export default function PlayerDetail() {
 
           {/* Units List */}
           <div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin">
-            {units.length === 0 && (
+            {playerUnits.length === 0 && (
               <p className="text-stone-400 text-sm text-center py-4">No units in roster yet.</p>
             )}
-            {units.map((unit) => (
+            {playerUnits.map((unit) => (
               <div
                 key={unit.id}
                 onClick={() => navigate(`/unit/${unit.id}`)}

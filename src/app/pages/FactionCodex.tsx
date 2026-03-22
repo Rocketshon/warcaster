@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, ChevronDown, ChevronRight, Search, Shield, Swords, BookOpen, Award, Zap } from "lucide-react";
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
@@ -28,21 +28,35 @@ function getAccentColor(color: string): string {
   return map[color] ?? 'bg-emerald-500';
 }
 
+// Helper to generate an array of random numbers once
+function generateRandomValues(count: number, fieldsPerItem: number): number[][] {
+  return Array.from({ length: count }, () =>
+    Array.from({ length: fieldsPerItem }, () => Math.random())
+  );
+}
+
 // Animation component for particle effects
 const AnimatedBackground = ({ type }: { type: string }) => {
+  const randoms = useMemo(() => {
+    if (type === "blood") return { particles: generateRandomValues(12, 4) };
+    if (type === "plague") return { particles: generateRandomValues(8, 5) };
+    if (type === "frost") return { crystals: generateRandomValues(20, 5), lines: generateRandomValues(6, 5) };
+    if (type === "dust") return { particles: generateRandomValues(30, 5), clouds: generateRandomValues(5, 5) };
+    return {};
+  }, [type]);
+
   if (type === "blood") {
     return (
       <>
-        {/* Red blood drip particles */}
-        {[...Array(12)].map((_, i) => (
+        {randoms.particles!.map((r, i) => (
           <div
             key={i}
             className="absolute pointer-events-none"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${-20 + Math.random() * 20}%`,
-              animation: `bloodDrip ${8 + Math.random() * 8}s linear infinite`,
-              animationDelay: `${Math.random() * 8}s`,
+              left: `${r[0] * 100}%`,
+              top: `${-20 + r[1] * 20}%`,
+              animation: `bloodDrip ${8 + r[2] * 8}s linear infinite`,
+              animationDelay: `${r[3] * 8}s`,
             }}
           >
             <div className="w-1 h-3 bg-red-500/30 rounded-full blur-sm" />
@@ -55,23 +69,22 @@ const AnimatedBackground = ({ type }: { type: string }) => {
   if (type === "plague") {
     return (
       <>
-        {/* Green fog/gas clouds */}
-        {[...Array(8)].map((_, i) => (
+        {randoms.particles!.map((r, i) => (
           <div
             key={i}
             className="absolute pointer-events-none"
             style={{
-              left: `${Math.random() * 100}%`,
-              bottom: `${-10 + Math.random() * 20}%`,
-              animation: `plagueFog ${15 + Math.random() * 10}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 10}s`,
+              left: `${r[0] * 100}%`,
+              bottom: `${-10 + r[1] * 20}%`,
+              animation: `plagueFog ${15 + r[2] * 10}s ease-in-out infinite`,
+              animationDelay: `${r[3] * 10}s`,
             }}
           >
             <div
               className="bg-gradient-to-t from-green-500/20 via-green-400/10 to-transparent rounded-full blur-2xl"
               style={{
-                width: `${150 + Math.random() * 150}px`,
-                height: `${200 + Math.random() * 200}px`,
+                width: `${150 + r[4] * 150}px`,
+                height: `${200 + r[0] * 200}px`,
               }}
             />
           </div>
@@ -83,41 +96,39 @@ const AnimatedBackground = ({ type }: { type: string }) => {
   if (type === "frost") {
     return (
       <>
-        {/* Blue frost/ice crystals */}
-        {[...Array(20)].map((_, i) => (
+        {randoms.crystals!.map((r, i) => (
           <div
             key={i}
             className="absolute pointer-events-none"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `frostPulse ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 4}s`,
+              left: `${r[0] * 100}%`,
+              top: `${r[1] * 100}%`,
+              animation: `frostPulse ${3 + r[2] * 4}s ease-in-out infinite`,
+              animationDelay: `${r[3] * 4}s`,
             }}
           >
             <div
               className="bg-blue-400/20 rounded-full blur-md"
               style={{
-                width: `${10 + Math.random() * 20}px`,
-                height: `${10 + Math.random() * 20}px`,
+                width: `${10 + r[4] * 20}px`,
+                height: `${10 + r[4] * 20}px`,
               }}
             />
           </div>
         ))}
-        {/* Frost lines */}
-        {[...Array(6)].map((_, i) => (
+        {randoms.lines!.map((r, i) => (
           <div
             key={`line-${i}`}
             className="absolute pointer-events-none"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${r[0] * 100}%`,
+              top: `${r[1] * 100}%`,
               width: "2px",
-              height: `${30 + Math.random() * 50}px`,
+              height: `${30 + r[2] * 50}px`,
               background: "linear-gradient(180deg, rgba(96,165,250,0.3) 0%, transparent 100%)",
-              animation: `frostLine ${2 + Math.random() * 3}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 3}s`,
-              transform: `rotate(${Math.random() * 360}deg)`,
+              animation: `frostLine ${2 + r[3] * 3}s ease-in-out infinite`,
+              animationDelay: `${r[4] * 3}s`,
+              transform: `rotate(${r[0] * 360}deg)`,
             }}
           />
         ))}
@@ -128,44 +139,42 @@ const AnimatedBackground = ({ type }: { type: string }) => {
   if (type === "dust") {
     return (
       <>
-        {/* Tan dust/sandstorm particles */}
-        {[...Array(30)].map((_, i) => (
+        {randoms.particles!.map((r, i) => (
           <div
             key={i}
             className="absolute pointer-events-none"
             style={{
-              left: `${-10 + Math.random() * 120}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `dustStorm ${10 + Math.random() * 15}s linear infinite`,
-              animationDelay: `${Math.random() * 10}s`,
+              left: `${-10 + r[0] * 120}%`,
+              top: `${r[1] * 100}%`,
+              animation: `dustStorm ${10 + r[2] * 15}s linear infinite`,
+              animationDelay: `${r[3] * 10}s`,
             }}
           >
             <div
               className="bg-yellow-700/20 rounded-full blur-sm"
               style={{
-                width: `${3 + Math.random() * 8}px`,
-                height: `${3 + Math.random() * 8}px`,
+                width: `${3 + r[4] * 8}px`,
+                height: `${3 + r[4] * 8}px`,
               }}
             />
           </div>
         ))}
-        {/* Dust clouds */}
-        {[...Array(5)].map((_, i) => (
+        {randoms.clouds!.map((r, i) => (
           <div
             key={`cloud-${i}`}
             className="absolute pointer-events-none"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `dustCloud ${20 + Math.random() * 15}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 15}s`,
+              left: `${r[0] * 100}%`,
+              top: `${r[1] * 100}%`,
+              animation: `dustCloud ${20 + r[2] * 15}s ease-in-out infinite`,
+              animationDelay: `${r[3] * 15}s`,
             }}
           >
             <div
               className="bg-gradient-to-r from-transparent via-amber-700/10 to-transparent rounded-full blur-2xl"
               style={{
-                width: `${200 + Math.random() * 200}px`,
-                height: `${100 + Math.random() * 100}px`,
+                width: `${200 + r[4] * 200}px`,
+                height: `${100 + r[0] * 100}px`,
               }}
             />
           </div>
