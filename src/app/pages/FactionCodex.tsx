@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, ChevronDown, ChevronRight, Search, Shield, Swords, BookOpen, Award, Zap } from "lucide-react";
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
@@ -195,8 +195,6 @@ export default function FactionCodex() {
   if (!factionMeta) {
     return (
       <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
         <div className="relative z-10 w-full max-w-md mx-auto">
           <button
             onClick={() => navigate(-1)}
@@ -207,7 +205,7 @@ export default function FactionCodex() {
           </button>
 
           <div className="text-center">
-            <BookOpen className="w-16 h-16 text-stone-600 mx-auto mb-4" strokeWidth={1.5} />
+            <BookOpen className="w-16 h-16 text-stone-500 mx-auto mb-4" strokeWidth={1.5} />
             <h1 className="text-xl font-bold text-stone-400 mb-2">
               Codex Not Found
             </h1>
@@ -220,10 +218,12 @@ export default function FactionCodex() {
   const animationType = getAnimationType(factionId!);
   const accentColor = getAccentColor(factionMeta.color);
 
-  // Expand first detachment by default
-  if (expandedDetachments.length === 0 && rules?.detachments && rules.detachments.length > 0) {
-    setExpandedDetachments([rules.detachments[0].name]);
-  }
+  // Expand first detachment by default (in useEffect to avoid setState during render)
+  useEffect(() => {
+    if (expandedDetachments.length === 0 && rules?.detachments && rules.detachments.length > 0) {
+      setExpandedDetachments([rules.detachments[0].name]);
+    }
+  }, [rules?.detachments]);
 
   const toggleDetachment = (detachmentName: string) => {
     setExpandedDetachments((prev) =>
@@ -263,9 +263,6 @@ export default function FactionCodex() {
       {/* Animated Background Effects */}
       {animationType && <AnimatedBackground type={animationType} />}
 
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-2xl mx-auto">
         {/* Back button */}
@@ -285,7 +282,7 @@ export default function FactionCodex() {
               <h1 className="text-3xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]">
                 {factionMeta.name}
               </h1>
-              <p className="text-stone-500 text-sm">Codex: {rules?.faction ?? factionMeta.name}</p>
+              <p className="text-stone-400 text-sm">Codex: {rules?.faction ?? factionMeta.name}</p>
             </div>
           </div>
           <div className={`h-1 w-full ${accentColor} rounded-full shadow-[0_0_10px_rgba(239,68,68,0.4)]`} />
@@ -298,7 +295,7 @@ export default function FactionCodex() {
             className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
               activeTab === "army"
                 ? "bg-gradient-to-r from-red-600 to-red-500 text-black"
-                : "border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 hover:border-emerald-500/40"
+                : "border border-stone-700/60 bg-stone-900 text-stone-300 hover:border-emerald-500/50"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -311,7 +308,7 @@ export default function FactionCodex() {
             className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
               activeTab === "detachments"
                 ? "bg-gradient-to-r from-red-600 to-red-500 text-black"
-                : "border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 hover:border-emerald-500/40"
+                : "border border-stone-700/60 bg-stone-900 text-stone-300 hover:border-emerald-500/50"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -324,7 +321,7 @@ export default function FactionCodex() {
             className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
               activeTab === "datasheets"
                 ? "bg-gradient-to-r from-red-600 to-red-500 text-black"
-                : "border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 hover:border-emerald-500/40"
+                : "border border-stone-700/60 bg-stone-900 text-stone-300 hover:border-emerald-500/50"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -337,7 +334,7 @@ export default function FactionCodex() {
             className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
               activeTab === "crusade"
                 ? "bg-gradient-to-r from-red-600 to-red-500 text-black"
-                : "border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 hover:border-emerald-500/40"
+                : "border border-stone-700/60 bg-stone-900 text-stone-300 hover:border-emerald-500/50"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -350,9 +347,7 @@ export default function FactionCodex() {
         {/* Army Rule Tab */}
         {activeTab === "army" && (
           <div className="space-y-4">
-            <div className="relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-6">
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
-              <div className="relative">
+            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
                 <h2 className="text-xl font-bold text-red-400 mb-4">Army Rules</h2>
                 {rules?.army_rules && rules.army_rules.length > 0 ? (
                   rules.army_rules.map((rule, idx) => (
@@ -361,9 +356,8 @@ export default function FactionCodex() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-stone-500 italic">No army rules available for this faction.</p>
+                  <p className="text-stone-400 italic">No army rules available for this faction.</p>
                 )}
-              </div>
             </div>
           </div>
         )}
@@ -375,7 +369,7 @@ export default function FactionCodex() {
               rules.detachments.map((detachment: DetachmentData) => (
                 <div
                   key={detachment.name}
-                  className="relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950"
+                  className="rounded-xl border border-stone-700/60 bg-stone-900"
                 >
                   {/* Detachment Header */}
                   <button
@@ -419,7 +413,7 @@ export default function FactionCodex() {
                               {detachment.enhancements.map((enh, idx) => (
                                 <div
                                   key={idx}
-                                  className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-3"
+                                  className="rounded-xl border border-stone-700/60 bg-stone-900 p-3"
                                 >
                                   <div className="flex items-start justify-between gap-3 mb-1">
                                     <h4 className="text-sm font-semibold text-emerald-400">{enh.name}</h4>
@@ -454,7 +448,7 @@ export default function FactionCodex() {
                               {detachment.stratagems.map((strat, idx) => (
                                 <div
                                   key={idx}
-                                  className="relative overflow-hidden rounded-lg border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-3"
+                                  className="rounded-xl border border-stone-700/60 bg-stone-900 p-3"
                                 >
                                   <div className="flex items-start justify-between gap-3 mb-1">
                                     <div className="flex items-center gap-2">
@@ -497,7 +491,7 @@ export default function FactionCodex() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-8 text-stone-500 text-sm">
+              <div className="text-center py-8 text-stone-400 text-sm">
                 No detachments available for this faction.
               </div>
             )}
@@ -515,7 +509,7 @@ export default function FactionCodex() {
                 value={datasheetSearch}
                 onChange={(e) => setDatasheetSearch(e.target.value)}
                 placeholder="Search datasheets..."
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
@@ -525,7 +519,7 @@ export default function FactionCodex() {
                 <button
                   key={unit.name}
                   onClick={() => handleDatasheetClick(unit)}
-                  className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                  className="w-full rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
                 >
                   <div className="p-3 flex items-center justify-between gap-3">
                     <div className="flex-1 text-left">
@@ -556,7 +550,7 @@ export default function FactionCodex() {
                           {unit.points[0].cost} pts
                         </span>
                       )}
-                      <ChevronRight className="w-4 h-4 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-stone-500 group-hover:text-emerald-500 transition-colors" />
                     </div>
                   </div>
                 </button>
@@ -564,7 +558,7 @@ export default function FactionCodex() {
             </div>
 
             {filteredDatasheets.length === 0 && (
-              <div className="text-center py-8 text-stone-500 text-sm">
+              <div className="text-center py-8 text-stone-400 text-sm">
                 No datasheets found
               </div>
             )}
@@ -575,27 +569,23 @@ export default function FactionCodex() {
         {activeTab === "crusade" && (
           <div className="space-y-4">
             {rules?.crusade_rules && rules.crusade_rules.length > 0 ? (
-              <div className="relative overflow-hidden rounded-lg border border-amber-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-6">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
-                <div className="relative">
-                  <h2 className="text-xl font-bold text-amber-400 mb-4">Crusade Rules</h2>
-                  {rules.crusade_rules.map((cr, idx) => (
-                    <div key={idx} className="mb-4 last:mb-0">
-                      {cr.name && (
-                        <h3 className="text-base font-semibold text-stone-200 mb-2">{cr.name}</h3>
-                      )}
-                      {cr.text && (
-                        <FormattedRuleText text={cr.text} />
-                      )}
-                    </div>
-                  ))}
-                </div>
+              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
+                <h2 className="text-xl font-bold text-amber-400 mb-4">Crusade Rules</h2>
+                {rules.crusade_rules.map((cr, idx) => (
+                  <div key={idx} className="mb-4 last:mb-0">
+                    {cr.name && (
+                      <h3 className="text-base font-semibold text-stone-200 mb-2">{cr.name}</h3>
+                    )}
+                    {cr.text && (
+                      <FormattedRuleText text={cr.text} />
+                    )}
+                  </div>
+                ))}
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-lg border border-amber-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-6">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
-                <div className="relative text-center py-4">
-                  <p className="text-stone-500 italic">No crusade rules available for this faction.</p>
+              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6">
+                <div className="text-center py-4">
+                  <p className="text-stone-400 italic">No crusade rules available for this faction.</p>
                 </div>
               </div>
             )}

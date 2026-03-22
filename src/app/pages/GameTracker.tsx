@@ -70,10 +70,6 @@ export default function GameTracker() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-amber-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-6">
@@ -88,12 +84,11 @@ export default function GameTracker() {
           <h1 className="text-2xl font-bold text-stone-100 mb-1 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             Game Tracker
           </h1>
-          <p className="text-stone-500 text-sm">Track VP and CP during your game</p>
+          <p className="text-stone-400 text-sm">Track VP and CP during your game</p>
         </div>
 
         {/* Round Tracker */}
-        <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-3 mb-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+        <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-3 mb-6">
           <div className="relative flex items-center justify-between">
             <button
               onClick={() => update({ currentRound: Math.max(1, state.currentRound - 1) })}
@@ -104,8 +99,8 @@ export default function GameTracker() {
             </button>
             <div className="text-center">
               <div className="text-[10px] text-stone-500 uppercase tracking-wider">Battle Round</div>
-              <div className="text-2xl font-bold text-emerald-400 font-mono">{state.currentRound}</div>
-              <div className="text-[10px] text-stone-600">of 5</div>
+              <div className="text-2xl font-bold text-amber-400 font-mono">{state.currentRound}</div>
+              <div className="text-[10px] text-stone-500">of 5</div>
             </div>
             <button
               onClick={() => update({ currentRound: Math.min(5, state.currentRound + 1) })}
@@ -128,8 +123,7 @@ export default function GameTracker() {
             const cpKey = isP1 ? "player1CP" : "player2CP";
 
             return (
-              <div key={player} className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+              <div key={player} className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900" style={{ borderLeftWidth: '4px', borderLeftColor: isP1 ? 'rgb(16, 185, 129)' : 'rgb(245, 158, 11)' }}>
                 <div className="relative p-4">
                   {/* Player Name */}
                   <div className="mb-4">
@@ -163,7 +157,7 @@ export default function GameTracker() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => update({ [vpKey]: Math.max(0, vp - 1) } as Partial<TrackerState>)}
-                          className="w-9 h-9 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                          className="w-12 h-12 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           -
                         </button>
@@ -175,20 +169,20 @@ export default function GameTracker() {
                             onChange={(e) => setEditValue(e.target.value)}
                             onBlur={() => handleCounterSubmit(vpKey)}
                             onKeyDown={(e) => { if (e.key === "Enter") handleCounterSubmit(vpKey); }}
-                            className="w-14 text-center text-3xl font-bold text-emerald-400 font-mono bg-stone-950 border border-emerald-500/30 rounded-lg focus:outline-none"
+                            className="w-14 text-center text-4xl font-bold text-emerald-400 font-mono bg-stone-950 border border-emerald-500/30 rounded-lg focus:outline-none"
                             min="0"
                           />
                         ) : (
                           <button
                             onClick={() => handleCounterTap(vpKey, vp)}
-                            className="text-3xl font-bold text-emerald-400 font-mono w-14 text-center hover:text-emerald-300 transition-colors"
+                            className="text-4xl font-bold text-emerald-400 font-mono w-14 text-center hover:text-emerald-300 transition-colors"
                           >
                             {vp}
                           </button>
                         )}
                         <button
                           onClick={() => update({ [vpKey]: vp + 1 } as Partial<TrackerState>)}
-                          className="w-9 h-9 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                          className="w-12 h-12 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           +
                         </button>
@@ -203,7 +197,7 @@ export default function GameTracker() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => update({ [cpKey]: Math.max(0, cp - 1) } as Partial<TrackerState>)}
-                          className="w-9 h-9 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                          className="w-12 h-12 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           -
                         </button>
@@ -215,20 +209,20 @@ export default function GameTracker() {
                             onChange={(e) => setEditValue(e.target.value)}
                             onBlur={() => handleCounterSubmit(cpKey)}
                             onKeyDown={(e) => { if (e.key === "Enter") handleCounterSubmit(cpKey); }}
-                            className="w-14 text-center text-3xl font-bold text-amber-400 font-mono bg-stone-950 border border-amber-500/30 rounded-lg focus:outline-none"
+                            className="w-14 text-center text-4xl font-bold text-amber-400 font-mono bg-stone-950 border border-amber-500/30 rounded-lg focus:outline-none"
                             min="0"
                           />
                         ) : (
                           <button
                             onClick={() => handleCounterTap(cpKey, cp)}
-                            className="text-3xl font-bold text-amber-400 font-mono w-14 text-center hover:text-amber-300 transition-colors"
+                            className="text-4xl font-bold text-amber-400 font-mono w-14 text-center hover:text-amber-300 transition-colors"
                           >
                             {cp}
                           </button>
                         )}
                         <button
                           onClick={() => update({ [cpKey]: cp + 1 } as Partial<TrackerState>)}
-                          className="w-9 h-9 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                          className="w-12 h-12 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           +
                         </button>
@@ -254,8 +248,7 @@ export default function GameTracker() {
       {/* Reset Confirmation Modal */}
       {showReset && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-          <div className="w-full max-w-sm relative overflow-hidden rounded-lg border border-red-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent" />
+          <div className="w-full max-w-sm relative overflow-hidden rounded-xl border border-red-500/30 bg-stone-900 p-6">
             <div className="relative">
               <div className="flex justify-center mb-4">
                 <RotateCcw className="w-12 h-12 text-red-500" strokeWidth={1.5} />
@@ -269,7 +262,7 @@ export default function GameTracker() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowReset(false)}
-                  className="flex-1 px-4 py-2 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+                  className="flex-1 px-4 py-2 rounded-lg border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
                 >
                   Cancel
                 </button>

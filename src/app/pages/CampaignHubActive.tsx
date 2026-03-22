@@ -64,10 +64,6 @@ export default function CampaignHubActive() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       {/* Content container */}
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Header Section */}
@@ -104,8 +100,7 @@ export default function CampaignHubActive() {
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           {/* Current Round */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {campaign.current_round}
@@ -117,8 +112,7 @@ export default function CampaignHubActive() {
           </div>
 
           {/* Total Battles */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {totalBattles}
@@ -130,8 +124,7 @@ export default function CampaignHubActive() {
           </div>
 
           {/* Player Count */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {displayPlayers.length}
@@ -165,13 +158,10 @@ export default function CampaignHubActive() {
               <button
                 key={player.id}
                 onClick={() => handlePlayerClick(player.id)}
-                className="group w-full relative overflow-hidden rounded-lg"
+                className="group w-full relative overflow-hidden rounded-xl"
               >
                 {/* Card background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 transition-all duration-300 group-hover:border-emerald-500/40 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
-
-                {/* Subtle inner glow on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
 
                 {/* Content */}
                 <div className="relative p-4">
@@ -186,7 +176,7 @@ export default function CampaignHubActive() {
                       <h3 className="text-base font-semibold text-stone-100 mb-0.5">
                         {player.name}
                       </h3>
-                      <p className="text-sm text-stone-500">
+                      <p className="text-sm text-stone-400">
                         {factionName}
                       </p>
                     </div>
@@ -207,13 +197,15 @@ export default function CampaignHubActive() {
                         {player.supply_used || 0} / {campaign.supply_limit}
                       </span>
                     </div>
-                    <div className="relative h-1.5 bg-stone-800 rounded-full overflow-hidden">
+                    <div className="relative h-3 bg-stone-800 rounded-full overflow-hidden">
                       <div
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-full transition-all duration-300"
+                        className={`absolute inset-y-0 left-0 rounded-full transition-all duration-300 ${
+                          supplyPercentage > 80
+                            ? "bg-gradient-to-r from-amber-600 to-amber-500"
+                            : "bg-gradient-to-r from-emerald-600 to-emerald-500"
+                        }`}
                         style={{ width: `${Math.min(supplyPercentage, 100)}%` }}
-                      >
-                        <div className="absolute inset-0 bg-emerald-400/30 blur-sm" />
-                      </div>
+                      />
                     </div>
                   </div>
                 </div>
@@ -236,10 +228,10 @@ export default function CampaignHubActive() {
           </div>
 
           {recentBattles.length === 0 ? (
-            <div className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-6 text-center">
+            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-6 text-center">
               <Swords className="w-10 h-10 text-stone-700 mx-auto mb-3" strokeWidth={1.5} />
-              <p className="text-stone-600 text-sm">No battles logged yet</p>
-              <p className="text-stone-700 text-xs mt-1">
+              <p className="text-stone-500 text-sm">No battles logged yet</p>
+              <p className="text-stone-600 text-xs mt-1">
                 Tap the + button to log your first battle
               </p>
             </div>
@@ -249,7 +241,7 @@ export default function CampaignHubActive() {
                 <button
                   key={battle.id}
                   onClick={() => navigate(`/battle/${battle.id}`)}
-                  className="group w-full rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-3 text-left hover:border-emerald-500/40 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all"
+                  className="group w-full rounded-xl border border-stone-700/60 bg-stone-900 p-3 text-left hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
@@ -257,16 +249,16 @@ export default function CampaignHubActive() {
                         <span className={`text-sm font-bold ${getResultColor(battle.result)}`}>
                           {getResultLabel(battle.result)}
                         </span>
-                        <span className="text-stone-600 text-xs">vs</span>
+                        <span className="text-stone-500 text-xs">vs</span>
                         <span className="text-stone-300 text-sm truncate">
                           {battle.opponent_name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-stone-500">
+                      <div className="flex items-center gap-2 text-xs text-stone-400">
                         <span>{battle.mission_name}</span>
                       </div>
                     </div>
-                    <div className="text-xs text-stone-600 whitespace-nowrap">
+                    <div className="text-xs text-stone-500 whitespace-nowrap">
                       {formatBattleDate(battle.created_at)}
                     </div>
                   </div>

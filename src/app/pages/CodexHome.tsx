@@ -37,7 +37,7 @@ export default function CodexHome() {
     const colors = getFactionColors(f.color);
     const dataId = getDataFactionId(f.id);
     const datasheets = getUnitsForFaction(dataId).length;
-    const detachments = getRulesForFaction(dataId)?.detachments.length ?? 0;
+    const detachments = getRulesForFaction(dataId)?.detachments?.length ?? 0;
     return {
       id: f.id,
       name: f.name,
@@ -65,10 +65,6 @@ export default function CodexHome() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -92,7 +88,7 @@ export default function CodexHome() {
           <h1 className="text-2xl font-bold text-stone-100 mb-2 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             Codex Library
           </h1>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Browse all faction codexes
           </p>
         </div>
@@ -108,9 +104,8 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${faction.bgGlow} to-transparent opacity-50`} />
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>
                   <div className="flex-1 text-left">
@@ -124,13 +119,13 @@ export default function CodexHome() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-stone-500">
+                    <div className="flex items-center gap-3 text-xs text-stone-400">
                       <span>{faction.datasheets} datasheets</span>
                       <span>•</span>
                       <span>{faction.detachments} detachments</span>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+                  <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
                 </div>
               </button>
             ))}
@@ -148,22 +143,21 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${faction.bgGlow} to-transparent opacity-50`} />
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>
                   <div className="flex-1 text-left">
                     <h3 className="text-base font-semibold text-stone-100 mb-1">
                       {faction.name}
                     </h3>
-                    <div className="flex items-center gap-3 text-xs text-stone-500">
+                    <div className="flex items-center gap-3 text-xs text-stone-400">
                       <span>{faction.datasheets} datasheets</span>
                       <span>•</span>
                       <span>{faction.detachments} detachments</span>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+                  <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
                 </div>
               </button>
             ))}
@@ -181,22 +175,21 @@ export default function CodexHome() {
               <button
                 key={faction.id}
                 onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${faction.bgGlow} to-transparent opacity-50`} />
                 <div className="relative p-4 flex items-center gap-4">
                   <div className="text-3xl">{faction.icon}</div>
                   <div className="flex-1 text-left">
                     <h3 className="text-base font-semibold text-stone-100 mb-1">
                       {faction.name}
                     </h3>
-                    <div className="flex items-center gap-3 text-xs text-stone-500">
+                    <div className="flex items-center gap-3 text-xs text-stone-400">
                       <span>{faction.datasheets} datasheets</span>
                       <span>•</span>
                       <span>{faction.detachments} detachments</span>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+                  <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
                 </div>
               </button>
             ))}

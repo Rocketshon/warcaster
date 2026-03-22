@@ -17,7 +17,7 @@ export default function BattleDetail() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <div className="text-center">
-          <p className="text-stone-500 mb-4">Battle not found.</p>
+          <p className="text-stone-400 mb-4">Battle not found.</p>
           <button
             onClick={() => navigate(-1)}
             className="px-6 py-3 rounded-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 text-black"
@@ -97,12 +97,9 @@ export default function BattleDetail() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col min-h-screen">
         {/* Header */}
-        <div className="p-6 pb-4 border-b border-emerald-500/20">
+        <div className="p-6 pb-4 border-b border-stone-700/60">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-stone-400 hover:text-emerald-500 transition-colors mb-4"
@@ -116,7 +113,7 @@ export default function BattleDetail() {
           </h1>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-stone-500 text-sm">
+            <div className="flex items-center gap-2 text-stone-400 text-sm">
               <Calendar className="w-4 h-4" />
               <span>{formatDate(battle.created_at)}</span>
             </div>
@@ -138,12 +135,12 @@ export default function BattleDetail() {
             </h2>
             <div className="flex items-center justify-center gap-4 text-sm">
               <div>
-                <p className="text-stone-500 mb-1">Your Score</p>
+                <p className="text-stone-400 mb-1">Your Score</p>
                 <p className="text-2xl font-bold text-stone-200">{battle.player_vp}</p>
               </div>
-              <div className="text-stone-600 text-2xl">&mdash;</div>
+              <div className="text-stone-500 text-2xl">&mdash;</div>
               <div>
-                <p className="text-stone-500 mb-1">Opponent Score</p>
+                <p className="text-stone-400 mb-1">Opponent Score</p>
                 <p className="text-2xl font-bold text-stone-200">{battle.opponent_vp}</p>
               </div>
             </div>
@@ -154,11 +151,11 @@ export default function BattleDetail() {
             <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
               Opponent
             </h3>
-            <div className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
+            <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <h4 className="text-lg font-bold text-stone-300 mb-2">
                 {battle.opponent_name}
               </h4>
-              <div className="flex items-center gap-2 text-sm text-stone-500">
+              <div className="flex items-center gap-2 text-sm text-stone-400">
                 {opponentFactionIcon && (
                   <span className="text-base">{opponentFactionIcon}</span>
                 )}
@@ -181,7 +178,7 @@ export default function BattleDetail() {
                     <div
                       key={unit.id}
                       onClick={() => navigate(`/unit/${unit.id}`)}
-                      className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-4 cursor-pointer hover:border-emerald-500/40 transition-all"
+                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-4 cursor-pointer hover:border-emerald-500/50 transition-all"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-semibold text-stone-300">{unit.custom_name}</h4>
@@ -199,7 +196,7 @@ export default function BattleDetail() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3 text-xs">
-                        <span className="text-stone-500">{unit.points_cost} pts</span>
+                        <span className="text-stone-400">{unit.points_cost} pts</span>
                         <span className="px-2 py-0.5 rounded-full bg-stone-800 text-stone-400">
                           {unit.rank}
                         </span>
@@ -220,7 +217,7 @@ export default function BattleDetail() {
             {/* XP Awarded — show per fielded unit */}
             {fieldedUnits.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-stone-500 mb-2 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-stone-400 mb-2 flex items-center gap-2">
                   <Zap className="w-4 h-4 text-emerald-500" />
                   Units in Battle
                 </h4>
@@ -228,7 +225,7 @@ export default function BattleDetail() {
                   {fieldedUnits.map((unit) => (
                     <div
                       key={unit.id}
-                      className="rounded-lg border border-emerald-500/20 bg-gradient-to-br from-emerald-950/10 to-stone-950 p-3 flex items-center justify-between"
+                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                     >
                       <span className="text-sm text-stone-400">{unit.custom_name}</span>
                       <span className="font-bold text-emerald-400">{unit.experience_points} XP</span>
@@ -241,7 +238,7 @@ export default function BattleDetail() {
             {/* Battle Honors — from fielded units that have honours */}
             {fieldedUnits.some(u => u.battle_honours.length > 0) && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-stone-500 mb-2 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-stone-400 mb-2 flex items-center gap-2">
                   <Award className="w-4 h-4 text-emerald-400" />
                   Battle Honors
                 </h4>
@@ -252,7 +249,7 @@ export default function BattleDetail() {
                       unit.battle_honours.map((honour) => (
                         <div
                           key={`${unit.id}-${honour.id}`}
-                          className="rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-3 flex items-center justify-between"
+                          className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                         >
                           <span className="text-sm text-stone-400">{unit.custom_name}</span>
                           <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
@@ -268,7 +265,7 @@ export default function BattleDetail() {
             {/* Battle Scars — from fielded units that have scars */}
             {fieldedUnits.some(u => u.battle_scars.length > 0) && (
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-stone-500 mb-2 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-stone-400 mb-2 flex items-center gap-2">
                   <Skull className="w-4 h-4 text-red-500" />
                   Battle Scars
                 </h4>
@@ -279,7 +276,7 @@ export default function BattleDetail() {
                       unit.battle_scars.map((scar) => (
                         <div
                           key={`${unit.id}-${scar.id}`}
-                          className="rounded-lg border border-red-500/30 bg-gradient-to-br from-red-950/20 to-stone-950 p-3 flex items-center justify-between"
+                          className="rounded-xl border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                         >
                           <span className="text-sm text-stone-400">{unit.custom_name}</span>
                           <span className="px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-semibold">
@@ -299,9 +296,9 @@ export default function BattleDetail() {
               <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
                 Battle Notes
               </h3>
-              <div className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900/80 to-stone-950 p-4">
+              <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
                 <div className="flex items-start gap-3">
-                  <FileText className="w-4 h-4 text-stone-600 mt-0.5 flex-shrink-0" />
+                  <FileText className="w-4 h-4 text-stone-500 mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-stone-400 italic leading-relaxed whitespace-pre-line">
                     {battle.notes}
                   </p>

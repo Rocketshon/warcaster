@@ -25,6 +25,7 @@ import RequisitionSpending from "./pages/RequisitionSpending";
 import BattleDetail from "./pages/BattleDetail";
 import TacticalCheatSheet from "./pages/TacticalCheatSheet";
 import { redirect } from "react-router";
+import { loadUser } from "../lib/storage";
 
 // Detect GitHub Pages base path from Vite's import.meta.env.BASE_URL
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -35,8 +36,8 @@ export const router = createBrowserRouter(
     {
       Component: AppLayout,
       children: [
-        // Root redirects to home
-        { path: "/", loader: () => redirect("/home") },
+        // Root redirects based on auth state
+        { path: "/", loader: () => redirect(loadUser() ? "/home" : "/sign-in") },
         // Campaign
         { path: "/home", Component: CampaignHub },
         { path: "/sign-up", Component: SignUp },

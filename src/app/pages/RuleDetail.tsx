@@ -15,6 +15,7 @@ function lookupRule(
   // Core rules: "core-{index}"
   if (ruleId.startsWith('core-') && CORE_RULES) {
     const idx = parseInt(ruleId.replace('core-', ''), 10);
+    if (isNaN(idx)) return null;
     const section = CORE_RULES.sections[idx];
     if (section) {
       return { title: section.name, source: 'Core Rules', sourceType: 'core', section };
@@ -24,6 +25,7 @@ function lookupRule(
   // Crusade rules: "crusade-{index}"
   if (ruleId.startsWith('crusade-') && CRUSADE_RULES) {
     const idx = parseInt(ruleId.replace('crusade-', ''), 10);
+    if (isNaN(idx)) return null;
     const section = CRUSADE_RULES.sections[idx];
     if (section) {
       return { title: section.name, source: 'Crusade Rules', sourceType: 'crusade', section };
@@ -48,6 +50,7 @@ function lookupRule(
 
     if (ruleId.startsWith('faction-det-')) {
       const idx = parseInt(ruleId.replace('faction-det-', ''), 10);
+      if (isNaN(idx)) return null;
       const det = factionRules.detachments[idx];
       if (det) {
         return {
@@ -113,8 +116,6 @@ export default function RuleDetail() {
   if (!rule) {
     return (
       <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
         <div className="relative z-10 w-full max-w-md mx-auto">
           <button
             onClick={() => navigate(-1)}
@@ -125,11 +126,11 @@ export default function RuleDetail() {
           </button>
 
           <div className="text-center">
-            <BookOpen className="w-16 h-16 text-stone-600 mx-auto mb-4" strokeWidth={1.5} />
+            <BookOpen className="w-16 h-16 text-stone-500 mx-auto mb-4" strokeWidth={1.5} />
             <h1 className="text-xl font-bold text-stone-400 mb-2">
               Rule Not Found
             </h1>
-            <p className="text-stone-600 text-sm">
+            <p className="text-stone-500 text-sm">
               The requested rule could not be found.
             </p>
           </div>
@@ -171,8 +172,7 @@ export default function RuleDetail() {
       <div className="space-y-6">
         {/* Main text content */}
         {parsed.paragraphs.length > 0 && (
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative space-y-2">
               {parsed.paragraphs.map((p, idx) => (
                 <p key={idx} className="text-stone-300 leading-relaxed">{p}</p>
@@ -183,8 +183,7 @@ export default function RuleDetail() {
 
         {/* Bullet points */}
         {parsed.bullets.length > 0 && (
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <ul className="relative space-y-2">
               {parsed.bullets.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-stone-300">
@@ -202,8 +201,7 @@ export default function RuleDetail() {
             <h2 className="text-xl font-bold text-stone-200 tracking-wide">
               Subsections
             </h2>
-            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <ul className="relative space-y-2">
                 {section.subsections.map((sub, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-stone-300">
@@ -229,9 +227,8 @@ export default function RuleDetail() {
           {rule.factionData.rules.map((ruleText: string, idx: number) => (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4"
+              className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
               <div className="relative">
                 <FormattedRuleText text={ruleText} />
               </div>
@@ -250,8 +247,7 @@ export default function RuleDetail() {
             <h2 className="text-xl font-bold text-stone-200 tracking-wide mb-3">
               {det.rule.name}
             </h2>
-            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
+            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="relative">
                 <FormattedRuleText text={det.rule.text} />
               </div>
@@ -268,7 +264,7 @@ export default function RuleDetail() {
                 {det.enhancements.map((enh: any, idx: number) => (
                   <div
                     key={idx}
-                    className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4"
+                    className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-sm font-bold text-emerald-400">{enh.name}</h3>
@@ -291,7 +287,7 @@ export default function RuleDetail() {
                 {det.stratagems.map((strat: any, idx: number) => (
                   <div
                     key={idx}
-                    className="relative overflow-hidden rounded-lg border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4"
+                    className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-sm font-bold text-purple-400">{strat.name}</h3>
@@ -336,9 +332,8 @@ export default function RuleDetail() {
           {rule.factionData.rules.map((cr: any, idx: number) => (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-lg border border-amber-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4"
+              className="relative overflow-hidden rounded-xl border border-amber-500/20 bg-stone-900 p-4"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
               <div className="relative">
                 {cr.name && (
                   <h3 className="text-base font-bold text-amber-400 mb-2">{cr.name}</h3>
@@ -356,10 +351,6 @@ export default function RuleDetail() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-2xl mx-auto">
         {/* Back button */}
         <button

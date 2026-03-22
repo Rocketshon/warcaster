@@ -47,9 +47,6 @@ export default function Roster() {
     // Empty State
     return (
       <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-        {/* Dark ambient glow effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
         <div className="relative z-10 w-full max-w-md mx-auto">
           {/* Back button */}
           <button
@@ -65,7 +62,7 @@ export default function Roster() {
             <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-1">
               Order of Battle
             </h1>
-            <p className="text-stone-500 text-sm">{factionName}</p>
+            <p className="text-stone-400 text-sm">{factionName}</p>
           </div>
 
           {/* Empty State Content */}
@@ -80,7 +77,7 @@ export default function Roster() {
             <h2 className="text-xl font-semibold text-stone-100 mb-3 tracking-wide">
               No Units Yet
             </h2>
-            <p className="text-stone-500 text-sm max-w-sm leading-relaxed mb-8">
+            <p className="text-stone-400 text-sm max-w-sm leading-relaxed mb-8">
               Add units from your faction's codex to build your Order of Battle and begin your crusade.
             </p>
 
@@ -108,10 +105,6 @@ export default function Roster() {
   // Active State
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -127,14 +120,13 @@ export default function Roster() {
           <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-1">
             {currentPlayer.name}
           </h1>
-          <p className="text-stone-500 text-sm">{factionName}</p>
+          <p className="text-stone-400 text-sm">{factionName}</p>
         </div>
 
         {/* Supply and Requisition */}
         <div className="mb-6 space-y-4">
           {/* Supply Bar */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-stone-500 uppercase tracking-wider">
@@ -156,8 +148,7 @@ export default function Roster() {
           </div>
 
           {/* Requisition Points */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative flex items-center justify-between">
               <span className="text-xs text-stone-500 uppercase tracking-wider">
                 Requisition Points
@@ -175,9 +166,8 @@ export default function Roster() {
             <div className="relative">
               <button
                 onClick={() => setShowDetachmentPicker(!showDetachmentPicker)}
-                className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4 text-left hover:border-emerald-500/40 transition-all"
+                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4 text-left hover:border-emerald-500/50 transition-all"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
                 <div className="relative flex items-center justify-between">
                   <div>
                     <span className="text-xs text-stone-500 uppercase tracking-wider block mb-1">
@@ -192,7 +182,7 @@ export default function Roster() {
               </button>
 
               {showDetachmentPicker && (
-                <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-lg border border-emerald-500/30 bg-stone-950/98 backdrop-blur-sm shadow-xl max-h-64 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-xl border border-stone-700/60 bg-stone-950/98 backdrop-blur-sm shadow-xl max-h-64 overflow-y-auto">
                   {detachments.map((det) => (
                     <button
                       key={det.name}
@@ -217,9 +207,8 @@ export default function Roster() {
         {currentDetachment && units.length > 0 && (
           <button
             onClick={() => navigate('/cheat-sheet')}
-            className="w-full mb-6 relative overflow-hidden rounded-lg border border-amber-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-4 hover:border-amber-500/50 transition-all group"
+            className="w-full mb-6 relative overflow-hidden rounded-xl border border-amber-500/30 bg-stone-900 p-4 hover:border-amber-500/50 transition-all group"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent group-hover:from-amber-500/10 transition-all" />
             <div className="relative flex items-center gap-3">
               <ScrollText className="w-5 h-5 text-amber-500" />
               <div className="text-left">
@@ -251,11 +240,12 @@ export default function Roster() {
                     e.preventDefault();
                     handleLongPress(unit.id);
                   }}
-                  className={`w-full text-left relative overflow-hidden rounded-lg border bg-gradient-to-br from-stone-900 to-stone-950 transition-all ${
+                  className={`w-full text-left relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 transition-all ${
                     unit.is_destroyed
-                      ? "border-red-500/30 opacity-60"
-                      : "border-emerald-500/20 hover:border-emerald-500/40"
+                      ? "opacity-60"
+                      : "hover:border-emerald-500/50"
                   }`}
+                  style={unit.is_destroyed ? { borderLeftWidth: '4px', borderLeftColor: 'rgb(239, 68, 68)' } : undefined}
                 >
                   <div className="p-4">
                     {/* Unit Header */}
@@ -305,12 +295,12 @@ export default function Roster() {
                         <div className="flex items-center gap-1.5 text-amber-400">
                           <Award className="w-4 h-4" />
                           <span className="font-mono">{unit.battle_honours.length}</span>
-                          <span className="text-stone-600">Honors</span>
+                          <span className="text-stone-500">Honors</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-red-400">
                           <AlertTriangle className="w-4 h-4" />
                           <span className="font-mono">{unit.battle_scars.length}</span>
-                          <span className="text-stone-600">Scars</span>
+                          <span className="text-stone-500">Scars</span>
                         </div>
                       </div>
 
@@ -326,7 +316,7 @@ export default function Roster() {
                             </span>
                           ))}
                           {unit.battle_honours.length > 2 && (
-                            <span className="text-stone-600 text-[10px]">
+                            <span className="text-stone-500 text-[10px]">
                               +{unit.battle_honours.length - 2} more
                             </span>
                           )}
@@ -345,7 +335,7 @@ export default function Roster() {
                             </span>
                           ))}
                           {unit.battle_scars.length > 2 && (
-                            <span className="text-stone-600 text-[10px]">
+                            <span className="text-stone-500 text-[10px]">
                               +{unit.battle_scars.length - 2} more
                             </span>
                           )}
@@ -354,16 +344,12 @@ export default function Roster() {
                     </div>
                   </div>
 
-                  {unit.is_destroyed && (
-                    <div className="absolute inset-0 bg-red-950/20 pointer-events-none" />
-                  )}
-
                   <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
                 </button>
 
                 {/* Remove action overlay */}
                 {showRemove === unit.id && (
-                  <div className="absolute inset-0 bg-red-950/95 rounded-lg flex items-center justify-center backdrop-blur-sm border border-red-500/30 z-10">
+                  <div className="absolute inset-0 bg-red-950/95 rounded-xl flex items-center justify-center backdrop-blur-sm border border-red-500/30 z-10">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -385,7 +371,7 @@ export default function Roster() {
       {/* Floating Action Button */}
       <button
         onClick={() => navigate("/add-unit")}
-        className="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.4)] hover:shadow-[0_6px_30px_rgba(16,185,129,0.6)] transition-all duration-300 group z-50"
+        className="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center shadow-[0_4px_20px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_30px_rgba(16,185,129,0.6)] transition-all duration-300 group z-50"
       >
         <Plus className="w-6 h-6 text-black group-hover:scale-110 transition-transform" strokeWidth={2.5} />
       </button>

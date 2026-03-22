@@ -114,10 +114,6 @@ export default function LogBattle() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -141,7 +137,7 @@ export default function LogBattle() {
           <h1 className="text-2xl font-bold text-stone-100 mb-2 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             Log Battle
           </h1>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Record the results of your crusade battle
           </p>
         </div>
@@ -165,7 +161,7 @@ export default function LogBattle() {
                       setOpponentFaction(getFactionName(p.faction_id));
                     }
                   }}
-                  className="w-full appearance-none bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full appearance-none bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 >
                   <option value="" className="bg-stone-900">
                     Select opponent...
@@ -185,7 +181,7 @@ export default function LogBattle() {
                 value={opponentName}
                 onChange={(e) => setOpponentName(e.target.value)}
                 placeholder="Opponent name"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             )}
           </div>
@@ -201,7 +197,7 @@ export default function LogBattle() {
                 value={opponentFaction}
                 onChange={(e) => setOpponentFaction(e.target.value)}
                 placeholder="e.g., Space Marines"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           )}
@@ -216,7 +212,7 @@ export default function LogBattle() {
               value={missionName}
               onChange={(e) => setMissionName(e.target.value)}
               placeholder="e.g., Sweep and Clear"
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
           </div>
 
@@ -234,7 +230,7 @@ export default function LogBattle() {
                   className={`relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all ${
                     battleSize === size
                       ? "bg-emerald-600 text-black border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                      : "bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 border border-emerald-500/20 hover:border-emerald-500/30"
+                      : "bg-stone-900 text-stone-300 border border-stone-700/60 hover:border-emerald-500/50"
                   }`}
                 >
                   {size}
@@ -257,7 +253,7 @@ export default function LogBattle() {
                 onChange={(e) => setYourScore(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
@@ -273,7 +269,7 @@ export default function LogBattle() {
                 onChange={(e) => setOpponentScore(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           </div>
@@ -292,7 +288,7 @@ export default function LogBattle() {
                   className={`flex-1 relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all ${
                     winner === option.value
                       ? "bg-emerald-600 text-black border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                      : "bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 border border-emerald-500/20 hover:border-emerald-500/30"
+                      : "bg-stone-900 text-stone-300 border border-stone-700/60 hover:border-emerald-500/50"
                   }`}
                 >
                   {option.label}
@@ -313,7 +309,7 @@ export default function LogBattle() {
               Units Fielded
             </label>
             {availableUnits.length === 0 ? (
-              <p className="text-stone-500 text-sm italic">
+              <p className="text-stone-400 text-sm italic">
                 No units in your roster. Add units from the Roster page first.
               </p>
             ) : (
@@ -325,10 +321,10 @@ export default function LogBattle() {
                       key={unit.id}
                       type="button"
                       onClick={() => toggleUnitSelection(unit.id)}
-                      className={`w-full text-left rounded-lg px-4 py-3 transition-all ${
+                      className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
                         isSelected
                           ? "bg-gradient-to-br from-emerald-900/40 to-emerald-950/30 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
-                          : "bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 hover:border-emerald-500/30"
+                          : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -368,7 +364,7 @@ export default function LogBattle() {
                   );
                 })}
                 {selectedUnitIds.length > 0 && (
-                  <p className="text-xs text-stone-500 mt-1">
+                  <p className="text-xs text-stone-400 mt-1">
                     {selectedUnitIds.length} unit{selectedUnitIds.length !== 1 ? "s" : ""} selected
                   </p>
                 )}
@@ -383,7 +379,7 @@ export default function LogBattle() {
                 <Star className="w-4 h-4 text-amber-500/70" />
                 Marked for Greatness
               </label>
-              <p className="text-xs text-stone-500 mb-3">
+              <p className="text-xs text-stone-400 mb-3">
                 Optionally select one fielded unit to receive bonus XP
               </p>
               <div className="space-y-2">
@@ -391,10 +387,10 @@ export default function LogBattle() {
                 <button
                   type="button"
                   onClick={() => setMarkedForGreatness(null)}
-                  className={`w-full text-left rounded-lg px-4 py-3 transition-all ${
+                  className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
                     markedForGreatness === null
                       ? "bg-gradient-to-br from-stone-800 to-stone-900 border border-stone-500/40"
-                      : "bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 hover:border-emerald-500/30"
+                      : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -420,10 +416,10 @@ export default function LogBattle() {
                       key={unit.id}
                       type="button"
                       onClick={() => setMarkedForGreatness(unit.id)}
-                      className={`w-full text-left rounded-lg px-4 py-3 transition-all ${
+                      className={`w-full text-left rounded-xl px-4 py-3 transition-all ${
                         isMarked
                           ? "bg-gradient-to-br from-amber-900/30 to-amber-950/20 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.15)]"
-                          : "bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 hover:border-emerald-500/30"
+                          : "bg-stone-900 border border-stone-700/60 hover:border-emerald-500/50"
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -475,7 +471,7 @@ export default function LogBattle() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Optional notes about the battle..."
               rows={4}
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
             />
           </div>
 
@@ -489,8 +485,8 @@ export default function LogBattle() {
             type="submit"
             className="w-full relative overflow-hidden group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-lg transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-500 rounded-lg transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
 
             <div className="relative px-6 py-4 flex items-center justify-center gap-2">
               <Swords className="w-5 h-5 text-black" strokeWidth={2} />

@@ -109,10 +109,6 @@ export default function AddUnit() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -128,7 +124,7 @@ export default function AddUnit() {
           <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-1">
             Add Unit
           </h1>
-          <p className="text-stone-500 text-sm">{factionName}</p>
+          <p className="text-stone-400 text-sm">{factionName}</p>
         </div>
 
         {!selectedUnit ? (
@@ -142,7 +138,7 @@ export default function AddUnit() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search units or keywords..."
-                  className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
@@ -160,7 +156,7 @@ export default function AddUnit() {
                   <button
                     key={`${unit.name}-${idx}`}
                     onClick={() => handleUnitSelect(unit)}
-                    className="w-full text-left relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 transition-all group"
+                    className="w-full text-left relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 transition-all group"
                   >
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3 mb-2">
@@ -191,7 +187,7 @@ export default function AddUnit() {
 
               {filteredUnits.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-stone-500 text-sm">No units found</p>
+                  <p className="text-stone-400 text-sm">No units found</p>
                 </div>
               )}
             </div>
@@ -201,8 +197,7 @@ export default function AddUnit() {
             {/* Unit Configuration Form */}
             <div className="space-y-5">
               {/* Selected Unit Info */}
-              <div className="relative overflow-hidden rounded-lg border border-emerald-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent" />
+              <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
                 <div className="relative">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div>
@@ -239,8 +234,7 @@ export default function AddUnit() {
 
               {/* Unit Composition */}
               {selectedUnit.unit_composition && (
-                <div className="relative overflow-hidden rounded-lg border border-stone-700/40 bg-gradient-to-br from-stone-900 to-stone-950 p-3">
-                  <div className="absolute inset-0 bg-gradient-to-br from-stone-500/5 to-transparent" />
+                <div className="relative overflow-hidden rounded-xl border border-stone-700/40 bg-stone-900 p-3">
                   <div className="relative">
                     <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5 text-stone-500" />
@@ -269,7 +263,7 @@ export default function AddUnit() {
                         className={`relative overflow-hidden rounded-lg border p-3 text-center transition-all ${
                           selectedModelTier === idx
                             ? "border-emerald-500/50 bg-emerald-500/10"
-                            : "border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/30"
+                            : "border-stone-700/60 bg-stone-900 hover:border-emerald-500/50"
                         }`}
                       >
                         <div className="text-sm font-bold text-stone-100 font-mono mb-0.5">
@@ -297,7 +291,7 @@ export default function AddUnit() {
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="Enter custom unit name"
-                  className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
@@ -311,7 +305,7 @@ export default function AddUnit() {
                   value={customPoints}
                   onChange={(e) => setCustomPoints(Number(e.target.value))}
                   min="0"
-                  className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
@@ -331,13 +325,12 @@ export default function AddUnit() {
               )}
 
               {/* Total Points Display */}
-              <div className="relative overflow-hidden rounded-lg border border-emerald-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent" />
+              <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
                 <div className="relative flex items-center justify-between">
                   <span className="text-sm font-medium text-stone-300 uppercase tracking-wider">
                     Total Points
                   </span>
-                  <span className="text-2xl font-bold text-emerald-400 font-mono">
+                  <span className="text-2xl font-bold text-amber-400 font-mono">
                     {customPoints}
                   </span>
                 </div>
@@ -352,7 +345,7 @@ export default function AddUnit() {
               <div className="flex gap-3">
                 <button
                   onClick={handleCancel}
-                  className="flex-1 px-6 py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+                  className="flex-1 px-6 py-3 rounded-lg border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
                 >
                   Cancel
                 </button>

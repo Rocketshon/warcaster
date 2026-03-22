@@ -8,16 +8,18 @@ import { formatRecord } from "../../lib/formatText";
 export default function PlayerDetail() {
   const { playerId } = useParams();
   const navigate = useNavigate();
-  const { currentPlayer, campaign, units, getPlayerBattles } = useCrusade();
+  const { currentPlayer, players, campaign, units, getPlayerBattles } = useCrusade();
 
-  // Find player — for now current player is the only one with full data
-  const player = currentPlayer;
+  // Find the requested player — fall back to currentPlayer if it's own profile
   const isOwnProfile = !playerId || playerId === currentPlayer?.id;
+  const player = isOwnProfile
+    ? currentPlayer
+    : players.find(p => p.id === playerId) ?? null;
 
   if (!player) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <p className="text-stone-500">Player not found</p>
+        <p className="text-stone-400">Player not found</p>
       </div>
     );
   }
@@ -25,8 +27,9 @@ export default function PlayerDetail() {
   const factionName = getFactionName(player.faction_id);
   const factionIcon = getFactionIcon(player.faction_id);
 
-  // Supply from units
-  const supplyUsed = units.reduce((sum, u) => sum + u.points_cost, 0);
+  // Supply from units belonging to this player
+  const playerUnits = units.filter(u => u.player_id === player.id);
+  const supplyUsed = playerUnits.reduce((sum, u) => sum + u.points_cost, 0);
   const supplyLimit = campaign?.supply_limit ?? 1000;
 
   // Player battles
@@ -61,10 +64,6 @@ export default function PlayerDetail() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -97,59 +96,47 @@ export default function PlayerDetail() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           {/* Supply */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
-            <div className="relative">
+          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Supply
               </div>
               <div className="text-xl font-bold text-stone-100">
-                {supplyUsed} <span className="text-stone-500 text-sm">/ {supplyLimit}</span>
+                {supplyUsed} <span className="text-stone-400 text-sm">/ {supplyLimit}</span>
               </div>
-            </div>
           </div>
 
           {/* Requisition */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
-            <div className="relative">
+          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Requisition
               </div>
               <div className="text-xl font-bold text-emerald-400">
                 {player.requisition_points}
               </div>
-            </div>
           </div>
 
           {/* Battles */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
-            <div className="relative">
+          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Battles
               </div>
               <div className="text-xl font-bold text-stone-100">
                 {player.battles_played}
               </div>
-            </div>
           </div>
 
           {/* Record — now showing W-L-D */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
-            <div className="relative">
+          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="text-xs text-stone-500 uppercase tracking-wider mb-1">
                 Record
               </div>
               <div className="text-sm font-bold font-mono">
                 <span className="text-emerald-500">{player.battles_won}W</span>
-                <span className="text-stone-500 mx-1">-</span>
+                <span className="text-stone-400 mx-1">-</span>
                 <span className="text-red-500/80">{player.battles_lost}L</span>
-                <span className="text-stone-500 mx-1">-</span>
+                <span className="text-stone-400 mx-1">-</span>
                 <span className="text-amber-400">{player.battles_drawn}D</span>
               </div>
-            </div>
           </div>
         </div>
 
@@ -176,13 +163,13 @@ export default function PlayerDetail() {
           {/* Units List */}
           <div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin">
             {units.length === 0 && (
-              <p className="text-stone-600 text-sm text-center py-4">No units in roster yet.</p>
+              <p className="text-stone-400 text-sm text-center py-4">No units in roster yet.</p>
             )}
             {units.map((unit) => (
               <div
                 key={unit.id}
                 onClick={() => navigate(`/unit/${unit.id}`)}
-                className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 cursor-pointer hover:border-emerald-500/40 transition-all"
+                className="rounded-xl border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
               >
                 <div className="p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -192,7 +179,7 @@ export default function PlayerDetail() {
                       </h3>
                       {/* Datasheet name subtitle — only if different from custom name */}
                       {unit.custom_name !== unit.datasheet_name && (
-                        <p className="text-xs text-stone-500 italic mb-1">
+                        <p className="text-xs text-stone-400 italic mb-1">
                           {unit.datasheet_name}
                         </p>
                       )}
@@ -227,7 +214,7 @@ export default function PlayerDetail() {
           {/* Battles List */}
           <div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin">
             {playerBattles.length === 0 && (
-              <p className="text-stone-600 text-sm text-center py-4">No battles fought yet.</p>
+              <p className="text-stone-400 text-sm text-center py-4">No battles fought yet.</p>
             )}
             {playerBattles.map((battle) => {
               const opponentIcon = resolveOpponentFactionIcon(battle.opponent_faction);
@@ -235,13 +222,13 @@ export default function PlayerDetail() {
                 <div
                   key={battle.id}
                   onClick={() => navigate(`/battle/${battle.id}`)}
-                  className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 cursor-pointer hover:border-emerald-500/40 transition-all"
+                  className="rounded-xl border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
                 >
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs text-stone-500 font-mono">
+                          <span className="text-xs text-stone-400 font-mono">
                             {formatDate(battle.created_at)}
                           </span>
                           <span className={`text-xs font-bold ${getResultColor(battle.result)}`}>
@@ -253,12 +240,12 @@ export default function PlayerDetail() {
                         </h3>
                         {/* Opponent faction with optional icon */}
                         {battle.opponent_faction && (
-                          <p className="text-xs text-stone-500 flex items-center gap-1">
+                          <p className="text-xs text-stone-400 flex items-center gap-1">
                             {opponentIcon && <span>{opponentIcon}</span>}
                             <span>{battle.opponent_faction}</span>
                           </p>
                         )}
-                        <p className="text-xs text-stone-500 italic mt-0.5">
+                        <p className="text-xs text-stone-400 italic mt-0.5">
                           {battle.mission_name}
                         </p>
                       </div>

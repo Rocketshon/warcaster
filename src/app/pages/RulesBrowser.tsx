@@ -94,10 +94,6 @@ export default function RulesBrowser() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -121,7 +117,7 @@ export default function RulesBrowser() {
           <h1 className="text-2xl font-bold text-stone-100 mb-2 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             Rules Browser
           </h1>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Quick reference for all game rules
           </p>
         </div>
@@ -135,7 +131,7 @@ export default function RulesBrowser() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search rules..."
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
           </div>
         </div>
@@ -143,7 +139,7 @@ export default function RulesBrowser() {
         {/* Rules Sections */}
         <div className="space-y-4">
           {/* Core Rules Section */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950">
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
             <button
               onClick={() => toggleSection("core")}
               className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"
@@ -180,12 +176,12 @@ export default function RulesBrowser() {
                       <span className="text-sm text-stone-200">
                         {rule.title}
                       </span>
-                      <ChevronRight className="w-4 h-4 text-stone-600" />
+                      <ChevronRight className="w-4 h-4 text-stone-500" />
                     </div>
                   </button>
                 ))}
                 {filteredCoreRules.length === 0 && (
-                  <div className="p-4 text-center text-sm text-stone-500">
+                  <div className="p-4 text-center text-sm text-stone-400">
                     No rules found
                   </div>
                 )}
@@ -194,7 +190,7 @@ export default function RulesBrowser() {
           </div>
 
           {/* Crusade Rules Section */}
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950">
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
             <button
               onClick={() => toggleSection("crusade")}
               className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"
@@ -231,12 +227,12 @@ export default function RulesBrowser() {
                       <span className="text-sm text-stone-200">
                         {rule.title}
                       </span>
-                      <ChevronRight className="w-4 h-4 text-stone-600" />
+                      <ChevronRight className="w-4 h-4 text-stone-500" />
                     </div>
                   </button>
                 ))}
                 {filteredCrusadeRules.length === 0 && (
-                  <div className="p-4 text-center text-sm text-stone-500">
+                  <div className="p-4 text-center text-sm text-stone-400">
                     No rules found
                   </div>
                 )}
@@ -246,7 +242,7 @@ export default function RulesBrowser() {
 
           {/* Faction Rules Section */}
           {factionRuleItems.length > 0 && (
-            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950">
+            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900">
               <button
                 onClick={() => toggleSection("faction")}
                 className="w-full p-4 flex items-center justify-between hover:bg-emerald-500/5 transition-all"
@@ -290,12 +286,12 @@ export default function RulesBrowser() {
                             </div>
                           )}
                         </div>
-                        <ChevronRight className="w-4 h-4 text-stone-600" />
+                        <ChevronRight className="w-4 h-4 text-stone-500" />
                       </div>
                     </button>
                   ))}
                   {filteredFactionRules.length === 0 && (
-                    <div className="p-4 text-center text-sm text-stone-500">
+                    <div className="p-4 text-center text-sm text-stone-400">
                       No rules found
                     </div>
                   )}
@@ -312,7 +308,7 @@ export default function RulesBrowser() {
           searchQuery.trim() && (
             <div className="text-center py-12 mt-6">
               <BookOpen className="w-16 h-16 text-emerald-500/30 mx-auto mb-4" strokeWidth={1} />
-              <p className="text-stone-500 text-sm">
+              <p className="text-stone-400 text-sm">
                 No rules found matching "{searchQuery}"
               </p>
             </div>

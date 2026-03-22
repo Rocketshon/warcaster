@@ -35,10 +35,6 @@ export default function CampaignHistory() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-2xl mx-auto">
         {/* Back button */}
         <button
@@ -57,25 +53,25 @@ export default function CampaignHistory() {
               Campaign History
             </h1>
           </div>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Your past crusades and battle records
           </p>
         </div>
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="relative overflow-hidden rounded-lg border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-stone-950 p-4">
-            <div className="text-xs text-stone-500 font-semibold mb-1">Total Campaigns</div>
+          <div className="relative overflow-hidden rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-stone-950 p-4">
+            <div className="text-xs text-stone-400 font-semibold mb-1">Total Campaigns</div>
             <div className="text-2xl font-bold text-amber-400">{totalCampaigns}</div>
           </div>
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-4">
-            <div className="text-xs text-stone-500 font-semibold mb-1">Total Battles</div>
+          <div className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-4">
+            <div className="text-xs text-stone-400 font-semibold mb-1">Total Battles</div>
             <div className="text-2xl font-bold text-emerald-400">
               {totalBattles}
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-lg border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
-            <div className="text-xs text-stone-500 font-semibold mb-1">Factions Played</div>
+          <div className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
+            <div className="text-xs text-stone-400 font-semibold mb-1">Factions Played</div>
             <div className="text-2xl font-bold text-purple-400">
               {factionsPlayed}
             </div>
@@ -93,9 +89,8 @@ export default function CampaignHistory() {
               <button
                 key={campaign.id}
                 onClick={() => handleCampaignClick(campaign.id)}
-                className="w-full relative overflow-hidden rounded-lg border border-amber-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all group"
+                className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-amber-500/5 to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="relative p-4">
                   {/* Campaign Name */}
@@ -108,8 +103,8 @@ export default function CampaignHistory() {
 
                   {/* Date Range */}
                   <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-4 h-4 text-stone-600" />
-                    <span className="text-sm text-stone-500">
+                    <Calendar className="w-4 h-4 text-stone-500" />
+                    <span className="text-sm text-stone-400">
                       {formatDate(campaign.start_date)} – {formatDate(campaign.end_date)}
                     </span>
                   </div>
@@ -148,10 +143,10 @@ export default function CampaignHistory() {
         {campaignHistory.length === 0 && (
           <div className="text-center py-12">
             <Scroll className="w-16 h-16 text-stone-700 mx-auto mb-4" strokeWidth={1.5} />
-            <h2 className="text-xl font-bold text-stone-600 mb-2">
+            <h2 className="text-xl font-bold text-stone-500 mb-2">
               No Past Campaigns
             </h2>
-            <p className="text-stone-600 text-sm">
+            <p className="text-stone-500 text-sm">
               Your campaign history will appear here once you complete your first crusade.
             </p>
           </div>

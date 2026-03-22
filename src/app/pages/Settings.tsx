@@ -160,10 +160,6 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       {/* Hidden file input for import */}
       <input
         ref={fileInputRef}
@@ -188,7 +184,7 @@ export default function Settings() {
           <h1 className="text-3xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             Settings
           </h1>
-          <p className="text-stone-500 text-sm mt-1">Manage your campaign and app preferences</p>
+          <p className="text-stone-400 text-sm mt-1">Manage your campaign and app preferences</p>
         </div>
 
         {/* Profile Section */}
@@ -196,7 +192,7 @@ export default function Settings() {
           <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
             Profile
           </h2>
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-5">
             {/* Avatar and Name */}
             <div className="flex items-center gap-4 mb-5">
               {/* Avatar Circle */}
@@ -244,10 +240,10 @@ export default function Settings() {
                         }}
                         className="p-1 rounded hover:bg-stone-800 transition-colors"
                       >
-                        <Pencil className="w-4 h-4 text-stone-500" />
+                        <Pencil className="w-4 h-4 text-stone-400" />
                       </button>
                     </div>
-                    <p className="text-sm text-stone-500 mt-1">{userEmail}</p>
+                    <p className="text-sm text-stone-400 mt-1">{userEmail}</p>
                   </div>
                 )}
               </div>
@@ -256,7 +252,7 @@ export default function Settings() {
             {/* Sign Out Button */}
             <button
               onClick={() => setShowSignOutDialog(true)}
-              className="w-full relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-xl border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-center gap-3">
                 <LogOut className="w-5 h-5 text-red-500" />
@@ -276,7 +272,7 @@ export default function Settings() {
             <button
               onClick={() => setShowLeaveDialog(true)}
               disabled={!campaign}
-              className="w-full relative overflow-hidden rounded-lg border border-red-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full relative overflow-hidden rounded-xl border border-red-500/20 bg-stone-900 hover:border-red-500/40 hover:bg-red-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -290,7 +286,7 @@ export default function Settings() {
             <button
               onClick={handleShareJoinCode}
               disabled={!campaign}
-              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -306,14 +302,14 @@ export default function Settings() {
             {/* Campaign History */}
             <button
               onClick={() => navigate("/campaign-history")}
-              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Database className="w-5 h-5 text-emerald-500" />
                   <span className="text-stone-300 font-semibold">Campaign History</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-stone-600 group-hover:text-emerald-500 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
               </div>
             </button>
           </div>
@@ -326,7 +322,7 @@ export default function Settings() {
           </h2>
           <div className="space-y-2">
             {/* Dark Mode Toggle */}
-            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
+            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {darkMode ? (
@@ -339,7 +335,7 @@ export default function Settings() {
                 <button
                   onClick={handleToggleDarkMode}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    darkMode ? "bg-emerald-600" : "bg-stone-700"
+                    darkMode ? "bg-amber-500" : "bg-stone-700"
                   }`}
                 >
                   <div
@@ -352,7 +348,7 @@ export default function Settings() {
             </div>
 
             {/* Font Size Slider */}
-            <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4">
+            <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-4">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-stone-300 font-semibold">Font Size</span>
@@ -388,7 +384,7 @@ export default function Settings() {
             {/* Export Crusade Data */}
             <button
               onClick={handleExportData}
-              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -404,7 +400,7 @@ export default function Settings() {
             {/* Import Crusade Data */}
             <button
               onClick={handleImportData}
-              className="w-full relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group p-4"
+              className="w-full relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -418,18 +414,18 @@ export default function Settings() {
             </button>
 
             {/* Database Stats */}
-            <div className="relative overflow-hidden rounded-lg border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
+            <div className="relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4">
               <div className="flex items-start gap-3">
                 <Database className="w-5 h-5 text-purple-400 mt-0.5" />
                 <div className="flex-1">
                   <h3 className="text-stone-300 font-semibold mb-2">Database Statistics</h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-stone-500">Factions:</span>
+                      <span className="text-stone-400">Factions:</span>
                       <span className="text-stone-400 font-mono">{dbStats.factionCount}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-stone-500">Datasheets:</span>
+                      <span className="text-stone-400">Datasheets:</span>
                       <span className="text-stone-400 font-mono">{dbStats.datasheetCount.toLocaleString()}</span>
                     </div>
                   </div>
@@ -444,21 +440,21 @@ export default function Settings() {
           <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
             About
           </h2>
-          <div className="relative overflow-hidden rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-5">
+          <div className="relative overflow-hidden rounded-xl border border-stone-700/60 bg-stone-900 p-5">
             <div className="flex items-start gap-3 mb-4">
               <Info className="w-5 h-5 text-emerald-500 mt-0.5" />
               <div className="flex-1">
                 <h3 className="text-stone-200 font-bold text-lg mb-1">
                   Crusade Commander
                 </h3>
-                <p className="text-stone-500 text-xs font-mono">Version 1.0.0 (Build 2026.03)</p>
+                <p className="text-stone-400 text-xs font-mono">Version 1.0.0 (Build 2026.03)</p>
               </div>
             </div>
 
             <div className="space-y-3 text-sm">
               <div>
                 <h4 className="text-stone-400 font-semibold mb-1">Credits</h4>
-                <p className="text-stone-500 text-xs leading-relaxed">
+                <p className="text-stone-400 text-xs leading-relaxed">
                   Designed and developed for the Warhammer 40,000 Crusade gaming community.
                   Built with React, TypeScript, and Tailwind CSS.
                 </p>
@@ -466,7 +462,7 @@ export default function Settings() {
 
               <div>
                 <h4 className="text-stone-400 font-semibold mb-1">Disclaimer</h4>
-                <p className="text-stone-500 text-xs leading-relaxed">
+                <p className="text-stone-400 text-xs leading-relaxed">
                   This is an unofficial fan-made app. Warhammer 40,000 is a registered trademark
                   of Games Workshop Limited. All rights reserved to their respective owners.
                   This app is not affiliated with, endorsed by, or sponsored by Games Workshop.
@@ -475,7 +471,7 @@ export default function Settings() {
 
               <div>
                 <h4 className="text-stone-400 font-semibold mb-1">Data Sources</h4>
-                <p className="text-stone-500 text-xs leading-relaxed">
+                <p className="text-stone-400 text-xs leading-relaxed">
                   Game rules and statistics are provided for reference purposes only.
                   Always refer to official rulebooks and errata for tournament play.
                 </p>
@@ -488,7 +484,7 @@ export default function Settings() {
       {/* Leave Campaign Confirmation Dialog */}
       {showLeaveDialog && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-          <div className="relative w-full max-w-md rounded-lg border border-red-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-6 shadow-2xl">
+          <div className="relative w-full max-w-md rounded-xl border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
@@ -502,7 +498,7 @@ export default function Settings() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowLeaveDialog(false)}
-                className="flex-1 px-4 py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
               >
                 Cancel
               </button>
@@ -520,7 +516,7 @@ export default function Settings() {
       {/* Sign Out Confirmation Dialog */}
       {showSignOutDialog && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-          <div className="relative w-full max-w-md rounded-lg border border-red-500/30 bg-gradient-to-br from-stone-900 to-stone-950 p-6 shadow-2xl">
+          <div className="relative w-full max-w-md rounded-xl border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
@@ -534,7 +530,7 @@ export default function Settings() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowSignOutDialog(false)}
-                className="flex-1 px-4 py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl border border-stone-700/60 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 transition-all"
               >
                 Cancel
               </button>

@@ -127,12 +127,12 @@ export function buildCheatSheet(
 ): PhaseSection[] {
   const entries: CheatSheetEntry[] = [];
   const dataFactionId = getDataFactionId(factionId);
-  const factionRules = FACTION_RULES[dataFactionId];
+  const factionRules = FACTION_RULES[dataFactionId] ?? null;
   const allDatasheets = UNITS[dataFactionId] ?? [];
 
   // 1. Detachment stratagems
   if (factionRules && detachmentId) {
-    const detachment = factionRules.detachments.find(d => d.name === detachmentId);
+    const detachment = factionRules.detachments?.find(d => d.name === detachmentId);
     if (detachment) {
       // Add detachment rule as a command-phase entry
       if (detachment.rule?.text) {

@@ -62,7 +62,7 @@ export default function TacticalCheatSheet() {
   const factionName = getFactionName(currentPlayer.faction_id);
   const dataFactionId = getDataFactionId(currentPlayer.faction_id);
   const factionRules = getRulesForFaction(dataFactionId);
-  const detachment = factionRules?.detachments.find(d => d.name === currentPlayer.detachment_id);
+  const detachment = factionRules?.detachments?.find(d => d.name === currentPlayer.detachment_id) ?? null;
 
   const currentSection = cheatSheet.find(s => s.phase === activePhase);
   const totalEntries = (s: PhaseSection) =>
@@ -79,9 +79,6 @@ export default function TacticalCheatSheet() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-hidden pb-24">
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/8 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto p-6">
         {/* Header */}
         <button
@@ -96,10 +93,10 @@ export default function TacticalCheatSheet() {
           <h1 className="text-xl font-bold text-stone-100 tracking-wider mb-1">
             Tactical Cheat Sheet
           </h1>
-          <p className="text-stone-500 text-xs">
+          <p className="text-stone-400 text-xs">
             {factionName} — {detachment?.name ?? 'No Detachment'}
           </p>
-          <p className="text-stone-600 text-[10px] mt-1 italic">
+          <p className="text-stone-500 text-[10px] mt-1 italic">
             Non-prescriptive — these are available options, not instructions
           </p>
         </div>
@@ -118,13 +115,13 @@ export default function TacticalCheatSheet() {
                 className={`flex-shrink-0 flex flex-col items-center gap-0.5 px-3 py-2 rounded-lg border transition-all text-xs ${
                   isActive
                     ? PHASE_COLORS[phase] + ' border-opacity-60'
-                    : 'text-stone-500 border-stone-800/50 bg-stone-950/50 hover:border-stone-700'
+                    : 'text-stone-400 border-stone-800/50 bg-stone-950/50 hover:border-stone-700'
                 }`}
               >
                 <span className="text-sm">{PHASE_ICONS[phase]}</span>
                 <span className="font-medium capitalize">{phase}</span>
                 {count > 0 && (
-                  <span className={`text-[10px] font-mono ${isActive ? '' : 'text-stone-600'}`}>
+                  <span className={`text-[10px] font-mono ${isActive ? '' : 'text-stone-500'}`}>
                     {count}
                   </span>
                 )}
@@ -178,7 +175,7 @@ export default function TacticalCheatSheet() {
             {/* Empty state */}
             {totalEntries(currentSection) === 0 && (
               <div className="text-center py-12">
-                <p className="text-stone-600 text-sm">
+                <p className="text-stone-500 text-sm">
                   No triggers available for this phase
                 </p>
               </div>
@@ -218,7 +215,7 @@ function TimingSection({
         <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wider">
           {title}
         </h2>
-        <span className="text-[10px] text-stone-600 font-mono">({entries.length})</span>
+        <span className="text-[10px] text-stone-500 font-mono">({entries.length})</span>
       </div>
       <div className="space-y-2">
         {entries.map((entry, i) => (
@@ -266,7 +263,7 @@ function EntryCard({
 
   return (
     <div
-      className={`rounded-lg border bg-gradient-to-br from-stone-900 to-stone-950 overflow-hidden transition-all ${PHASE_ACCENT[phase]}`}
+      className={`rounded-xl border bg-stone-900 overflow-hidden transition-all ${PHASE_ACCENT[phase]}`}
     >
       {/* Header - always visible */}
       <button
@@ -275,9 +272,9 @@ function EntryCard({
       >
         <div className="mt-0.5">
           {isExpanded ? (
-            <ChevronDown className="w-3.5 h-3.5 text-stone-500" />
+            <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
           ) : (
-            <ChevronRight className="w-3.5 h-3.5 text-stone-500" />
+            <ChevronRight className="w-3.5 h-3.5 text-stone-400" />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -304,7 +301,7 @@ function EntryCard({
                 </span>
               ))}
               {entry.sourceUnits.length > 3 && (
-                <span className="text-[10px] text-stone-600">
+                <span className="text-[10px] text-stone-500">
                   +{entry.sourceUnits.length - 3} more
                 </span>
               )}
@@ -334,12 +331,12 @@ function EntryCard({
             <DetailRow label="Details" value={entry.description} />
           )}
           {entry.detachment && (
-            <p className="text-[10px] text-stone-600 italic">
+            <p className="text-[10px] text-stone-500 italic">
               Source: {entry.detachment}
             </p>
           )}
           {entry.stratagemType && (
-            <p className="text-[10px] text-stone-600 italic">
+            <p className="text-[10px] text-stone-500 italic">
               Type: {entry.stratagemType}
             </p>
           )}

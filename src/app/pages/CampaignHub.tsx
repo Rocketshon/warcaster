@@ -43,9 +43,16 @@ function pickWeightedQuote(lastQuote: string): string {
 
 export default function CampaignHub() {
   const navigate = useNavigate();
-  const { campaign, currentPlayer } = useCrusade();
+  const { user, campaign, currentPlayer } = useCrusade();
   const [quote, setQuote] = useState(() => pickWeightedQuote(""));
   const [fade, setFade] = useState(true);
+
+  // Redirect to sign-in if no user is logged in
+  useEffect(() => {
+    if (!user) {
+      navigate("/sign-in", { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,10 +67,6 @@ export default function CampaignHub() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-between p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full blur-[100px] pointer-events-none" />
-
       {/* Content container */}
       <div className="relative z-10 flex flex-col items-center justify-center flex-1 w-full max-w-md">
         {/* Logo/Title section */}
@@ -95,7 +98,7 @@ export default function CampaignHub() {
             onClick={() => navigate("/campaign/active")}
             className="group w-full relative overflow-hidden mb-4"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/40 to-stone-950 border border-emerald-500/30 rounded-lg transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]" />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]" style={{ borderLeftWidth: '4px', borderLeftColor: 'rgb(245, 158, 11)' }} />
             <div className="relative px-6 py-5 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="text-xs text-emerald-500/70 uppercase tracking-wider mb-1">
@@ -121,8 +124,7 @@ export default function CampaignHub() {
             onClick={() => navigate('/create-campaign')}
             className="group w-full relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg transition-all duration-300 group-hover:border-emerald-500/40 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
             <div className="relative px-6 py-6 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="flex items-center gap-3 mb-1">
@@ -131,7 +133,7 @@ export default function CampaignHub() {
                     {campaign ? 'New Campaign' : 'Create Campaign'}
                   </h3>
                 </div>
-                <p className="text-stone-500 text-sm ml-8">
+                <p className="text-stone-400 text-sm ml-8">
                   Forge a new crusade and lead your forces
                 </p>
               </div>
@@ -145,8 +147,7 @@ export default function CampaignHub() {
             onClick={() => navigate('/join-campaign')}
             className="group w-full relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg transition-all duration-300 group-hover:border-emerald-500/40 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
+            <div className="absolute inset-0 bg-stone-900 border border-stone-700/60 rounded-xl transition-all duration-300 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]" />
             <div className="relative px-6 py-6 flex items-center justify-between">
               <div className="flex-1 text-left">
                 <div className="flex items-center gap-3 mb-1">
@@ -155,7 +156,7 @@ export default function CampaignHub() {
                     Join Campaign
                   </h3>
                 </div>
-                <p className="text-stone-500 text-sm ml-8">
+                <p className="text-stone-400 text-sm ml-8">
                   Answer the call and join an existing crusade
                 </p>
               </div>
@@ -168,7 +169,7 @@ export default function CampaignHub() {
 
       {/* Bottom rotating quote */}
       <div className="relative z-10 mt-8 text-center">
-        <div className="flex items-center justify-center gap-2 text-stone-600 text-xs tracking-wider">
+        <div className="flex items-center justify-center gap-2 text-stone-500 text-xs tracking-wider">
           <div className="w-8 h-px bg-gradient-to-r from-transparent to-stone-700" />
           <span
             className={`uppercase italic max-w-xs text-center transition-opacity duration-400 ${fade ? "opacity-100" : "opacity-0"}`}

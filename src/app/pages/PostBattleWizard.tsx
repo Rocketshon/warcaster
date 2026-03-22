@@ -215,7 +215,7 @@ export default function PostBattleWizard() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <div className="text-center">
-          <p className="text-stone-500 mb-4">No recent battle to process.</p>
+          <p className="text-stone-400 mb-4">No recent battle to process.</p>
           <button
             onClick={() => navigate("/campaign/active")}
             className="px-6 py-3 rounded-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 text-black"
@@ -229,12 +229,9 @@ export default function PostBattleWizard() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col min-h-screen">
         {/* Header with progress */}
-        <div className="p-6 pb-4 border-b border-emerald-500/20">
+        <div className="p-6 pb-4 border-b border-stone-700/60">
           <button
             onClick={() => currentStep === 1 ? navigate(-1) : goToPreviousStep()}
             className="flex items-center gap-2 text-stone-400 hover:text-emerald-500 transition-colors mb-4"
@@ -253,8 +250,8 @@ export default function PostBattleWizard() {
                       step.number < currentStep
                         ? "bg-emerald-500 text-black"
                         : step.number === currentStep
-                        ? "bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]"
-                        : "bg-stone-800 text-stone-600"
+                        ? "bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+                        : "bg-stone-800 text-stone-500"
                     }`}
                   >
                     {step.number < currentStep ? (
@@ -265,7 +262,7 @@ export default function PostBattleWizard() {
                   </div>
                   <span
                     className={`text-[10px] mt-1 ${
-                      step.number === currentStep ? "text-emerald-400" : "text-stone-600"
+                      step.number === currentStep ? "text-amber-400" : "text-stone-500"
                     }`}
                   >
                     {step.name}
@@ -291,7 +288,7 @@ export default function PostBattleWizard() {
               <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-2">
                 Mark Casualties
               </h1>
-              <p className="text-stone-500 text-sm mb-6">
+              <p className="text-stone-400 text-sm mb-6">
                 Which of your units were destroyed during the battle?
               </p>
 
@@ -304,10 +301,10 @@ export default function PostBattleWizard() {
                     <button
                       key={unit.id}
                       onClick={() => toggleDestroyed(unit.id)}
-                      className={`w-full rounded-lg border transition-all p-4 text-left ${
+                      className={`w-full rounded-xl border transition-all p-4 text-left ${
                         isDestroyed
                           ? "border-red-500/40 bg-gradient-to-br from-red-950/40 to-stone-950"
-                          : "border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 hover:border-emerald-500/40"
+                          : "border-stone-700/60 bg-stone-900 hover:border-emerald-500/50"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -349,7 +346,7 @@ export default function PostBattleWizard() {
               <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-2">
                 Award Experience
               </h1>
-              <p className="text-stone-500 text-sm mb-6">
+              <p className="text-stone-400 text-sm mb-6">
                 XP is automatically calculated based on battle participation
               </p>
 
@@ -362,7 +359,7 @@ export default function PostBattleWizard() {
                   return (
                     <div
                       key={unit.id}
-                      className="rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 p-4"
+                      className="rounded-xl border border-stone-700/60 bg-stone-900 p-4"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <h3 className="font-semibold text-stone-300">{unit.custom_name}</h3>
@@ -375,11 +372,11 @@ export default function PostBattleWizard() {
                       </div>
 
                       <div className="space-y-1 text-xs mb-3">
-                        <div className="flex justify-between text-stone-500">
+                        <div className="flex justify-between text-stone-400">
                           <span>+1 Participated</span>
                         </div>
                         {!state.destroyed && (
-                          <div className="flex justify-between text-stone-500">
+                          <div className="flex justify-between text-stone-400">
                             <span>+1 Survived</span>
                           </div>
                         )}
@@ -389,7 +386,7 @@ export default function PostBattleWizard() {
                           </div>
                         )}
                         {battleWon && (
-                          <div className="flex justify-between text-stone-500">
+                          <div className="flex justify-between text-stone-400">
                             <span>+1 Won Battle</span>
                           </div>
                         )}
@@ -420,15 +417,15 @@ export default function PostBattleWizard() {
               <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-2">
                 Battle Scars
               </h1>
-              <p className="text-stone-500 text-sm mb-6">
+              <p className="text-stone-400 text-sm mb-6">
                 Destroyed units must test for battle scars
               </p>
 
               {destroyedUnits.length === 0 ? (
-                <div className="rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-6 text-center">
+                <div className="rounded-xl border border-emerald-500/30 bg-stone-900 p-6 text-center">
                   <Check className="w-12 h-12 text-emerald-500 mx-auto mb-3" strokeWidth={1.5} />
                   <h3 className="text-lg font-semibold text-emerald-400 mb-2">No Casualties</h3>
-                  <p className="text-stone-500 text-sm">No scars to assign this battle</p>
+                  <p className="text-stone-400 text-sm">No scars to assign this battle</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -440,7 +437,7 @@ export default function PostBattleWizard() {
                     return (
                       <div
                         key={unit.id}
-                        className="rounded-lg border border-red-500/30 bg-gradient-to-br from-red-950/20 to-stone-950 p-4"
+                        className="rounded-xl border border-red-500/30 bg-stone-900 p-4"
                       >
                         <div className="flex items-center gap-2 mb-3">
                           <Skull className="w-4 h-4 text-red-500" />
@@ -450,7 +447,7 @@ export default function PostBattleWizard() {
                         <div className="relative">
                           <button
                             onClick={() => setScarPickerOpen(scarPickerOpen === unit.id ? null : unit.id)}
-                            className="w-full rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 px-4 py-3 text-left hover:border-emerald-500/40 transition-all flex items-center justify-between"
+                            className="w-full rounded-xl border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
                           >
                             {selectedScar ? (
                               <div>
@@ -458,13 +455,13 @@ export default function PostBattleWizard() {
                                 <p className="text-xs text-stone-500 mt-1">{selectedScar.description}</p>
                               </div>
                             ) : (
-                              <span className="text-stone-600">Assign Battle Scar...</span>
+                              <span className="text-stone-500">Assign Battle Scar...</span>
                             )}
                             <ChevronDown className="w-5 h-5 text-stone-500" />
                           </button>
 
                           {scarPickerOpen === unit.id && (
-                            <div className="absolute z-10 w-full mt-2 bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg overflow-hidden shadow-2xl">
+                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-xl overflow-hidden shadow-2xl">
                               {BATTLE_SCARS.map((scar) => (
                                 <button
                                   key={scar.id}
@@ -496,15 +493,15 @@ export default function PostBattleWizard() {
               <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-2">
                 Battle Honors
               </h1>
-              <p className="text-stone-500 text-sm mb-6">
+              <p className="text-stone-400 text-sm mb-6">
                 Units that ranked up may select a battle honor
               </p>
 
               {rankedUpUnits.length === 0 ? (
-                <div className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-6 text-center">
-                  <Award className="w-12 h-12 text-stone-600 mx-auto mb-3" strokeWidth={1.5} />
-                  <h3 className="text-lg font-semibold text-stone-500 mb-2">No Rank Ups</h3>
-                  <p className="text-stone-600 text-sm">No units ranked up this battle</p>
+                <div className="rounded-xl border border-stone-700/50 bg-stone-900 p-6 text-center">
+                  <Award className="w-12 h-12 text-stone-500 mx-auto mb-3" strokeWidth={1.5} />
+                  <h3 className="text-lg font-semibold text-stone-400 mb-2">No Rank Ups</h3>
+                  <p className="text-stone-500 text-sm">No units ranked up this battle</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -517,7 +514,7 @@ export default function PostBattleWizard() {
                     return (
                       <div
                         key={unit.id}
-                        className="rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-4"
+                        className="rounded-xl border border-emerald-500/30 bg-stone-900 p-4"
                       >
                         <div className="flex items-center gap-2 mb-3">
                           <Award className="w-4 h-4 text-amber-400" />
@@ -530,7 +527,7 @@ export default function PostBattleWizard() {
                         <div className="relative">
                           <button
                             onClick={() => setHonorPickerOpen(honorPickerOpen === unit.id ? null : unit.id)}
-                            className="w-full rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 px-4 py-3 text-left hover:border-emerald-500/40 transition-all flex items-center justify-between"
+                            className="w-full rounded-xl border border-stone-700/60 bg-stone-900 px-4 py-3 text-left hover:border-emerald-500/50 transition-all flex items-center justify-between"
                           >
                             {selectedHonor ? (
                               <div>
@@ -543,13 +540,13 @@ export default function PostBattleWizard() {
                                 <p className="text-xs text-stone-500">{selectedHonor.description}</p>
                               </div>
                             ) : (
-                              <span className="text-stone-600">Select Battle Honor...</span>
+                              <span className="text-stone-500">Select Battle Honor...</span>
                             )}
                             <ChevronDown className="w-5 h-5 text-stone-500" />
                           </button>
 
                           {honorPickerOpen === unit.id && (
-                            <div className="absolute z-10 w-full mt-2 bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg overflow-hidden shadow-2xl max-h-80 overflow-y-auto">
+                            <div className="absolute z-10 w-full mt-2 bg-stone-900 border border-stone-700/60 rounded-xl overflow-hidden shadow-2xl max-h-80 overflow-y-auto">
                               {BATTLE_HONORS.map((honor) => (
                                 <button
                                   key={honor.id}
@@ -586,28 +583,28 @@ export default function PostBattleWizard() {
               <h1 className="text-2xl font-bold text-stone-100 tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] mb-2">
                 Battle Complete
               </h1>
-              <p className="text-stone-500 text-sm mb-6">
+              <p className="text-stone-400 text-sm mb-6">
                 Crusade updated successfully
               </p>
 
               {/* Campaign stats */}
-              <div className="rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 to-stone-950 p-5 mb-6">
+              <div className="rounded-xl border border-emerald-500/30 bg-stone-900 p-5 mb-6">
                 <h3 className="text-sm font-semibold text-stone-400 uppercase tracking-wider mb-3">
                   Campaign Update
                 </h3>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-stone-500 text-sm">New Record:</span>
+                    <span className="text-stone-400 text-sm">New Record:</span>
                     <span className="text-stone-300 font-semibold">
                       {currentPlayer?.battles_won ?? 0}W - {currentPlayer?.battles_lost ?? 0}L - {currentPlayer?.battles_drawn ?? 0}D
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-stone-500 text-sm">RP Gained:</span>
+                    <span className="text-stone-400 text-sm">RP Gained:</span>
                     <span className="text-emerald-400 font-bold">+{battleWon ? 1 : 0}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-stone-500 text-sm">Current RP:</span>
+                    <span className="text-stone-400 text-sm">Current RP:</span>
                     <span className="text-stone-300 font-bold">{currentPlayer?.requisition_points ?? 0}</span>
                   </div>
                 </div>
@@ -625,7 +622,7 @@ export default function PostBattleWizard() {
                   if (!state) return null;
                   const newRankColor = getRankColor(getRankFromXP(state.newTotalXP));
                   return (
-                    <div key={unit.id} className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-3">
+                    <div key={unit.id} className="rounded-xl border border-stone-700/50 bg-stone-900 p-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="font-semibold text-stone-300 text-sm">{unit.custom_name}</p>
@@ -669,7 +666,7 @@ export default function PostBattleWizard() {
         </div>
 
         {/* Bottom button */}
-        <div className="p-6 pt-4 border-t border-emerald-500/20">
+        <div className="p-6 pt-4 border-t border-stone-700/60">
           {currentStep < 5 ? (
             <button
               onClick={goToNextStep}

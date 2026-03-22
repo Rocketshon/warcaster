@@ -43,9 +43,6 @@ export default function CreateCampaign() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -64,7 +61,7 @@ export default function CreateCampaign() {
               Create Campaign
             </h1>
           </div>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Start a new Crusade campaign
           </p>
         </div>
@@ -81,7 +78,7 @@ export default function CreateCampaign() {
               value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
               placeholder="War for Armageddon"
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
           </div>
 
@@ -95,9 +92,9 @@ export default function CreateCampaign() {
               value={supplyLimit}
               onChange={(e) => setSupplyLimit(parseInt(e.target.value) || 0)}
               min={0}
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
-            <p className="text-xs text-stone-600 mt-1">Maximum points for armies</p>
+            <p className="text-xs text-stone-500 mt-1">Maximum points for armies</p>
           </div>
 
           {/* Starting Requisition */}
@@ -111,9 +108,9 @@ export default function CreateCampaign() {
               onChange={(e) => setStartingRequisition(parseInt(e.target.value) || 0)}
               min={0}
               max={20}
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
-            <p className="text-xs text-stone-600 mt-1">Points available for requisitions</p>
+            <p className="text-xs text-stone-500 mt-1">Points available for requisitions</p>
           </div>
 
           {/* Divider */}
@@ -135,7 +132,7 @@ export default function CreateCampaign() {
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
                 placeholder="Commander Name"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
@@ -146,7 +143,7 @@ export default function CreateCampaign() {
               </label>
               <button
                 onClick={() => setShowFactionPicker(true)}
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-left hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-left hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
                 {selectedFaction ? (
                   <div className="flex items-center gap-3">
@@ -154,7 +151,7 @@ export default function CreateCampaign() {
                     <span className="text-stone-300 font-semibold">{selectedFaction.name}</span>
                   </div>
                 ) : (
-                  <span className="text-stone-600">Select your faction...</span>
+                  <span className="text-stone-500">Select your faction...</span>
                 )}
               </button>
             </div>
@@ -167,7 +164,7 @@ export default function CreateCampaign() {
             className={`w-full py-4 rounded-lg font-bold transition-all mt-8 ${
               isFormValid
                 ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                : "bg-stone-800 text-stone-600 cursor-not-allowed"
+                : "bg-stone-800 text-stone-500 cursor-not-allowed"
             }`}
           >
             Create Campaign

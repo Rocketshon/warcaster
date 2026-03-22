@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Skull, Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { findCredential, hashPassword } from "../../lib/storage";
 import { toast } from "sonner";
 
 export default function SignIn() {
@@ -19,7 +20,9 @@ export default function SignIn() {
   // Validation
   const isFormValid = email.trim() && password.trim();
 
-  const handleSignIn = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSignIn = async () => {
     setErrorMessage("");
 
     // Validate
@@ -32,24 +35,32 @@ export default function SignIn() {
       return;
     }
 
-    // Check if a user exists in localStorage with matching email
-    const storedUser = localStorage.getItem("crusade_user");
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed.email?.toLowerCase() === email.toLowerCase().trim()) {
-          // Sign in successful
-          setUser(parsed);
-          navigate("/home");
-          return;
-        }
-      } catch {
-        // invalid stored data, fall through
-      }
+    const normalizedEmail = email.toLowerCase().trim();
+    const credential = findCredential(normalizedEmail);
+
+    if (!credential) {
+      setErrorMessage("Account not found. Please check your email or sign up.");
+      return;
     }
 
-    // No matching user found
-    setErrorMessage("Account not found. Please check your email or sign up.");
+    setIsSubmitting(true);
+
+    // Verify password
+    const inputHash = await hashPassword(password);
+    if (inputHash !== credential.passwordHash) {
+      setIsSubmitting(false);
+      setErrorMessage("Incorrect password. Please try again.");
+      return;
+    }
+
+    // Sign in successful
+    setUser({
+      id: credential.userId,
+      email: normalizedEmail,
+      display_name: normalizedEmail.split("@")[0],
+    });
+    setIsSubmitting(false);
+    navigate("/home");
   };
 
   const handleGoogleSignIn = () => {
@@ -66,10 +77,6 @@ export default function SignIn() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col justify-center min-h-screen py-12">
         {/* Logo & Header */}
         <div className="text-center mb-8">
@@ -79,7 +86,7 @@ export default function SignIn() {
               Crusade Command
             </h1>
           </div>
-          <p className="text-stone-500 text-sm tracking-wide">
+          <p className="text-stone-400 text-sm tracking-wide">
             Return to the battlefield
           </p>
         </div>
@@ -114,7 +121,7 @@ export default function SignIn() {
                   setErrorMessage("");
                 }}
                 placeholder="commander@imperium.com"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           </div>
@@ -134,12 +141,12 @@ export default function SignIn() {
                   setErrorMessage("");
                 }}
                 placeholder="Enter your password"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-500 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-500 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -152,7 +159,7 @@ export default function SignIn() {
             <div className="mt-2 text-right">
               <button
                 onClick={handleForgotPassword}
-                className="text-xs text-stone-500 hover:text-emerald-500 transition-colors"
+                className="text-xs text-stone-400 hover:text-emerald-500 transition-colors"
               >
                 Forgot password?
               </button>
@@ -162,14 +169,14 @@ export default function SignIn() {
           {/* Sign In Button */}
           <button
             onClick={handleSignIn}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             className={`w-full py-4 rounded-lg font-bold transition-all mt-2 ${
-              isFormValid
+              isFormValid && !isSubmitting
                 ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
                 : "bg-stone-800 text-stone-600 cursor-not-allowed"
             }`}
           >
-            Sign In
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
 
           {/* Divider */}
@@ -178,7 +185,7 @@ export default function SignIn() {
               <div className="w-full border-t border-stone-800"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black px-3 text-stone-600 font-semibold tracking-wider">
+              <span className="bg-black px-3 text-stone-500 font-semibold tracking-wider">
                 Or
               </span>
             </div>
@@ -187,7 +194,7 @@ export default function SignIn() {
           {/* OAuth Buttons */}
           <button
             onClick={handleGoogleSignIn}
-            className="w-full py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-lg border border-stone-600 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -212,7 +219,7 @@ export default function SignIn() {
 
           <button
             onClick={handleAppleSignIn}
-            className="w-full py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-lg border border-stone-600 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
@@ -222,7 +229,7 @@ export default function SignIn() {
 
           {/* Sign Up Link */}
           <div className="text-center pt-6">
-            <p className="text-stone-500 text-sm">
+            <p className="text-stone-400 text-sm">
               Don't have an account?{" "}
               <button
                 onClick={() => navigate("/sign-up")}

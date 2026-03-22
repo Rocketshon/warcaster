@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Skull, Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
-import { generateId } from "../../lib/storage";
+import { generateId, hashPassword, saveCredential, findCredential } from "../../lib/storage";
 import { toast } from "sonner";
 
 export default function SignUp() {
@@ -25,7 +25,9 @@ export default function SignUp() {
   const doPasswordsMatch = password === confirmPassword && confirmPassword.length > 0;
   const isFormValid = isEmailValid && isPasswordValid && doPasswordsMatch;
 
-  const handleCreateAccount = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleCreateAccount = async () => {
     setErrorMessage("");
 
     // Validate
@@ -43,28 +45,27 @@ export default function SignUp() {
     }
 
     // Check if email already in use
-    const storedUser = localStorage.getItem("crusade_user");
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed.email?.toLowerCase() === email.toLowerCase().trim()) {
-          setErrorMessage("Email already in use. Please sign in or use a different email.");
-          return;
-        }
-      } catch {
-        // invalid stored data, continue
-      }
+    const normalizedEmail = email.toLowerCase().trim();
+    const existing = findCredential(normalizedEmail);
+    if (existing) {
+      setErrorMessage("Email already in use. Please sign in or use a different email.");
+      return;
     }
 
-    // Create user object and store in localStorage
+    setIsSubmitting(true);
+
+    // Hash password and store credentials
+    const passwordHash = await hashPassword(password);
     const displayName = email.split("@")[0];
     const newUser = {
       id: generateId(),
-      email: email.trim().toLowerCase(),
+      email: normalizedEmail,
       display_name: displayName,
     };
 
+    saveCredential({ email: normalizedEmail, passwordHash, userId: newUser.id });
     setUser(newUser);
+    setIsSubmitting(false);
 
     // Navigate to home after successful signup
     navigate("/home");
@@ -80,10 +81,6 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col justify-center min-h-screen py-12">
         {/* Logo & Header */}
         <div className="text-center mb-8">
@@ -93,7 +90,7 @@ export default function SignUp() {
               Crusade Command
             </h1>
           </div>
-          <p className="text-stone-500 text-sm tracking-wide">
+          <p className="text-stone-400 text-sm tracking-wide">
             Begin your Crusade
           </p>
         </div>
@@ -128,7 +125,7 @@ export default function SignUp() {
                   setErrorMessage("");
                 }}
                 placeholder="commander@imperium.com"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           </div>
@@ -148,12 +145,12 @@ export default function SignUp() {
                   setErrorMessage("");
                 }}
                 placeholder="Minimum 8 characters"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-500 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-500 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -179,12 +176,12 @@ export default function SignUp() {
                   setErrorMessage("");
                 }}
                 placeholder="Re-enter password"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-12 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-500 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-500 transition-colors"
               >
                 {showConfirmPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -198,14 +195,14 @@ export default function SignUp() {
           {/* Create Account Button */}
           <button
             onClick={handleCreateAccount}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             className={`w-full py-4 rounded-lg font-bold transition-all mt-2 ${
-              isFormValid
+              isFormValid && !isSubmitting
                 ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
                 : "bg-stone-800 text-stone-600 cursor-not-allowed"
             }`}
           >
-            Create Account
+            {isSubmitting ? "Creating..." : "Create Account"}
           </button>
 
           {/* Divider */}
@@ -214,7 +211,7 @@ export default function SignUp() {
               <div className="w-full border-t border-stone-800"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black px-3 text-stone-600 font-semibold tracking-wider">
+              <span className="bg-black px-3 text-stone-500 font-semibold tracking-wider">
                 Or
               </span>
             </div>
@@ -223,7 +220,7 @@ export default function SignUp() {
           {/* OAuth Buttons */}
           <button
             onClick={handleGoogleSignUp}
-            className="w-full py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-lg border border-stone-600 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -248,7 +245,7 @@ export default function SignUp() {
 
           <button
             onClick={handleAppleSignUp}
-            className="w-full py-3 rounded-lg border border-emerald-500/20 bg-gradient-to-br from-stone-900 to-stone-950 text-stone-300 font-semibold hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-lg border border-stone-600 bg-stone-900 text-stone-300 font-semibold hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
@@ -258,7 +255,7 @@ export default function SignUp() {
 
           {/* Sign In Link */}
           <div className="text-center pt-6">
-            <p className="text-stone-500 text-sm">
+            <p className="text-stone-400 text-sm">
               Already have an account?{" "}
               <button
                 onClick={() => navigate("/sign-in")}

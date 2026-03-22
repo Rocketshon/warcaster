@@ -56,9 +56,6 @@ export default function JoinCampaign() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
-      {/* Dark ambient glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -77,7 +74,7 @@ export default function JoinCampaign() {
               Join Campaign
             </h1>
           </div>
-          <p className="text-stone-500 text-sm">
+          <p className="text-stone-400 text-sm">
             Enter a campaign code to join an existing Crusade
           </p>
         </div>
@@ -98,9 +95,9 @@ export default function JoinCampaign() {
               }}
               placeholder="ABC123"
               maxLength={6}
-              className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 text-center text-2xl font-mono tracking-widest placeholder:text-stone-600 placeholder:text-base placeholder:tracking-normal focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all uppercase"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 text-center text-2xl font-mono tracking-widest placeholder:text-stone-500 placeholder:text-base placeholder:tracking-normal focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all uppercase"
             />
-            <p className="text-xs text-stone-600 mt-1 text-center">6-character code from campaign host</p>
+            <p className="text-xs text-stone-500 mt-1 text-center">6-character code from campaign host</p>
           </div>
 
           {/* Error Message Area */}
@@ -135,7 +132,7 @@ export default function JoinCampaign() {
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
                 placeholder="Commander Name"
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
@@ -146,7 +143,7 @@ export default function JoinCampaign() {
               </label>
               <button
                 onClick={() => setShowFactionPicker(true)}
-                className="w-full bg-gradient-to-br from-stone-900 to-stone-950 border border-emerald-500/20 rounded-lg px-4 py-3 text-left hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-left hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
               >
                 {selectedFaction ? (
                   <div className="flex items-center gap-3">
@@ -154,7 +151,7 @@ export default function JoinCampaign() {
                     <span className="text-stone-300 font-semibold">{selectedFaction.name}</span>
                   </div>
                 ) : (
-                  <span className="text-stone-600">Select your faction...</span>
+                  <span className="text-stone-500">Select your faction...</span>
                 )}
               </button>
             </div>
@@ -167,15 +164,15 @@ export default function JoinCampaign() {
             className={`w-full py-4 rounded-lg font-bold transition-all mt-8 ${
               isFormValid
                 ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                : "bg-stone-800 text-stone-600 cursor-not-allowed"
+                : "bg-stone-800 text-stone-500 cursor-not-allowed"
             }`}
           >
             Join Campaign
           </button>
 
           {/* Help Text */}
-          <div className="rounded-lg border border-stone-700/50 bg-gradient-to-br from-stone-900 to-stone-950 p-4 mt-6">
-            <p className="text-xs text-stone-500">
+          <div className="rounded-xl border border-stone-700/60 bg-stone-900 p-4 mt-6">
+            <p className="text-xs text-stone-400">
               <span className="font-semibold text-stone-400">Need a join code?</span> Ask the campaign host to share their 6-character campaign code with you.
             </p>
           </div>
