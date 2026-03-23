@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Swords, ArrowRight } from "lucide-react";
 import { Skull } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useAuth } from "../../lib/AuthContext";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
 import { SpaceMarineHelmet } from "../components/SpaceMarineHelmet";
 
@@ -43,16 +44,17 @@ function pickWeightedQuote(lastQuote: string): string {
 
 export default function CampaignHub() {
   const navigate = useNavigate();
-  const { user, campaign, currentPlayer } = useCrusade();
+  const { campaign, currentPlayer } = useCrusade();
+  const { user, isLoading } = useAuth();
   const [quote, setQuote] = useState(() => pickWeightedQuote(""));
   const [fade, setFade] = useState(true);
 
-  // Redirect to sign-in if no user is logged in
+  // Redirect to sign-in if no user is logged in (wait for auth to finish loading)
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate("/sign-in", { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, isLoading, navigate]);
 
   useEffect(() => {
     const interval = setInterval(() => {

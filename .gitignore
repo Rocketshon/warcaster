@@ -45,3 +45,4 @@ _backup/
 Crusader App Design/
 assets/
 guidelines/
+.claude/settings.local.json

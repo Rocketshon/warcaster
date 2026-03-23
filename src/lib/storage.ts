@@ -154,44 +154,6 @@ export function clearUser(): void {
   localStorage.removeItem(STORAGE_KEYS.USER);
 }
 
-// --- Auth credentials (local-only password verification) ---
-const CREDENTIALS_KEY = 'crusade_credentials';
-
-interface StoredCredential {
-  email: string;
-  passwordHash: string;
-  userId: string;
-}
-
-/** Hash a password using SHA-256 via Web Crypto API */
-export async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-export function saveCredential(cred: StoredCredential): void {
-  const creds = loadCredentials();
-  // Replace existing credential for the same email
-  const idx = creds.findIndex(c => c.email === cred.email);
-  if (idx >= 0) {
-    creds[idx] = cred;
-  } else {
-    creds.push(cred);
-  }
-  safeSetItem(CREDENTIALS_KEY, JSON.stringify(creds));
-}
-
-export function loadCredentials(): StoredCredential[] {
-  return safeGetItem<StoredCredential[]>(CREDENTIALS_KEY, []);
-}
-
-export function findCredential(email: string): StoredCredential | undefined {
-  return loadCredentials().find(c => c.email === email.toLowerCase().trim());
-}
-
 // --- Utilities ---
 export function generateId(): string {
   return crypto.randomUUID();

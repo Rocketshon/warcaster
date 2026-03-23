@@ -1,14 +1,16 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, FactionId, UnitRank } from '../types';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, FactionId } from '../types';
 import * as storage from './storage';
+import * as sync from './sync';
+import { subscribeToCampaign, unsubscribeFromCampaign } from './realtime';
+import { initOfflineQueue, queueMutation, flushQueue } from './offlineQueue';
+import { isSupabaseConfigured } from './supabase';
+import { useAuth } from './AuthContext';
 import { getRankFromXP } from './ranks';
 import { getFactionName, getFactionIcon } from './factions';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface CrusadeState {
-  // Auth
-  user: storage.UserSession | null;
-  setUser: (user: storage.UserSession | null) => void;
-
   // Campaign
   campaign: Campaign | null;
   players: CampaignPlayer[];
@@ -16,7 +18,7 @@ interface CrusadeState {
 
   // Actions — Campaign
   createCampaign: (name: string, supplyLimit: number, startingRp: number, playerName: string, factionId: FactionId) => void;
-  joinCampaign: (code: string, playerName: string, factionId: FactionId) => { success: boolean; error?: string };
+  joinCampaign: (code: string, playerName: string, factionId: FactionId) => Promise<{ success: boolean; error?: string }>;
   leaveCampaign: () => void;
   setDetachment: (detachmentId: string) => void;
 
@@ -47,7 +49,7 @@ interface CrusadeState {
 const CrusadeContext = createContext<CrusadeState | null>(null);
 
 export function CrusadeProvider({ children }: { children: ReactNode }) {
-  const [user, setUserState] = useState<storage.UserSession | null>(() => storage.loadUser());
+  const { user: authUser } = useAuth();
   const [campaign, setCampaign] = useState<Campaign | null>(() => storage.loadCampaign());
   const [currentPlayer, setCurrentPlayer] = useState<CampaignPlayer | null>(() => storage.loadPlayer());
   const [players, setPlayers] = useState<CampaignPlayer[]>([]);
@@ -55,17 +57,105 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   const [battles, setBattles] = useState<Battle[]>(() => storage.loadBattles());
   const [campaignHistory, setCampaignHistory] = useState<storage.ArchivedCampaign[]>(() => storage.loadCampaignHistory());
 
-  // Persist on change
+  const realtimeChannelRef = useRef<RealtimeChannel | null>(null);
+
+  // Persist on change (localStorage cache)
   useEffect(() => { if (campaign) storage.saveCampaign(campaign); }, [campaign]);
   useEffect(() => { if (currentPlayer) storage.savePlayer(currentPlayer); }, [currentPlayer]);
   useEffect(() => { storage.saveUnits(units); }, [units]);
   useEffect(() => { storage.saveBattles(battles); }, [battles]);
 
-  const setUser = useCallback((u: storage.UserSession | null) => {
-    setUserState(u);
-    if (u) storage.saveUser(u);
-    else storage.clearUser();
-  }, []);
+  // Initialize offline queue listener
+  useEffect(() => { initOfflineQueue(); }, []);
+
+  // Pull from cloud on auth change
+  useEffect(() => {
+    if (!authUser?.id || !isSupabaseConfigured()) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const cloudData = await sync.pullCampaignFromCloud(authUser.id);
+        if (cancelled || !cloudData) return;
+        if (cloudData.campaign) {
+          setCampaign(cloudData.campaign);
+          setCurrentPlayer(cloudData.player);
+          setUnits(cloudData.units);
+          setBattles(cloudData.battles);
+          // Load other players in the campaign
+          const { data: allPlayers } = await import('./supabase').then(m =>
+            m.supabase.from('cc_campaign_players').select('*').eq('campaign_id', cloudData.campaign!.id)
+          );
+          if (allPlayers && !cancelled) setPlayers(allPlayers);
+        } else {
+          // No cloud campaign — try to migrate local data
+          const localCampaign = storage.loadCampaign();
+          if (localCampaign) {
+            await sync.migrateLocalData(authUser.id);
+          }
+        }
+        // Flush any pending offline mutations
+        await flushQueue();
+      } catch (err) {
+        console.warn('Cloud sync failed, using local data:', err);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [authUser?.id]);
+
+  // Realtime subscriptions
+  useEffect(() => {
+    if (!campaign?.id || !isSupabaseConfigured()) return;
+
+    const channel = subscribeToCampaign(campaign.id, {
+      onPlayerChange: (payload) => {
+        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+          const updated = payload.new as unknown as CampaignPlayer;
+          setPlayers(prev => {
+            const exists = prev.find(p => p.id === updated.id);
+            if (exists) return prev.map(p => p.id === updated.id ? updated : p);
+            return [...prev, updated];
+          });
+          if (updated.user_id === authUser?.id) {
+            setCurrentPlayer(updated);
+          }
+        }
+      },
+      onBattleChange: (payload) => {
+        if (payload.eventType === 'INSERT') {
+          const newBattle = payload.new as unknown as Battle;
+          setBattles(prev => {
+            if (prev.find(b => b.id === newBattle.id)) return prev;
+            return [newBattle, ...prev];
+          });
+        }
+      },
+      onUnitChange: (payload) => {
+        if (payload.eventType === 'INSERT') {
+          const newUnit = payload.new as unknown as CrusadeUnit;
+          setUnits(prev => {
+            if (prev.find(u => u.id === newUnit.id)) return prev;
+            return [...prev, newUnit];
+          });
+        } else if (payload.eventType === 'UPDATE') {
+          const updated = payload.new as unknown as CrusadeUnit;
+          setUnits(prev => prev.map(u => u.id === updated.id ? updated : u));
+        } else if (payload.eventType === 'DELETE') {
+          const deleted = payload.old as unknown as { id: string };
+          setUnits(prev => prev.filter(u => u.id !== deleted.id));
+        }
+      },
+    });
+    realtimeChannelRef.current = channel;
+
+    return () => {
+      if (realtimeChannelRef.current) {
+        unsubscribeFromCampaign(realtimeChannelRef.current);
+        realtimeChannelRef.current = null;
+      }
+    };
+  }, [campaign?.id, authUser?.id]);
 
   const createCampaign = useCallback((
     name: string, supplyLimit: number, startingRp: number, playerName: string, factionId: FactionId
@@ -78,13 +168,13 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       starting_rp: startingRp,
       created_at: new Date().toISOString(),
       current_round: 1,
-      owner_id: user?.id ?? storage.generateId(),
+      owner_id: authUser?.id ?? storage.generateId(),
     };
 
     const player: CampaignPlayer = {
       id: storage.generateId(),
       campaign_id: newCampaign.id,
-      user_id: user?.id ?? '',
+      user_id: authUser?.id ?? '',
       name: playerName,
       faction_id: factionId,
       supply_used: 0,
@@ -101,18 +191,41 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     setPlayers([player]);
     setUnits([]);
     setBattles([]);
-  }, [user]);
 
-  const joinCampaign = useCallback((code: string, playerName: string, factionId: FactionId) => {
-    // Guard: cannot join if already in a campaign
+    // Push to cloud
+    if (isSupabaseConfigured() && authUser?.id) {
+      sync.createCampaignCloud(newCampaign, player).catch(console.warn);
+    }
+  }, [authUser]);
+
+  const joinCampaign = useCallback(async (code: string, playerName: string, factionId: FactionId): Promise<{ success: boolean; error?: string }> => {
     if (campaign) return { success: false, error: 'Leave your current campaign first.' };
-    // For local-first: check if a campaign with this code exists
+
+    // Try Supabase first (real cross-device join)
+    if (isSupabaseConfigured() && authUser?.id) {
+      const result = await sync.joinCampaignCloud(code, authUser.id, playerName, factionId);
+      if (result.success && result.campaign && result.player) {
+        setCampaign(result.campaign);
+        setCurrentPlayer(result.player);
+        setPlayers(prev => [...prev, result.player!]);
+        // Pull full data
+        const cloudData = await sync.pullCampaignFromCloud(authUser.id);
+        if (cloudData) {
+          setUnits(cloudData.units);
+          setBattles(cloudData.battles);
+        }
+        return { success: true };
+      }
+      if (result.error) return { success: false, error: result.error };
+    }
+
+    // Fallback: local-only join
     const existingCampaign = storage.loadCampaign();
     if (existingCampaign && existingCampaign.join_code === code.toUpperCase()) {
       const player: CampaignPlayer = {
         id: storage.generateId(),
         campaign_id: existingCampaign.id,
-        user_id: user?.id ?? '',
+        user_id: authUser?.id ?? '',
         name: playerName,
         faction_id: factionId,
         supply_used: 0,
@@ -129,7 +242,17 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       return { success: true };
     }
     return { success: false, error: 'Campaign not found. Check the join code.' };
-  }, [user, campaign]);
+  }, [authUser, campaign]);
+
+  // Sync player to cloud whenever player state changes
+  useEffect(() => {
+    if (currentPlayer && isSupabaseConfigured()) {
+      const timer = setTimeout(() => {
+        sync.updatePlayerInCloud(currentPlayer).catch(console.warn);
+      }, 1000); // Debounce 1s to avoid rapid-fire updates
+      return () => clearTimeout(timer);
+    }
+  }, [currentPlayer]);
 
   const leaveCampaign = useCallback(() => {
     // Read current state for archiving before clearing
@@ -154,9 +277,13 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       setCampaignHistory(storage.loadCampaignHistory());
     }
 
+    // Leave campaign in cloud
+    if (isSupabaseConfigured() && prevPlayer) {
+      sync.leaveCampaignCloud(prevPlayer.id).catch(console.warn);
+    }
+
     setCampaign(null);
     setCurrentPlayer(null);
-    // Clear storage to prevent stale data from useEffect persistence
     storage.clearCampaign();
     setPlayers([]);
     setUnits([]);
@@ -187,6 +314,13 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
         created_at: new Date().toISOString(),
       };
       setUnits(prev => [...prev, unit]);
+      // Push unit to cloud
+      if (isSupabaseConfigured()) {
+        sync.pushUnitToCloud(unit).catch(err => {
+          console.warn('Cloud push failed, queuing:', err);
+          queueMutation({ type: 'unit', action: 'create', data: unit });
+        });
+      }
       return { ...cp, supply_used: (cp.supply_used || 0) + pointsCost };
     });
   }, []);
@@ -201,7 +335,16 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
           return { ...cp, supply_used: Math.max(0, (cp.supply_used || 0) + delta) };
         });
       }
-      return prev.map(u => u.id === unitId ? { ...u, ...updates } : u);
+      const updated = prev.map(u => u.id === unitId ? { ...u, ...updates } : u);
+      // Push update to cloud
+      const updatedUnit = updated.find(u => u.id === unitId);
+      if (isSupabaseConfigured() && updatedUnit) {
+        sync.updateUnitInCloud(updatedUnit).catch(err => {
+          console.warn('Cloud push failed, queuing:', err);
+          queueMutation({ type: 'unit', action: 'update', data: updatedUnit });
+        });
+      }
+      return updated;
     });
   }, []);
 
@@ -212,6 +355,13 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
         setCurrentPlayer(cp => {
           if (!cp) return cp;
           return { ...cp, supply_used: Math.max(0, (cp.supply_used || 0) - unit.points_cost) };
+        });
+      }
+      // Delete from cloud
+      if (isSupabaseConfigured()) {
+        sync.deleteUnitFromCloud(unitId).catch(err => {
+          console.warn('Cloud delete failed, queuing:', err);
+          queueMutation({ type: 'unit', action: 'delete', data: { id: unitId } });
         });
       }
       return prev.filter(u => u.id !== unitId);
@@ -225,6 +375,14 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       created_at: new Date().toISOString(),
     };
     setBattles(prev => [battle, ...prev]);
+
+    // Push battle to cloud
+    if (isSupabaseConfigured()) {
+      sync.pushBattleToCloud(battle).catch(err => {
+        console.warn('Cloud push failed, queuing:', err);
+        queueMutation({ type: 'battle', action: 'create', data: battle });
+      });
+    }
 
     // Update player stats using functional updater to avoid stale closure
     setCurrentPlayer(cp => {
@@ -307,7 +465,6 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
 
   return (
     <CrusadeContext.Provider value={{
-      user, setUser,
       campaign, players, currentPlayer,
       createCampaign, joinCampaign, leaveCampaign, setDetachment,
       units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,

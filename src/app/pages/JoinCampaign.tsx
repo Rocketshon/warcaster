@@ -27,7 +27,7 @@ export default function JoinCampaign() {
     setErrorMessage(""); // Clear error when user makes changes
   };
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     // Clear previous errors
     setErrorMessage("");
 
@@ -39,7 +39,7 @@ export default function JoinCampaign() {
 
     if (!selectedFaction) return;
 
-    const result = joinCampaign(
+    const result = await joinCampaign(
       joinCode.trim(),
       playerName.trim(),
       selectedFaction.id as FactionId

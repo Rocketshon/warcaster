@@ -13,12 +13,14 @@ import {
   LogOut
 } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useAuth } from "../../lib/AuthContext";
 import { saveCampaign, savePlayer, saveUnits, saveBattles } from "../../lib/storage";
 import { getAllFactionSlugs, getAllUnits } from "../../data";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { user, setUser, campaign, currentPlayer, units, battles, leaveCampaign } = useCrusade();
+  const { campaign, currentPlayer, units, battles, leaveCampaign } = useCrusade();
+  const { user: authUser, profile, signOut } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
@@ -27,11 +29,11 @@ export default function Settings() {
   const [showImportSuccess, setShowImportSuccess] = useState(false);
 
   // Profile state
-  const displayName = user?.display_name ?? "Commander";
+  const displayName = profile?.display_name ?? authUser?.user_metadata?.display_name ?? authUser?.email?.split("@")[0] ?? "Commander";
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(displayName);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
-  const userEmail = user?.email ?? "";
+  const userEmail = authUser?.email ?? "";
 
   // Database stats from real data layer
   const dbStats = useMemo(() => {
@@ -56,16 +58,14 @@ export default function Settings() {
     navigate("/home");
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setShowSignOutDialog(false);
-    setUser(null);
+    await signOut();
     navigate("/sign-in");
   };
 
   const handleSaveName = () => {
-    if (user) {
-      setUser({ ...user, display_name: tempName });
-    }
+    // TODO: Update display name in Supabase profile when sync is implemented
     setIsEditingName(false);
   };
 
