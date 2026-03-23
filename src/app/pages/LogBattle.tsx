@@ -62,10 +62,14 @@ export default function LogBattle() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-    setIsSubmitting(true);
 
     if (!opponentName.trim() && !opponentId) {
       toast.error("Please select or name an opponent");
+      return;
+    }
+
+    if (otherPlayers.length > 0 && !opponentId && !opponentName.trim()) {
+      toast.error("Please select an opponent from the list");
       return;
     }
 
@@ -78,6 +82,8 @@ export default function LogBattle() {
       toast.error("No active campaign");
       return;
     }
+
+    setIsSubmitting(true);
 
     // Determine result
     let result: Battle['result'];

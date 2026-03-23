@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, BookOpen, Shield, Award, ChevronDown, ChevronRight } from "lucide-react";
 import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
@@ -151,6 +151,10 @@ export default function RuleDetail() {
   const [expandedSubsections, setExpandedSubsections] = useState<Set<string>>(new Set());
 
   const rule = ruleId ? lookupRule(ruleId, currentPlayer?.faction_id) : null;
+
+  useEffect(() => {
+    setExpandedSubsections(new Set());
+  }, [ruleId]);
 
   const toggleSubsection = (key: string) => {
     setExpandedSubsections((prev) => {

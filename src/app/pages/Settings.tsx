@@ -1,12 +1,10 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
   ArrowLeft,
   AlertTriangle,
   Share2,
   ChevronRight,
-  Moon,
-  Sun,
   Download,
   Upload,
   Database,
@@ -23,11 +21,6 @@ export default function Settings() {
   const { user, setUser, campaign, currentPlayer, units, battles, leaveCampaign } = useCrusade();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
-  const [fontSize, setFontSize] = useState(() => {
-    const stored = document.documentElement.style.getPropertyValue("--app-font-size");
-    return stored ? parseInt(stored, 10) : 16;
-  });
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [showShareSuccess, setShowShareSuccess] = useState(false);
   const [showExportSuccess, setShowExportSuccess] = useState(false);
@@ -92,20 +85,6 @@ export default function Settings() {
     }
   };
 
-  const handleToggleDarkMode = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  useEffect(() => {
-    document.documentElement.style.setProperty("--app-font-size", `${fontSize}`);
-  }, [fontSize]);
-
   const handleExportData = () => {
     const exportPayload = {
       campaign,
@@ -153,13 +132,6 @@ export default function Settings() {
     reader.readAsText(file);
     // Reset input so the same file can be re-selected
     e.target.value = "";
-  };
-
-  const getFontSizeLabel = () => {
-    if (fontSize <= 14) return "Small";
-    if (fontSize <= 16) return "Medium";
-    if (fontSize <= 18) return "Large";
-    return "Extra Large";
   };
 
   return (
@@ -316,66 +288,6 @@ export default function Settings() {
                 <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
               </div>
             </button>
-          </div>
-        </div>
-
-        {/* Appearance Section */}
-        <div className="mb-6">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
-            Appearance
-          </h2>
-          <div className="space-y-2">
-            {/* Dark Mode Toggle */}
-            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {darkMode ? (
-                    <Moon className="w-5 h-5 text-purple-400" />
-                  ) : (
-                    <Sun className="w-5 h-5 text-amber-400" />
-                  )}
-                  <span className="text-stone-300 font-semibold">Dark Mode</span>
-                </div>
-                <button
-                  onClick={handleToggleDarkMode}
-                  className={`relative w-12 h-6 rounded-full transition-colors ${
-                    darkMode ? "bg-amber-500" : "bg-stone-700"
-                  }`}
-                >
-                  <div
-                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                      darkMode ? "translate-x-7" : "translate-x-1"
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Font Size Slider */}
-            <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-stone-300 font-semibold">Font Size</span>
-                  <span className="text-emerald-400 text-sm font-mono">{getFontSizeLabel()}</span>
-                </div>
-                <input
-                  type="range"
-                  min="12"
-                  max="20"
-                  step="2"
-                  value={fontSize}
-                  onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full h-2 bg-stone-800 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-              {/* Preview Text */}
-              <div className="pt-3 border-t border-stone-800">
-                <p className="text-stone-400 text-xs mb-1">Preview:</p>
-                <p className="text-stone-300" style={{ fontSize: `${fontSize}px` }}>
-                  The Emperor protects
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -549,40 +461,6 @@ export default function Settings() {
         </div>
       )}
 
-      {/* Custom slider styles */}
-      <style>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: rgb(16, 185, 129);
-          cursor: pointer;
-          box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-        }
-
-        .slider::-moz-range-thumb {
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: rgb(16, 185, 129);
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-        }
-
-        .slider::-webkit-slider-track {
-          background: linear-gradient(to right, rgb(16, 185, 129) 0%, rgb(16, 185, 129) var(--slider-progress, 50%), rgb(41, 37, 36) var(--slider-progress, 50%), rgb(41, 37, 36) 100%);
-        }
-
-        .slider::-moz-range-track {
-          background: rgb(41, 37, 36);
-        }
-
-        .slider::-moz-range-progress {
-          background: rgb(16, 185, 129);
-        }
-      `}</style>
     </div>
   );
 }

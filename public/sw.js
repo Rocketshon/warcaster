@@ -2,8 +2,8 @@ const CACHE_NAME = 'crusade-command-v2';
 
 // Assets to precache on install
 const PRECACHE_URLS = [
-  '/',
-  '/index.html',
+  './',
+  './index.html',
 ];
 
 // Install: cache shell assets
@@ -41,7 +41,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
         })
-        .catch(() => caches.match('/index.html'))
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
