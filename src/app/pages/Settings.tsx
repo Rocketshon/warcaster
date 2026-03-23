@@ -25,7 +25,7 @@ import { getFactionName, getFactionIcon } from "../../lib/factions";
 export default function Settings() {
   const navigate = useNavigate();
   const { campaign, currentPlayer, players, units, battles, leaveCampaign, updateCampaignSettings, removePlayer, postAnnouncement } = useCrusade();
-  const { user: authUser, profile, signOut } = useAuth();
+  const { user: authUser, signOut } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
@@ -41,11 +41,11 @@ export default function Settings() {
   const [showRemovePlayerDialog, setShowRemovePlayerDialog] = useState<string | null>(null);
 
   // Profile state
-  const displayName = profile?.display_name ?? authUser?.user_metadata?.display_name ?? authUser?.email?.split("@")[0] ?? "Commander";
+  const displayName = authUser?.username ?? "Commander";
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(displayName);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
-  const userEmail = authUser?.email ?? "";
+  const userEmail = "";
 
   // Database stats from real data layer
   const dbStats = useMemo(() => {

@@ -1,169 +1,101 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import type { User, Session } from '@supabase/supabase-js';
-import { supabase } from './supabase';
-import { saveUser, clearUser } from './storage';
+import { supabase, isSupabaseConfigured } from './supabase';
+import { saveUser, clearUser, loadUser, generateId } from './storage';
+
+interface SimpleUser {
+  id: string;
+  username: string;
+}
 
 interface AuthContextType {
-  user: User | null;
-  profile: { display_name: string } | null;
-  session: Session | null;
+  user: SimpleUser | null;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (email: string, password: string, displayName: string) => Promise<{ error?: string }>;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
+  signIn: (username: string) => Promise<{ error?: string }>;
+  signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<{ display_name: string } | null>(null);
+  const [user, setUser] = useState<SimpleUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('cc_profiles')
-        .select('display_name')
-        .eq('id', userId)
-        .single();
-
-      if (!error && data) {
-        setProfile({ display_name: data.display_name });
-        return data.display_name as string;
-      }
-    } catch {
-      // Profile fetch failed — non-critical
-    }
-    return null;
-  }, []);
-
-  // Sync auth user to localStorage cache for fast route redirects
-  const syncUserToStorage = useCallback((authUser: User | null, displayName: string | null) => {
-    if (authUser) {
-      saveUser({
-        id: authUser.id,
-        email: authUser.email ?? '',
-        display_name: displayName ?? authUser.user_metadata?.display_name ?? authUser.email?.split('@')[0] ?? 'Commander',
-      });
-    } else {
-      clearUser();
-    }
-  }, []);
-
+  // Restore session on mount
   useEffect(() => {
-    // Restore session on mount
-    supabase.auth.getSession().then(async ({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      if (currentSession?.user) {
-        const displayName = await fetchProfile(currentSession.user.id);
-        syncUserToStorage(currentSession.user, displayName);
-      }
-
-      setIsLoading(false);
-    });
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-
-      if (newSession?.user) {
-        const displayName = await fetchProfile(newSession.user.id);
-        syncUserToStorage(newSession.user, displayName);
-      } else {
-        setProfile(null);
-        syncUserToStorage(null, null);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [fetchProfile, syncUserToStorage]);
-
-  const signUp = useCallback(async (email: string, password: string, displayName: string): Promise<{ error?: string }> => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName },
-      },
-    });
-
-    if (error) {
-      if (error.message.includes('already registered')) {
-        return { error: 'Email already in use. Please sign in or use a different email.' };
-      }
-      if (error.message.includes('Password')) {
-        return { error: 'Password is too weak. Please use at least 8 characters.' };
-      }
-      if (error.message.includes('Database error')) {
-        return { error: 'Account creation failed. Please try again.' };
-      }
-      return { error: error.message };
+    const stored = loadUser();
+    if (stored) {
+      setUser({ id: stored.id, username: stored.display_name });
     }
+    setIsLoading(false);
+  }, []);
 
-    // Create profile row (instead of relying on DB trigger)
-    if (data.user) {
+  const signIn = useCallback(async (username: string): Promise<{ error?: string }> => {
+    const trimmed = username.trim();
+    if (!trimmed) return { error: 'Please enter a username.' };
+    if (trimmed.length < 2) return { error: 'Username must be at least 2 characters.' };
+    if (trimmed.length > 30) return { error: 'Username must be 30 characters or less.' };
+    if (!/^[a-zA-Z0-9_\- ]+$/.test(trimmed)) return { error: 'Username can only contain letters, numbers, spaces, hyphens, and underscores.' };
+
+    // Check if username is taken (in Supabase)
+    if (isSupabaseConfigured()) {
       try {
-        await supabase.from('cc_profiles').upsert({
-          id: data.user.id,
-          display_name: displayName || email.split('@')[0],
-        }, { onConflict: 'id' });
-      } catch {
-        // Profile creation failed — non-critical, will retry on next auth state change
+        const { data: existing } = await supabase
+          .from('cc_profiles')
+          .select('id, display_name')
+          .ilike('display_name', trimmed)
+          .maybeSingle();
+
+        if (existing) {
+          // Username exists — log in as that user
+          const userObj: SimpleUser = { id: existing.id, username: existing.display_name };
+          setUser(userObj);
+          saveUser({ id: existing.id, email: '', display_name: existing.display_name });
+          return {};
+        }
+
+        // New username — create profile
+        const newId = generateId();
+        const { error } = await supabase
+          .from('cc_profiles')
+          .insert({ id: newId, display_name: trimmed });
+
+        if (error) {
+          console.warn('Failed to create cloud profile:', error.message);
+          // Fall through to local-only
+        } else {
+          const userObj: SimpleUser = { id: newId, username: trimmed };
+          setUser(userObj);
+          saveUser({ id: newId, email: '', display_name: trimmed });
+          return {};
+        }
+      } catch (err) {
+        console.warn('Cloud auth failed, falling back to local:', err);
       }
     }
 
-    return {};
-  }, []);
-
-  const signIn = useCallback(async (email: string, password: string): Promise<{ error?: string }> => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        return { error: 'Invalid email or password. Please try again.' };
-      }
-      return { error: error.message };
+    // Local-only fallback
+    const existingLocal = loadUser();
+    if (existingLocal && existingLocal.display_name.toLowerCase() === trimmed.toLowerCase()) {
+      // Same user returning
+      setUser({ id: existingLocal.id, username: existingLocal.display_name });
+      return {};
     }
 
+    // Brand new local user
+    const newId = generateId();
+    const userObj: SimpleUser = { id: newId, username: trimmed };
+    setUser(userObj);
+    saveUser({ id: newId, email: '', display_name: trimmed });
     return {};
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-  }, []);
-
-  const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+  const signOut = useCallback(() => {
     setUser(null);
-    setSession(null);
-    setProfile(null);
     clearUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      profile,
-      session,
-      isLoading,
-      signIn,
-      signUp,
-      signInWithGoogle,
-      signOut,
-    }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
