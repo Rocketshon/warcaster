@@ -12,6 +12,9 @@ import { useRealtimeSubscription } from './hooks/useRealtimeSubscription';
 import { trackEvent } from './telemetry';
 
 interface CrusadeState {
+  // Sync status
+  syncing: boolean;
+
   // Campaign
   campaign: Campaign | null;
   players: CampaignPlayer[];
@@ -78,7 +81,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     setCampaign, setCurrentPlayer, setPlayers, setUnits, setBattles,
   }), []);
 
-  useSyncEffect(campaign, currentPlayer, units, battles, authUser, syncSetters);
+  const { syncing } = useSyncEffect(campaign, currentPlayer, players, units, battles, authUser, syncSetters);
 
   // Realtime subscriptions (extracted hook handles playerIdsRef internally)
   const playerIds = useMemo(() => players.map(p => p.id), [players]);
@@ -465,6 +468,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
 
   return (
     <CrusadeContext.Provider value={{
+      syncing,
       campaign, players, currentPlayer,
       createCampaign, joinCampaign, leaveCampaign, setDetachment,
       units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,

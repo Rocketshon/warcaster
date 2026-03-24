@@ -9,7 +9,7 @@ import type { CampaignPlayer, Datasheet } from "../../types";
 
 export default function BattleLobby() {
   const navigate = useNavigate();
-  const { players, currentPlayer, units } = useCrusade();
+  const { players, currentPlayer, units, syncing } = useCrusade();
   const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
 
   const displayPlayers = players.length > 0
@@ -67,8 +67,15 @@ export default function BattleLobby() {
           </div>
         </div>
 
+        {/* Syncing indicator */}
+        {syncing && (
+          <div className="text-center py-4">
+            <p className="text-emerald-400 text-sm animate-pulse">Syncing campaign data...</p>
+          </div>
+        )}
+
         {/* No opponents message */}
-        {displayPlayers.filter(p => p.id !== currentPlayer?.id).length === 0 && (
+        {!syncing && displayPlayers.filter(p => p.id !== currentPlayer?.id).length === 0 && (
           <div className="text-center py-12">
             <p className="text-stone-400 mb-2">No opponents in your campaign yet.</p>
             <p className="text-stone-500 text-sm mb-4">Share your join code to invite players.</p>

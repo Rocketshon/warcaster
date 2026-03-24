@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Campaign, CampaignPlayer, CrusadeUnit, Battle } from '../../types';
 import * as storage from '../storage';
 import * as sync from '../sync';
@@ -26,12 +26,14 @@ interface SyncSetters {
 export function useSyncEffect(
   campaign: Campaign | null,
   currentPlayer: CampaignPlayer | null,
+  players: CampaignPlayer[],
   units: CrusadeUnit[],
   battles: Battle[],
   authUser: SimpleUser | null,
   setters: SyncSetters,
-) {
+): { syncing: boolean } {
   const { setCampaign, setCurrentPlayer, setPlayers, setUnits, setBattles } = setters;
+  const [syncing, setSyncing] = useState(false);
 
   // Persist on change (localStorage cache)
   useEffect(() => { if (campaign) storage.saveCampaign(campaign); }, [campaign]);
@@ -39,10 +41,18 @@ export function useSyncEffect(
   useEffect(() => { storage.saveUnits(units); }, [units]);
   useEffect(() => { storage.saveBattles(battles); }, [battles]);
 
+  // Persist all players so they're available immediately on next refresh
+  useEffect(() => {
+    if (players.length > 0) {
+      storage.safeSetItem(storage.STORAGE_KEYS.ALL_PLAYERS, JSON.stringify(players));
+    }
+  }, [players]);
+
   // Pull from cloud on auth change
   useEffect(() => {
     if (!authUser?.id || !isSupabaseConfigured()) return;
     let cancelled = false;
+    setSyncing(true);
 
     (async () => {
       try {
@@ -53,22 +63,21 @@ export function useSyncEffect(
           setCurrentPlayer(cloudData.player);
           setUnits(cloudData.units);
           setBattles(cloudData.battles);
-          // Use players already fetched by pullCampaignFromCloud (no second round-trip)
           if (cloudData.players.length > 0 && !cancelled) {
             setPlayers(cloudData.players);
             storage.safeSetItem(storage.STORAGE_KEYS.ALL_PLAYERS, JSON.stringify(cloudData.players));
           }
         } else {
-          // No cloud campaign — try to migrate local data
           const localCampaign = storage.loadCampaign();
           if (localCampaign) {
             await sync.migrateLocalData(authUser.id);
           }
         }
-        // Flush any pending offline mutations
         await flushQueue();
       } catch (err) {
         console.warn('Cloud sync failed, using local data:', err);
+      } finally {
+        if (!cancelled) setSyncing(false);
       }
     })();
 
@@ -84,4 +93,6 @@ export function useSyncEffect(
       return () => clearTimeout(timer);
     }
   }, [currentPlayer]);
+
+  return { syncing };
 }

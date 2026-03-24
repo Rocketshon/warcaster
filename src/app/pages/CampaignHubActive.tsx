@@ -13,7 +13,7 @@ import type { AttentionItem } from "../../lib/attention";
 export default function CampaignHubActive() {
   const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
-  const { players, battles, units } = useCrusade();
+  const { players, battles, units, syncing } = useCrusade();
   const [copied, setCopied] = useState(false);
 
   if (!ready) return null;
@@ -216,6 +216,13 @@ export default function CampaignHubActive() {
           </span>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
         </div>
+
+        {/* Sync indicator */}
+        {syncing && (
+          <div className="text-center py-2 mb-2">
+            <p className="text-emerald-400 text-xs animate-pulse">Syncing campaign data...</p>
+          </div>
+        )}
 
         {/* Player Cards List */}
         <div className="space-y-3">
