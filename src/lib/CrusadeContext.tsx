@@ -467,6 +467,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const postAnnouncement = useCallback((text: string) => {
+    if (text.length > 500) return;
     setCampaign(prev => {
       if (!prev) return prev;
       const announcement = {
@@ -487,17 +488,27 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     });
   }, [authUser]);
 
+  const contextValue = useMemo(() => ({
+    syncing,
+    campaign, players, currentPlayer,
+    createCampaign, joinCampaign, leaveCampaign, setDetachment,
+    units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,
+    battles, logBattle, getPlayerBattles,
+    awardXP, recordBattleParticipation, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, updateBattle, spendRequisition, awardRequisition,
+    updateCampaignSettings, removePlayer: removePlayerFn, postAnnouncement,
+    campaignHistory,
+  }), [
+    syncing, campaign, players, currentPlayer,
+    createCampaign, joinCampaign, leaveCampaign, setDetachment,
+    units, addUnitFn, updateUnitFn, removeUnitFn,
+    battles, logBattle, getPlayerBattles,
+    awardXP, recordBattleParticipation, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, updateBattle, spendRequisition, awardRequisition,
+    updateCampaignSettings, removePlayerFn, postAnnouncement,
+    campaignHistory,
+  ]);
+
   return (
-    <CrusadeContext.Provider value={{
-      syncing,
-      campaign, players, currentPlayer,
-      createCampaign, joinCampaign, leaveCampaign, setDetachment,
-      units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,
-      battles, logBattle, getPlayerBattles,
-      awardXP, recordBattleParticipation, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, updateBattle, spendRequisition, awardRequisition,
-      updateCampaignSettings, removePlayer: removePlayerFn, postAnnouncement,
-      campaignHistory,
-    }}>
+    <CrusadeContext.Provider value={contextValue}>
       {children}
     </CrusadeContext.Provider>
   );

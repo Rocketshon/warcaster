@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Plus, Sword, Skull, Award, AlertTriangle, ChevronDown, ChevronUp, ScrollText, Store } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
@@ -28,9 +28,18 @@ export default function Roster() {
   const detachments = factionRules?.detachments ?? [];
   const currentDetachment = detachments.find(d => d.name === currentPlayer.detachment_id);
 
-  const supplyUsed = units.filter(u => u.player_id === currentPlayer.id).reduce((sum, u) => sum + u.points_cost, 0);
+  const playerUnits = useMemo(() => units.filter(u => u.player_id === currentPlayer.id), [units, currentPlayer.id]);
+  const supplyUsed = useMemo(() => playerUnits.reduce((sum, u) => sum + u.points_cost, 0), [playerUnits]);
   const supplyLimit = campaign.supply_limit;
   const supplyPercent = supplyLimit > 0 ? (supplyUsed / supplyLimit) * 100 : 0;
+
+  const filteredUnits = useMemo(() => statusFilter === 'all' ? playerUnits : playerUnits.filter(u => u.status === statusFilter), [playerUnits, statusFilter]);
+
+  const attentionMap = useMemo(() => {
+    const m: Record<string, ReturnType<typeof getUnitAttentionItems>> = {};
+    for (const u of playerUnits) m[u.id] = getUnitAttentionItems(u);
+    return m;
+  }, [playerUnits]);
 
   const handleUnitClick = (unitId: string) => {
     if (showRemove === unitId) {
@@ -43,12 +52,6 @@ export default function Roster() {
   const handleLongPress = (unitId: string) => {
     setShowRemove(showRemove === unitId ? null : unitId);
   };
-
-  const playerUnits = units.filter(u => u.player_id === currentPlayer.id);
-
-  const filteredUnits = statusFilter === 'all'
-    ? playerUnits
-    : playerUnits.filter(u => u.status === statusFilter);
 
   const supplyBarColor = supplyPercent > 95
     ? 'bg-red-500'
@@ -315,7 +318,7 @@ export default function Roster() {
             const rank = getRankFromXP(unit.experience_points);
             const rankColor = getRankColor(rank);
             const isExpanded = expandedUnitId === unit.id;
-            const unitAttention = getUnitAttentionItems(unit);
+            const unitAttention = attentionMap[unit.id] ?? [];
             const xpProgress = getNextRankXP(unit.experience_points);
 
             return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Search, BookOpen, ChevronDown, ChevronRight, Shield } from "lucide-react";
 import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
@@ -147,15 +147,16 @@ export default function RulesBrowser() {
   }, [expandedSections]);
 
   // Build rules from real data
-  const coreRuleItems = CORE_RULES ? buildRuleItems(CORE_RULES.sections, "core") : [];
-  const crusadeRuleItems = CRUSADE_RULES ? buildRuleItems(CRUSADE_RULES.sections, "crusade") : [];
+  const coreRuleItems = useMemo(() => CORE_RULES ? buildRuleItems(CORE_RULES.sections, "core") : [], []);
+  const crusadeRuleItems = useMemo(() => CRUSADE_RULES ? buildRuleItems(CRUSADE_RULES.sections, "crusade") : [], []);
 
   // Build faction rules if the player has an active campaign
   const factionRulesData = currentPlayer ? getRulesForFaction(getDataFactionId(currentPlayer.faction_id)) : undefined;
-  const factionRuleItems: RuleItem[] = [];
-  if (factionRulesData) {
+  const factionRuleItems = useMemo(() => {
+    const items: RuleItem[] = [];
+    if (!factionRulesData) return items;
     if (factionRulesData.army_rules.length > 0) {
-      factionRuleItems.push({
+      items.push({
         id: 'faction-army-rules',
         title: 'Army Rules',
         subtitle: `${factionRulesData.army_rules.length} rules`,
@@ -164,7 +165,7 @@ export default function RulesBrowser() {
       });
     }
     factionRulesData.detachments.forEach((det, idx) => {
-      factionRuleItems.push({
+      items.push({
         id: `faction-det-${idx}`,
         title: det.name,
         subtitle: 'Detachment',
@@ -173,7 +174,7 @@ export default function RulesBrowser() {
       });
     });
     if (factionRulesData.crusade_rules && factionRulesData.crusade_rules.length > 0) {
-      factionRuleItems.push({
+      items.push({
         id: 'faction-crusade',
         title: 'Faction Crusade Rules',
         subtitle: `${factionRulesData.crusade_rules.length} sections`,
@@ -181,7 +182,8 @@ export default function RulesBrowser() {
         originalName: 'Faction Crusade Rules',
       });
     }
-  }
+    return items;
+  }, [factionRulesData]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) =>
@@ -192,21 +194,21 @@ export default function RulesBrowser() {
   };
 
   // Filter rules based on search
-  const filterRules = (rules: RuleItem[]) => {
-    if (!searchQuery.trim()) return rules;
+  const filterBySearch = useCallback((items: RuleItem[]) => {
+    if (!searchQuery) return items;
     const q = searchQuery.toLowerCase();
-    return rules.filter((rule) =>
-      rule.title.toLowerCase().includes(q) ||
-      rule.subtitle?.toLowerCase().includes(q)
+    return items.filter((item) =>
+      item.title.toLowerCase().includes(q) ||
+      item.subtitle?.toLowerCase().includes(q)
     );
-  };
+  }, [searchQuery]);
 
-  const filteredCoreRules = filterRules(coreRuleItems);
-  const filteredCrusadeRules = filterRules(crusadeRuleItems);
-  const filteredFactionRules = filterRules(factionRuleItems);
+  const filteredCoreRules = useMemo(() => filterBySearch(coreRuleItems), [filterBySearch, coreRuleItems]);
+  const filteredCrusadeRules = useMemo(() => filterBySearch(crusadeRuleItems), [filterBySearch, crusadeRuleItems]);
+  const filteredFactionRules = useMemo(() => filterBySearch(factionRuleItems), [filterBySearch, factionRuleItems]);
 
   // Group core rules into categories
-  const coreRuleGroups = groupCoreRules(filteredCoreRules);
+  const coreRuleGroups = useMemo(() => groupCoreRules(filteredCoreRules), [filteredCoreRules]);
 
   const handleRuleClick = (ruleId: string) => {
     navigate(`/rule/${ruleId}`);

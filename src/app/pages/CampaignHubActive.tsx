@@ -45,7 +45,7 @@ export default function CampaignHubActive() {
   }, [players]);
 
   // Attention items for current player's units
-  const playerUnits = units.filter(u => u.player_id === currentPlayer?.id);
+  const playerUnits = useMemo(() => units.filter(u => u.player_id === currentPlayer?.id), [units, currentPlayer?.id]);
   const attentionItems: AttentionItem[] = useMemo(
     () => playerUnits.flatMap(u => getUnitAttentionItems(u)),
     [playerUnits]

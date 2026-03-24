@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { useMemo, useCallback } from "react";
 import { ArrowLeft, ChevronRight, BookOpen } from "lucide-react";
 import { FACTIONS, getDataFactionId } from '../../lib/factions';
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
@@ -33,7 +34,7 @@ export default function CodexHome() {
   const navigate = useNavigate();
 
   // Build faction list dynamically from real data
-  const factionList = FACTIONS.map((f) => {
+  const factionList = useMemo(() => FACTIONS.map((f) => {
     const colors = getFactionColors(f.color);
     const dataId = getDataFactionId(f.id);
     const datasheets = getUnitsForFaction(dataId).length;
@@ -48,20 +49,20 @@ export default function CodexHome() {
       detachments,
       ...colors,
     };
-  });
+  }), []);
 
-  const handleFactionClick = (faction: (typeof factionList)[0]) => {
+  const handleFactionClick = useCallback((faction: (typeof factionList)[0]) => {
     if (faction.hasChapters) {
       navigate("/space-marines-chapters");
     } else {
       navigate(`/codex/${faction.id}`);
     }
-  };
+  }, [navigate, factionList]);
 
   // Group factions
-  const imperiumFactions = factionList.filter((f) => f.category === "imperium");
-  const chaosFactions = factionList.filter((f) => f.category === "chaos");
-  const xenosFactions = factionList.filter((f) => f.category === "xenos");
+  const imperiumFactions = useMemo(() => factionList.filter((f) => f.category === "imperium"), [factionList]);
+  const chaosFactions = useMemo(() => factionList.filter((f) => f.category === "chaos"), [factionList]);
+  const xenosFactions = useMemo(() => factionList.filter((f) => f.category === "xenos"), [factionList]);
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">

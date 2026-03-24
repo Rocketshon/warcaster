@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 /**
@@ -347,9 +348,8 @@ export function parseRuleText(text: string): ReactNode[] {
  * Drop-in replacement for `<p className="whitespace-pre-line">{text}</p>`
  */
 export function FormattedRuleText({ text, className }: { text: string | null | undefined; className?: string }) {
-  if (!text) return null;
-  const elements = parseRuleText(text);
-  if (elements.length === 0) return null;
+  const elements = useMemo(() => (text ? parseRuleText(text) : []), [text]);
+  if (!elements.length) return null;
   return <div className={className}>{elements}</div>;
 }
 

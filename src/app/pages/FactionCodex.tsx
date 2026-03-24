@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, ChevronDown, ChevronRight, Search, Shield, Swords, BookOpen, Award, Zap } from "lucide-react";
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
@@ -36,7 +36,7 @@ function generateRandomValues(count: number, fieldsPerItem: number): number[][] 
 }
 
 // Animation component for particle effects
-const AnimatedBackground = ({ type }: { type: string }) => {
+const AnimatedBackground = React.memo(function AnimatedBackground({ type }: { type: string }) {
   const randoms = useMemo(() => {
     if (type === "blood") return { particles: generateRandomValues(12, 4) };
     if (type === "plague") return { particles: generateRandomValues(8, 5) };
@@ -184,7 +184,7 @@ const AnimatedBackground = ({ type }: { type: string }) => {
   }
 
   return null;
-};
+});
 
 export default function FactionCodex() {
   const { factionId } = useParams();
@@ -226,6 +226,7 @@ export default function FactionCodex() {
 
   const animationType = getAnimationType(factionId!);
   const accentColor = getAccentColor(factionMeta.color);
+  const enhColors = getEnhancementCardColors(factionMeta.color);
 
   // Expand first detachment by default (in useEffect to avoid setState during render)
   useEffect(() => {
@@ -262,10 +263,13 @@ export default function FactionCodex() {
     navigate(`/datasheet/${factionId}/${encodeURIComponent(unit.name)}`);
   };
 
-  const filteredDatasheets = units.filter((ds) =>
-    ds.name.toLowerCase().includes(datasheetSearch.toLowerCase()) ||
-    ds.keywords.some((k) => k.toLowerCase().includes(datasheetSearch.toLowerCase()))
-  );
+  const filteredDatasheets = useMemo(() => {
+    const q = datasheetSearch.toLowerCase();
+    return units.filter((ds) =>
+      ds.name.toLowerCase().includes(q) ||
+      ds.keywords.some((k) => k.toLowerCase().includes(q))
+    );
+  }, [units, datasheetSearch]);
 
   return (
     <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
@@ -420,7 +424,6 @@ export default function FactionCodex() {
                           {expandedEnhancements.includes(detachment.name) && (
                             <div className="space-y-2">
                               {detachment.enhancements.map((enh, idx) => {
-                                const enhColors = getEnhancementCardColors(factionMeta.color);
                                 return (
                                 <div
                                   key={idx}

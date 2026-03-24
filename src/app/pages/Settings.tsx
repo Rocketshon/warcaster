@@ -95,6 +95,15 @@ export default function Settings() {
 
   const handleSaveName = async () => {
     if (!tempName.trim()) return;
+    const trimmed = tempName.trim();
+    if (trimmed.length < 2 || trimmed.length > 30) {
+      toast.error('Name must be 2-30 characters');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_\- ]+$/.test(trimmed)) {
+      toast.error('Letters, numbers, spaces, hyphens, and underscores only');
+      return;
+    }
     if (isSavingName) return;
     setIsSavingName(true);
     try {
@@ -165,6 +174,24 @@ export default function Settings() {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string);
+        // Validate structure
+        if (!data || typeof data !== 'object') {
+          toast.error('Invalid file format');
+          return;
+        }
+        // Validate ownership if authUser exists
+        if (data.currentPlayer && authUser && data.currentPlayer.user_id && data.currentPlayer.user_id !== authUser.id) {
+          toast.error('This data belongs to a different account');
+          return;
+        }
+        // Clamp numeric fields
+        if (data.currentPlayer) {
+          data.currentPlayer.requisition_points = Math.max(0, Math.min(999, Number(data.currentPlayer.requisition_points) || 0));
+          data.currentPlayer.supply_used = Math.max(0, Math.min(9999, Number(data.currentPlayer.supply_used) || 0));
+        }
+        // Validate arrays
+        if (data.units && !Array.isArray(data.units)) data.units = [];
+        if (data.battles && !Array.isArray(data.battles)) data.battles = [];
         // Restore campaign, units, battles via localStorage then reload
         if (data.campaign) saveCampaign(data.campaign);
         if (data.currentPlayer) savePlayer(data.currentPlayer);
@@ -425,11 +452,16 @@ export default function Settings() {
                     value={announcementText}
                     onChange={(e) => setAnnouncementText(e.target.value)}
                     placeholder="Write an announcement..."
+                    maxLength={500}
                     className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 placeholder-stone-600 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                   />
                   <button
                     onClick={() => {
                       if (announcementText.trim()) {
+                        if (announcementText.trim().length > 500) {
+                          toast.error('Announcement must be 500 characters or less');
+                          return;
+                        }
                         postAnnouncement(announcementText.trim());
                         setAnnouncementText("");
                       }
