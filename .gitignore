@@ -47,5 +47,15 @@ Crusader App Design/
 assets/
 guidelines/
 .claude/settings.local.json
-.claude/settings.local.json
 .nexus/
+
+# Audit/analysis artifacts
+audit-report.json
+haiku-audit-report.json
+sonnet-analysis.json
+audit-general-report.json
+general-rules-data.json
+
+# Build scripts with local paths
+scripts/sonnet-text-cleanup.cjs
+scripts/update-rules-data.cjs

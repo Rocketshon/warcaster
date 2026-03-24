@@ -3,7 +3,7 @@
 ## Data Backup
 ### Supabase Database
 1. Export via Supabase Dashboard → Settings → Database → Download Backup
-2. Or use pg_dump: `pg_dump -h db.pipkhcgizgrfxnwuiqin.supabase.co -U postgres -d postgres > backup.sql`
+2. Or use pg_dump: `pg_dump -h db.<PROJECT_REF>.supabase.co -U postgres -d postgres > backup.sql`
 3. Schedule weekly backups via cron or GitHub Actions
 
 ### localStorage Data

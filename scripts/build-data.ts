@@ -20,7 +20,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DATASHEETS_ROOT = path.resolve('C:/Users/dshon/Projects/Warhammer/datasheets');
+const DATASHEETS_ROOT = path.resolve(process.env.DATASHEETS_PATH || path.join(__dirname, '..', '..', '_backlog', 'Warhammer', 'datasheets'));
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'src', 'data');
 
 // Directory slug (hyphens) -> FactionId (underscores)

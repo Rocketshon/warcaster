@@ -1,6 +1,8 @@
 # Crusade Command
 
-A mobile-first PWA for tracking Warhammer 40,000 Crusade campaigns. Built with React, TypeScript, Tailwind CSS, and Supabase.
+A real-time companion app for Warhammer 40,000 Crusade campaigns. Track rosters, log battles, manage requisitions, and run live combat with your friends — all from your phone.
+
+Built by [Obelus Labs](https://github.com/Rocketshon).
 
 ## Features
 
@@ -81,13 +83,43 @@ src/
 |---|---|
 | `npm run dev` | Start dev server |
 | `npm run build` | Production build |
-| `npm run test` | Run tests |
+| `npm test` | Run unit and integration tests |
+| `npm run test:coverage` | Tests with coverage report |
+| `npm run test:e2e` | Playwright E2E tests |
 | `npm run lint` | Run ESLint |
+| `npm run audit:security` | Security scan |
+| `npm run audit:bundle` | Bundle size check |
+
+## Testing
+
+- **99 unit/integration tests** via Vitest (combat engine, storage, sync, ranks, offline queue)
+- **E2E tests** via Playwright (auth, campaign flows, rules browsing)
+- **Coverage thresholds** enforced at 60% for branches, functions, lines, and statements
+
+## CI/CD
+
+GitHub Actions pipeline runs on every push to `main`:
+1. Lint (ESLint)
+2. Type check (tsc --noEmit)
+3. Unit + integration tests with coverage
+4. Production build
+5. Bundle size check
+6. Deploy to GitHub Pages
 
 ## Deployment
 
 Deployed via GitHub Actions to GitHub Pages on push to `main`.
 
+## Docs
+
+- [API Contracts](docs/api-contracts.md) — Full database schema and sync protocol
+- [Disaster Recovery](docs/disaster-recovery.md) — Backup and recovery procedures
+- [Load Testing](docs/load-testing.md) — k6 configuration and Supabase limits
+
 ## License
 
-Private project. Not for redistribution.
+Private project. All rights reserved.
+
+## Disclaimer
+
+This is a fan-made tool for personal use. Warhammer 40,000 and all associated names, logos, and images are trademarks or registered trademarks of Games Workshop Ltd. This project is not affiliated with or endorsed by Games Workshop.
