@@ -57,6 +57,9 @@ export function useRealtimeSubscription(
             if (prev.find(b => b.id === newBattle.id)) return prev;
             return [newBattle, ...prev];
           });
+        } else if (payload.eventType === 'UPDATE') {
+          const updated = payload.new as unknown as Battle;
+          setBattles(prev => prev.map(b => b.id === updated.id ? updated : b));
         }
       },
       onUnitChange: (payload) => {

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { saveUser, clearUser, loadUser, generateId } from './storage';
+import { trackEvent, trackSession } from './telemetry';
 
 // NOTE: cc_profiles.display_name should have a UNIQUE constraint in Supabase:
 //   ALTER TABLE cc_profiles ADD CONSTRAINT cc_profiles_display_name_unique UNIQUE (display_name);
@@ -59,6 +60,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const userObj: SimpleUser = { id: existing.id, username: existing.display_name };
           setUser(userObj);
           saveUser({ id: existing.id, email: '', display_name: existing.display_name });
+          trackEvent('sign_in', { method: 'username' });
+          trackSession();
           return {};
         }
 
@@ -79,6 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const userObj: SimpleUser = { id: newId, username: trimmed };
           setUser(userObj);
           saveUser({ id: newId, email: '', display_name: trimmed });
+          trackEvent('sign_in', { method: 'username' });
+          trackSession();
           return {};
         }
       } catch (err) {
@@ -99,6 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userObj: SimpleUser = { id: newId, username: trimmed };
     setUser(userObj);
     saveUser({ id: newId, email: '', display_name: trimmed });
+    trackEvent('sign_in', { method: 'username' });
+    trackSession();
     return {};
   }, []);
 

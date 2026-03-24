@@ -41,18 +41,19 @@ interface UnitState {
 }
 
 export default function PostBattleWizard() {
-  const { campaign, currentPlayer, ready } = useCampaignGuard();
+  const guard = useCampaignGuard();
   const navigate = useNavigate();
   const location = useLocation();
   const { battles, units, awardXP, recordBattleParticipation, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
 
-  if (!ready) return null;
-
   // Get the battle by ID from location state, or fall back to most recent
   const targetBattleId = (location.state as { battleId?: string } | null)?.battleId;
-  const latestBattle = targetBattleId
-    ? battles.find(b => b.id === targetBattleId) ?? battles[0] ?? null
-    : battles[0] ?? null;
+  const latestBattle = useMemo(() => {
+    if (targetBattleId) {
+      return battles.find(b => b.id === targetBattleId) ?? battles[0] ?? null;
+    }
+    return battles[0] ?? null;
+  }, [targetBattleId, battles]);
 
   // Guard: prevent double-apply on back-navigation remount
   const alreadyProcessed = latestBattle && sessionStorage.getItem('lastProcessedBattleId') === latestBattle.id;
@@ -60,14 +61,15 @@ export default function PostBattleWizard() {
 
   // Get fielded units: from battle.units_fielded, or fall back to all roster units
   const fieldedUnits = useMemo(() => {
-    if (latestBattle && latestBattle.units_fielded.length > 0) {
+    if (!latestBattle) return [];
+    if (latestBattle.units_fielded.length > 0) {
       return latestBattle.units_fielded
         .map(id => units.find(u => u.id === id))
         .filter(Boolean) as typeof units;
     }
     // Fall back to current player's roster units only (not all units in the campaign)
-    return units.filter(u => u.player_id === currentPlayer?.id);
-  }, [latestBattle, units, currentPlayer]);
+    return units.filter(u => u.player_id === guard.currentPlayer?.id);
+  }, [latestBattle, units, guard.currentPlayer]);
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -127,6 +129,11 @@ export default function PostBattleWizard() {
   // UI state for pickers
   const [scarPickerOpen, setScarPickerOpen] = useState<string | null>(null);
   const [honorPickerOpen, setHonorPickerOpen] = useState<string | null>(null);
+
+  // Early returns AFTER all hooks
+  if (!guard.ready) return null;
+
+  const { currentPlayer } = guard;
 
   const steps = [
     { number: 1, name: "Casualties" },

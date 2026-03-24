@@ -21,7 +21,13 @@ export function useCampaignGuard(): GuardResult {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!campaign) navigate('/home', { replace: true });
+    if (!campaign) {
+      // Delay redirect to allow cloud pull to complete
+      const timer = setTimeout(() => {
+        if (!campaign) navigate('/home', { replace: true });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
   }, [campaign, navigate]);
 
   if (campaign && currentPlayer) {

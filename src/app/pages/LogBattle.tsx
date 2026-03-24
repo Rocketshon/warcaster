@@ -47,6 +47,7 @@ export default function LogBattle() {
   const [selectedAgendas, setSelectedAgendas] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useCustomOpponent, setUseCustomOpponent] = useState(false);
 
   // Build opponent list from players (excluding current player)
   const otherPlayers = players.filter(p => p.id !== currentPlayer?.id);
@@ -180,51 +181,71 @@ export default function LogBattle() {
             <label className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
               Opponent
             </label>
-            {otherPlayers.length > 0 ? (
-              <div className="relative">
-                <select
-                  value={opponentId}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setOpponentId(val);
-                    if (!val) {
-                      setOpponentName('');
-                      setOpponentFaction('');
-                      return;
-                    }
-                    const p = otherPlayers.find(pl => pl.id === val);
-                    if (p) {
-                      setOpponentName(p.name);
-                      setOpponentFaction(getFactionName(p.faction_id));
-                    }
-                  }}
-                  className="w-full appearance-none bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
-                >
-                  <option value="" className="bg-stone-900">
-                    Select opponent...
-                  </option>
-                  {otherPlayers.map((player) => (
-                    <option key={player.id} value={player.id} className="bg-stone-900">
-                      {player.name} — {getFactionName(player.faction_id)}
+            {otherPlayers.length > 0 && !useCustomOpponent ? (
+              <div>
+                <div className="relative">
+                  <select
+                    value={opponentId}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setOpponentId(val);
+                      if (!val) {
+                        setOpponentName('');
+                        setOpponentFaction('');
+                        return;
+                      }
+                      const p = otherPlayers.find(pl => pl.id === val);
+                      if (p) {
+                        setOpponentName(p.name);
+                        setOpponentFaction(getFactionName(p.faction_id));
+                      }
+                    }}
+                    className="w-full appearance-none bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  >
+                    <option value="" className="bg-stone-900">
+                      Select opponent...
                     </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500/50 pointer-events-none" />
+                    {otherPlayers.map((player) => (
+                      <option key={player.id} value={player.id} className="bg-stone-900">
+                        {player.name} — {getFactionName(player.faction_id)}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500/50 pointer-events-none" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setUseCustomOpponent(true); setOpponentId(''); setOpponentName(''); setOpponentFaction(''); }}
+                  className="text-sm text-emerald-400 underline mt-2"
+                >
+                  Play against someone else?
+                </button>
               </div>
             ) : (
-              /* No other players in campaign — manual entry */
-              <input
-                type="text"
-                value={opponentName}
-                onChange={(e) => setOpponentName(e.target.value)}
-                placeholder="Opponent name"
-                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
-              />
+              /* No other players in campaign or custom opponent mode — manual entry */
+              <div>
+                <input
+                  type="text"
+                  value={opponentName}
+                  onChange={(e) => setOpponentName(e.target.value)}
+                  placeholder="Opponent name"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                />
+                {otherPlayers.length > 0 && useCustomOpponent && (
+                  <button
+                    type="button"
+                    onClick={() => { setUseCustomOpponent(false); setOpponentName(''); setOpponentFaction(''); }}
+                    className="text-sm text-emerald-400 underline mt-2"
+                  >
+                    Select from campaign
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
-          {/* Opponent Faction (manual entry when no other players) */}
-          {otherPlayers.length === 0 && (
+          {/* Opponent Faction (manual entry when no other players or custom opponent) */}
+          {(otherPlayers.length === 0 || useCustomOpponent) && (
             <div>
               <label className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
                 Opponent Faction

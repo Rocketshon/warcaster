@@ -29,7 +29,9 @@ export default function PlayerDetail() {
 
   // Supply from units belonging to this player
   const playerUnits = units.filter(u => u.player_id === player.id);
-  const supplyUsed = playerUnits.reduce((sum, u) => sum + u.points_cost, 0);
+  const supplyUsed = isOwnProfile
+    ? playerUnits.reduce((sum, u) => sum + u.points_cost, 0)
+    : (player.supply_used || 0);
   const supplyLimit = campaign?.supply_limit ?? 1000;
 
   // Player battles

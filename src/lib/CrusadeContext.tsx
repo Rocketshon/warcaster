@@ -9,6 +9,7 @@ import { getRankFromXP } from './ranks';
 import { getFactionName, getFactionIcon } from './factions';
 import { useSyncEffect } from './hooks/useSyncEffect';
 import { useRealtimeSubscription } from './hooks/useRealtimeSubscription';
+import { trackEvent } from './telemetry';
 
 interface CrusadeState {
   // Campaign
@@ -126,6 +127,8 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     if (isSupabaseConfigured() && authUser?.id) {
       sync.createCampaignCloud(newCampaign, player).catch(console.warn);
     }
+
+    trackEvent('campaign_created');
   }, [authUser]);
 
   const joinCampaign = useCallback(async (code: string, playerName: string, factionId: FactionId): Promise<{ success: boolean; error?: string }> => {
@@ -137,13 +140,20 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       if (result.success && result.campaign && result.player) {
         setCampaign(result.campaign);
         setCurrentPlayer(result.player);
-        setPlayers(prev => [...prev, result.player!]);
-        // Pull full data
+        // Pull full data (includes the complete player list)
         const cloudData = await sync.pullCampaignFromCloud(authUser.id);
         if (cloudData) {
+          if (cloudData.players) {
+            setPlayers(cloudData.players);
+          } else {
+            setPlayers(prev => [...prev, result.player!]);
+          }
           setUnits(cloudData.units);
           setBattles(cloudData.battles);
+        } else {
+          setPlayers(prev => [...prev, result.player!]);
         }
+        trackEvent('campaign_joined');
         return { success: true };
       }
       if (result.error) return { success: false, error: result.error };
@@ -169,6 +179,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       setCurrentPlayer(player);
       setPlayers(prev => [...prev, player]);
       setCampaign(existingCampaign);
+      trackEvent('campaign_joined');
       return { success: true };
     }
     return { success: false, error: 'Campaign not found. Check the join code.' };
@@ -243,6 +254,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
           queueMutation({ type: 'unit', action: 'create', data: unit });
         });
       }
+      trackEvent('unit_added', { faction: cp.faction_id || '' });
       return { ...cp, supply_used: (cp.supply_used || 0) + pointsCost };
     });
   }, []);
@@ -297,6 +309,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       created_at: new Date().toISOString(),
     };
     setBattles(prev => [battle, ...prev]);
+    trackEvent('battle_logged');
 
     // Push battle to cloud
     if (isSupabaseConfigured()) {

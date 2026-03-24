@@ -1,0 +1,14 @@
+# Default owner
+* @Rocketshon
+
+# Core game logic
+src/lib/combatEngine.ts @Rocketshon
+src/lib/CrusadeContext.tsx @Rocketshon
+src/lib/sync.ts @Rocketshon
+
+# Data files (auto-generated)
+src/data/ @Rocketshon
+
+# Infrastructure
+.github/ @Rocketshon
+supabase/ @Rocketshon

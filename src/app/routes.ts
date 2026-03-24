@@ -77,6 +77,7 @@ export const router = createBrowserRouter(
         { path: "/campaign-map", Component: CampaignMap },
         { path: "/battle-lobby", Component: BattleLobby },
         { path: "/battle-live/:opponentId", Component: CombatTracker },
+        { path: "/dev/components", lazy: () => import('./pages/ComponentCatalog').then(m => ({ Component: m.default })) },
         { path: "/reset", lazy: () => import('./pages/ResetData').then(m => ({ Component: m.default })) },
         { path: "*", lazy: () => import('./pages/NotFound').then(m => ({ Component: m.default })) },
       ],

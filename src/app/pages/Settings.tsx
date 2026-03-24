@@ -23,6 +23,9 @@ import { getAllFactionSlugs, getAllUnits } from "../../data";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 import { toast } from "sonner";
+import { getAllFlags, setFeatureFlag, type FeatureFlags } from '../../lib/featureFlags';
+import { getUsageStats, clearTelemetry } from '../../lib/telemetry';
+import { getErrorLog, clearErrorLog } from '../../lib/errorTracking';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -41,6 +44,11 @@ export default function Settings() {
   const [cmStartingRp, setCmStartingRp] = useState(campaign?.starting_rp ?? 5);
   const [announcementText, setAnnouncementText] = useState("");
   const [showRemovePlayerDialog, setShowRemovePlayerDialog] = useState<string | null>(null);
+
+  // Developer Tools state
+  const [devFlags, setDevFlags] = useState<FeatureFlags>(() => getAllFlags());
+  const [showErrorLog, setShowErrorLog] = useState(false);
+  const [showUsageStats, setShowUsageStats] = useState(false);
 
   // Profile state
   const displayName = authUser?.username ?? "Commander";
@@ -522,6 +530,147 @@ export default function Settings() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Developer Tools Section */}
+        <div className="mb-6">
+          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 px-1">
+            Developer Tools
+          </h2>
+          <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-5 space-y-5">
+
+            {/* Feature Flags */}
+            <div>
+              <h3 className="text-stone-200 font-semibold mb-3">Feature Flags</h3>
+              <div className="space-y-2">
+                {(Object.keys(devFlags) as (keyof FeatureFlags)[]).map((flag) => (
+                  <label key={flag} className="flex items-center justify-between p-2 rounded-sm hover:bg-stone-800 transition-colors cursor-pointer">
+                    <span className="text-sm text-stone-400 font-mono">{flag}</span>
+                    <button
+                      onClick={() => {
+                        const newValue = !devFlags[flag];
+                        setFeatureFlag(flag, newValue);
+                        setDevFlags(getAllFlags());
+                      }}
+                      className={`relative w-10 h-5 rounded-full transition-colors ${devFlags[flag] ? 'bg-emerald-600' : 'bg-stone-700'}`}
+                    >
+                      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${devFlags[flag] ? 'translate-x-5' : ''}`} />
+                    </button>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Error Log */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-stone-200 font-semibold">Error Log</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-stone-500 font-mono">{getErrorLog().length} errors</span>
+                  <button
+                    onClick={() => setShowErrorLog(!showErrorLog)}
+                    className="px-3 py-1 text-xs rounded-sm border border-stone-700 text-stone-400 hover:text-stone-300 hover:border-stone-600 transition-all"
+                  >
+                    {showErrorLog ? 'Hide' : 'View'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearErrorLog();
+                      setShowErrorLog(false);
+                      toast.success('Error log cleared');
+                    }}
+                    className="px-3 py-1 text-xs rounded-sm border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+              {showErrorLog && (
+                <div className="max-h-60 overflow-y-auto space-y-2 mt-2">
+                  {getErrorLog().length === 0 ? (
+                    <p className="text-sm text-stone-600 text-center py-2">No errors recorded</p>
+                  ) : (
+                    getErrorLog().map((entry, i) => (
+                      <div key={i} className="p-2 rounded-sm border border-stone-700/40 bg-stone-800 text-xs">
+                        <div className="flex justify-between text-stone-500 mb-1">
+                          <span className="font-mono">{new Date(entry.timestamp).toLocaleString()}</span>
+                        </div>
+                        <p className="text-red-400 font-mono break-all">{entry.message}</p>
+                        {entry.stack && (
+                          <pre className="text-stone-600 mt-1 text-[10px] leading-tight overflow-x-auto whitespace-pre-wrap">{entry.stack.slice(0, 300)}</pre>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Usage Stats */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-stone-200 font-semibold">Usage Stats</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowUsageStats(!showUsageStats)}
+                    className="px-3 py-1 text-xs rounded-sm border border-stone-700 text-stone-400 hover:text-stone-300 hover:border-stone-600 transition-all"
+                  >
+                    {showUsageStats ? 'Hide' : 'View'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearTelemetry();
+                      setShowUsageStats(false);
+                      toast.success('Telemetry cleared');
+                    }}
+                    className="px-3 py-1 text-xs rounded-sm border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+              {showUsageStats && (() => {
+                const stats = getUsageStats();
+                return (
+                  <div className="space-y-2 mt-2">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="p-2 rounded-sm border border-stone-700/40 bg-stone-800">
+                        <span className="text-stone-500 text-xs">Sessions</span>
+                        <p className="text-stone-200 font-mono">{stats.sessionCount}</p>
+                      </div>
+                      <div className="p-2 rounded-sm border border-stone-700/40 bg-stone-800">
+                        <span className="text-stone-500 text-xs">Total Events</span>
+                        <p className="text-stone-200 font-mono">{stats.events.length}</p>
+                      </div>
+                      <div className="p-2 rounded-sm border border-stone-700/40 bg-stone-800">
+                        <span className="text-stone-500 text-xs">First Seen</span>
+                        <p className="text-stone-200 font-mono text-xs">{new Date(stats.firstSeen).toLocaleDateString()}</p>
+                      </div>
+                      <div className="p-2 rounded-sm border border-stone-700/40 bg-stone-800">
+                        <span className="text-stone-500 text-xs">Last Seen</span>
+                        <p className="text-stone-200 font-mono text-xs">{new Date(stats.lastSeen).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                    {Object.keys(stats.featureUsage).length > 0 && (
+                      <div className="p-2 rounded-sm border border-stone-700/40 bg-stone-800">
+                        <span className="text-stone-500 text-xs block mb-1">Feature Usage</span>
+                        <div className="space-y-1">
+                          {Object.entries(stats.featureUsage)
+                            .sort(([, a], [, b]) => b - a)
+                            .map(([event, count]) => (
+                              <div key={event} className="flex justify-between text-xs">
+                                <span className="text-stone-400 font-mono">{event}</span>
+                                <span className="text-stone-200 font-mono">{count}</span>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

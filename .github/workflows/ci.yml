@@ -1,0 +1,48 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+    secrets:
+      VITE_SUPABASE_URL:
+        required: false
+      VITE_SUPABASE_ANON_KEY:
+        required: false
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npx eslint src/ --max-warnings 0 || true
+      - name: TypeCheck
+        run: npx tsc --noEmit
+      - name: Test
+        run: npx vitest run --coverage
+      - name: Build
+        env:
+          GITHUB_PAGES: 'true'
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: npm run build
+      - name: Bundle Size Check
+        run: |
+          MAX_SIZE=2000000
+          ACTUAL=$(du -sb dist/ | cut -f1)
+          echo "Bundle size: $ACTUAL bytes (limit: $MAX_SIZE)"
+          if [ "$ACTUAL" -gt "$MAX_SIZE" ]; then
+            echo "::warning::Bundle size exceeds 2MB limit"
+          fi
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
