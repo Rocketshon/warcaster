@@ -70,6 +70,7 @@ export default function FactionPicker({
             </h2>
             <button
               onClick={onClose}
+              aria-label="Close faction picker"
               className="p-2 rounded-lg hover:bg-stone-800 transition-colors"
             >
               <X className="w-5 h-5 text-stone-400" />

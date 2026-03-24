@@ -229,7 +229,7 @@ export default function Settings() {
                       type="text"
                       value={tempName}
                       onChange={(e) => setTempName(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-stone-700 bg-stone-900 text-stone-300 focus:outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-2 rounded-lg border border-stone-700 bg-stone-900 text-stone-300 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                     />
                     <div className="flex gap-2 mt-2">
                       <button
@@ -257,6 +257,7 @@ export default function Settings() {
                           setTempName(displayName);
                           setIsEditingName(true);
                         }}
+                        aria-label="Edit display name"
                         className="p-1 rounded hover:bg-stone-800 transition-colors"
                       >
                         <Pencil className="w-4 h-4 text-stone-400" />
@@ -357,7 +358,7 @@ export default function Settings() {
                     step={50}
                     value={cmSupplyLimit}
                     onChange={(e) => setCmSupplyLimit(Number(e.target.value))}
-                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 font-mono focus:outline-none focus:border-emerald-500"
+                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 font-mono focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                   />
                   <button
                     onClick={() => updateCampaignSettings({ supply_limit: cmSupplyLimit })}
@@ -379,7 +380,7 @@ export default function Settings() {
                     step={1}
                     value={cmStartingRp}
                     onChange={(e) => setCmStartingRp(Number(e.target.value))}
-                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 font-mono focus:outline-none focus:border-emerald-500"
+                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 font-mono focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                   />
                   <button
                     onClick={() => updateCampaignSettings({ starting_rp: cmStartingRp })}
@@ -413,7 +414,7 @@ export default function Settings() {
                     value={announcementText}
                     onChange={(e) => setAnnouncementText(e.target.value)}
                     placeholder="Write an announcement..."
-                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 placeholder-stone-600 focus:outline-none focus:border-emerald-500"
+                    className="flex-1 px-3 py-2 rounded-sm border border-stone-700 bg-stone-800 text-stone-200 placeholder-stone-600 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                   />
                   <button
                     onClick={() => {
@@ -459,6 +460,7 @@ export default function Settings() {
                         {!isOwner && (
                           <button
                             onClick={() => setShowRemovePlayerDialog(player.id)}
+                            aria-label="Remove player"
                             className="p-2 rounded-sm hover:bg-red-500/10 transition-colors group"
                           >
                             <UserMinus className="w-4 h-4 text-stone-500 group-hover:text-red-400 transition-colors" />
@@ -725,7 +727,7 @@ export default function Settings() {
 
       {/* Leave Campaign Confirmation Dialog */}
       {showLeaveDialog && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6" role="dialog" aria-modal="true">
           <div className="relative w-full max-w-md rounded-sm border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
@@ -757,7 +759,7 @@ export default function Settings() {
 
       {/* Remove Player Confirmation Dialog */}
       {showRemovePlayerDialog && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6" role="dialog" aria-modal="true">
           <div className="relative w-full max-w-md rounded-sm border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
@@ -792,7 +794,7 @@ export default function Settings() {
 
       {/* Sign Out Confirmation Dialog */}
       {showSignOutDialog && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6" role="dialog" aria-modal="true">
           <div className="relative w-full max-w-md rounded-sm border border-red-500/30 bg-stone-900 p-6 shadow-2xl">
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />

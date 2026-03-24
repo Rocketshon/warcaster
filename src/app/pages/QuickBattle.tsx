@@ -70,6 +70,7 @@ export default function QuickBattle() {
         <div className="flex items-center gap-3 px-4 py-3">
           <button
             onClick={() => navigate("/home")}
+            aria-label="Go back"
             className="p-1.5 rounded-lg hover:bg-stone-800 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-stone-400" />

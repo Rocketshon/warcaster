@@ -106,6 +106,8 @@ export default function TutorialOverlay() {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
       className={`fixed inset-0 z-[90] flex items-center justify-center p-4 transition-opacity duration-300 ${
         fadeIn && !fadeOut ? 'opacity-100' : 'opacity-0'
       }`}

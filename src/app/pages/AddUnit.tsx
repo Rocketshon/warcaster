@@ -139,7 +139,7 @@ export default function AddUnit() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search units or keywords..."
-                  className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg pl-11 pr-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
@@ -221,6 +221,7 @@ export default function AddUnit() {
                     </div>
                     <button
                       onClick={handleCancel}
+                      aria-label="Deselect unit"
                       className="text-stone-500 hover:text-stone-300 transition-colors"
                     >
                       <X className="w-5 h-5" />
@@ -292,7 +293,7 @@ export default function AddUnit() {
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="Enter custom unit name"
-                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
@@ -307,7 +308,7 @@ export default function AddUnit() {
                   value={customPoints}
                   onChange={(e) => setCustomPoints(Number(e.target.value))}
                   min="0"
-                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 

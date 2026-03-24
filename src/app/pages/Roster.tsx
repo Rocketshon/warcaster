@@ -173,7 +173,7 @@ export default function Roster() {
           <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-stone-500 uppercase tracking-wider">
+                <span className="text-xs text-stone-400 uppercase tracking-wider">
                   Supply
                 </span>
                 <span className="text-sm font-bold text-stone-100 font-mono">
@@ -196,7 +196,7 @@ export default function Roster() {
         <div className="mb-6">
           <div className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 p-4">
             <div className="relative flex items-center justify-between">
-              <span className="text-xs text-stone-500 uppercase tracking-wider">
+              <span className="text-xs text-stone-400 uppercase tracking-wider">
                 Requisition Points
               </span>
               <span className="text-xl font-bold text-emerald-400 font-mono">
@@ -507,6 +507,7 @@ export default function Roster() {
       {/* Floating Action Button */}
       <button
         onClick={() => navigate("/add-unit")}
+        aria-label="Add unit"
         className="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center shadow-[0_4px_20px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_30px_rgba(16,185,129,0.6)] transition-all duration-300 group z-50"
       >
         <Plus className="w-6 h-6 text-black group-hover:scale-110 transition-transform" strokeWidth={2.5} />

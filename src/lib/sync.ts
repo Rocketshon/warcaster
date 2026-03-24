@@ -455,12 +455,8 @@ export async function syncAll(userId: string): Promise<void> {
     if (cloudData.player) {
       storage.savePlayer(cloudData.player);
     }
-    if (cloudData.units.length > 0) {
-      storage.saveUnits(cloudData.units);
-    }
-    if (cloudData.battles.length > 0) {
-      storage.saveBattles(cloudData.battles);
-    }
+    storage.saveUnits(cloudData.units);
+    storage.saveBattles(cloudData.battles);
 
     // Push local units not present in cloud
     const cloudUnitIds = new Set(cloudData.units.map(u => u.id));

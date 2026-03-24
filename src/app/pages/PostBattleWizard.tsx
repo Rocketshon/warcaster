@@ -1,12 +1,10 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { ArrowLeft, Check, ChevronDown, X, Award, Zap, Skull, TrendingUp, Trophy } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
 import { generateId } from "../../lib/storage";
-import { updatePlayerInCloud } from "../../lib/sync";
-import { isSupabaseConfigured } from "../../lib/supabase";
 
 // Battle scars options (game rules, not mock data)
 const BATTLE_SCARS = [
@@ -126,6 +124,34 @@ export default function PostBattleWizard() {
     appliedRef.current = true;
   }
 
+  const calculateXP = useCallback(() => {
+    setUnitStates((prev) => {
+      const newStates = { ...prev };
+      fieldedUnits.forEach((unit) => {
+        const state = newStates[unit.id];
+        if (!state) return;
+
+        let xp = 1; // Participated
+        if (!state.destroyed) xp += 1; // Survived
+        if (latestBattle?.marked_for_greatness === unit.id) xp += 1; // Marked for Greatness
+        if (battleWon) xp += 1; // Won battle
+
+        const newTotal = unit.experience_points + xp;
+        const oldRank = getRankFromXP(unit.experience_points);
+        const newRank = getRankFromXP(newTotal);
+
+        newStates[unit.id] = {
+          ...state,
+          xpGained: xp,
+          newTotalXP: newTotal,
+          rankedUp: oldRank !== newRank,
+          newRank,
+        };
+      });
+      return newStates;
+    });
+  }, [fieldedUnits, battleWon, latestBattle]);
+
   // If already processed, skip straight to summary and recalculate XP for display
   useEffect(() => {
     if (alreadyProcessed) {
@@ -137,8 +163,7 @@ export default function PostBattleWizard() {
     if (alreadyProcessed && latestBattle) {
       calculateXP();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alreadyProcessed, latestBattle]);
+  }, [alreadyProcessed, latestBattle, calculateXP]);
 
   // UI state for pickers
   const [scarPickerOpen, setScarPickerOpen] = useState<string | null>(null);
@@ -162,32 +187,6 @@ export default function PostBattleWizard() {
       ...prev,
       [unitId]: { ...prev[unitId], destroyed: !prev[unitId].destroyed },
     }));
-  };
-
-  const calculateXP = () => {
-    const newStates = { ...unitStates };
-    fieldedUnits.forEach((unit) => {
-      const state = newStates[unit.id];
-      if (!state) return;
-
-      let xp = 1; // Participated
-      if (!state.destroyed) xp += 1; // Survived
-      if (latestBattle?.marked_for_greatness === unit.id) xp += 1; // Marked for Greatness
-      if (battleWon) xp += 1; // Won battle
-
-      const newTotal = unit.experience_points + xp;
-      const oldRank = getRankFromXP(unit.experience_points);
-      const newRank = getRankFromXP(newTotal);
-
-      newStates[unit.id] = {
-        ...state,
-        xpGained: xp,
-        newTotalXP: newTotal,
-        rankedUp: oldRank !== newRank,
-        newRank,
-      };
-    });
-    setUnitStates(newStates);
   };
 
   const selectScar = (unitId: string, scarId: string) => {
@@ -265,15 +264,6 @@ export default function PostBattleWizard() {
       sessionStorage.setItem('lastProcessedBattleId', latestBattle.id);
     }
     setChangesApplied(true);
-
-    // Push player data to cloud immediately so it isn't lost on navigation
-    if (isSupabaseConfigured() && currentPlayer) {
-      setTimeout(() => {
-        if (currentPlayer) {
-          updatePlayerInCloud(currentPlayer).catch(console.warn);
-        }
-      }, 100);
-    }
   };
 
   const goToNextStep = () => {

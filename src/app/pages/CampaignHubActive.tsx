@@ -165,7 +165,7 @@ export default function CampaignHubActive() {
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {campaign.current_round}
               </div>
-              <div className="text-xs text-stone-500 uppercase tracking-wider">
+              <div className="text-xs text-stone-400 uppercase tracking-wider">
                 Round
               </div>
             </div>
@@ -177,7 +177,7 @@ export default function CampaignHubActive() {
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {totalBattles}
               </div>
-              <div className="text-xs text-stone-500 uppercase tracking-wider">
+              <div className="text-xs text-stone-400 uppercase tracking-wider">
                 Battles
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function CampaignHubActive() {
               <div className="text-2xl font-bold text-stone-100 mb-1">
                 {displayPlayers.length}
               </div>
-              <div className="text-xs text-stone-500 uppercase tracking-wider">
+              <div className="text-xs text-stone-400 uppercase tracking-wider">
                 Players
               </div>
             </div>
@@ -435,6 +435,7 @@ export default function CampaignHubActive() {
       {/* Floating Action Button - Log Battle */}
       <button
         onClick={handleLogBattle}
+        aria-label="Log battle"
         className="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-500 transition-all shadow-[0_0_25px_rgba(16,185,129,0.4)] hover:shadow-[0_0_35px_rgba(16,185,129,0.6)] z-20 flex items-center justify-center group"
       >
         <Plus className="w-6 h-6 text-black group-hover:rotate-90 transition-transform duration-300" strokeWidth={2.5} />

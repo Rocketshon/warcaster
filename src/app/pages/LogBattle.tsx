@@ -293,7 +293,7 @@ export default function LogBattle() {
                   value={opponentName}
                   onChange={(e) => setOpponentName(e.target.value)}
                   placeholder="Opponent name"
-                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                  className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
                 {otherPlayers.length > 0 && useCustomOpponent && (
                   <button
@@ -319,7 +319,7 @@ export default function LogBattle() {
                 value={opponentFaction}
                 onChange={(e) => setOpponentFaction(e.target.value)}
                 placeholder="e.g., Space Marines"
-                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           )}
@@ -335,7 +335,7 @@ export default function LogBattle() {
               value={missionName}
               onChange={(e) => setMissionName(e.target.value)}
               placeholder="e.g., Sweep and Clear"
-              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
           </div>
 
@@ -408,7 +408,7 @@ export default function LogBattle() {
                             {agenda.xp}
                           </span>
                         </div>
-                        <p className="text-xs text-stone-500 mt-0.5">
+                        <p className="text-xs text-stone-400 mt-0.5">
                           {agenda.description}
                         </p>
                       </div>
@@ -459,7 +459,7 @@ export default function LogBattle() {
                 onChange={(e) => setYourScore(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
@@ -477,7 +477,7 @@ export default function LogBattle() {
                 onChange={(e) => setOpponentScore(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           </div>
@@ -679,7 +679,7 @@ export default function LogBattle() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Optional notes about the battle..."
               rows={4}
-              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-600 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
+              className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
             />
           </div>
 

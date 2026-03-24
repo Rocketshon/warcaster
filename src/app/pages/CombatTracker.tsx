@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router";
 import { ArrowLeft, Swords, Target, Shield, Crosshair, Settings2 } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
@@ -59,6 +59,8 @@ export default function CombatTracker() {
   const [combatResult, setCombatResult] = useState<CombatResult | null>(null);
   const [hitRolls, setHitRolls] = useState<number[]>([]);
   const [woundRolls, setWoundRolls] = useState<number[]>([]);
+  const hitRollsRef = useRef<number[]>([]);
+  const woundRollsRef = useRef<number[]>([]);
   const [engagements, setEngagements] = useState<CombatEngagement[]>([]);
   const [diceMode, setDiceModeState] = useState<"digital" | "manual">(getDiceMode);
   const [turn, setTurn] = useState(1);
@@ -213,6 +215,7 @@ export default function CombatTracker() {
 
   // Hit rolls complete
   const handleHitRollsComplete = (rolls: number[]) => {
+    hitRollsRef.current = rolls;
     setHitRolls(rolls);
     // Count hits
     const hitTarget = preview?.hitTarget ?? 7;
@@ -231,6 +234,7 @@ export default function CombatTracker() {
 
   // Wound rolls complete
   const handleWoundRollsComplete = (rolls: number[]) => {
+    woundRollsRef.current = rolls;
     setWoundRolls(rolls);
     const woundTarget = preview?.woundTarget ?? 7;
     let wounds = 0;
@@ -247,7 +251,7 @@ export default function CombatTracker() {
 
   // Save rolls complete
   const handleSaveRollsComplete = (rolls: number[]) => {
-    finalizeCombat(hitRolls, woundRolls, rolls);
+    finalizeCombat(hitRollsRef.current, woundRollsRef.current, rolls);
   };
 
   // Finalize combat with manual rolls
@@ -327,13 +331,20 @@ export default function CombatTracker() {
   // Count wounds for save roll count
   const woundsForSaveRoll = useMemo(() => {
     if (!preview || woundRolls.length === 0) return 0;
+    const hasDevastatingWounds = selectedWeapon?.traits?.some(
+      (t: string) => t.toLowerCase().includes('devastating wounds')
+    );
     let wounds = 0;
     for (const r of woundRolls) {
       if (r === 1) continue;
-      if (r === 6 || r >= preview.woundTarget) wounds++;
+      if (r === 6) {
+        if (!hasDevastatingWounds) wounds++;
+      } else if (r >= preview.woundTarget) {
+        wounds++;
+      }
     }
     return wounds;
-  }, [woundRolls, preview]);
+  }, [woundRolls, preview, selectedWeapon]);
 
   const myFaction = currentPlayer ? getFaction(currentPlayer.faction_id) : null;
   const oppFaction = opponent ? getFaction(opponent.faction_id) : null;

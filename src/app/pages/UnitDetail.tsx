@@ -750,7 +750,7 @@ export default function UnitDetail() {
 
       {/* Edit Unit Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-sm border border-stone-700/60 bg-stone-900 p-6">
             <div>
               <h3 className="text-lg font-bold text-stone-100 mb-4">Edit Unit</h3>
@@ -762,7 +762,7 @@ export default function UnitDetail() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none"
+                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
 
@@ -774,7 +774,7 @@ export default function UnitDetail() {
                     value={editPoints}
                     onChange={(e) => setEditPoints(Number(e.target.value))}
                     min="0"
-                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none"
+                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
 
@@ -785,7 +785,7 @@ export default function UnitDetail() {
                     onChange={(e) => setEditNotes(e.target.value)}
                     rows={3}
                     placeholder="Battle notes, lore, etc."
-                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none resize-none"
+                    className="w-full bg-stone-950 border border-stone-600 rounded-lg px-3 py-2 text-stone-100 text-sm focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 resize-none"
                   />
                 </div>
               </div>
@@ -811,7 +811,7 @@ export default function UnitDetail() {
 
       {/* Enhancement Picker Modal */}
       {showEnhancementPicker && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-sm border border-stone-700/60 bg-stone-900 p-6 max-h-[80vh] overflow-y-auto">
             <div>
               <div className="flex justify-center mb-4">
@@ -854,7 +854,7 @@ export default function UnitDetail() {
 
       {/* Award XP Modal */}
       {showSpendXP && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-sm border border-stone-700/60 bg-stone-900 p-6">
             <div>
               <div className="flex justify-center mb-4">
@@ -870,7 +870,7 @@ export default function UnitDetail() {
               <div className="flex items-center justify-center gap-4 mb-6">
                 <button
                   onClick={() => setXpAmount(Math.max(1, xpAmount - 1))}
-                  className="w-10 h-10 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                  className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                 >
                   -
                 </button>
@@ -879,7 +879,7 @@ export default function UnitDetail() {
                 </div>
                 <button
                   onClick={() => setXpAmount(xpAmount + 1)}
-                  className="w-10 h-10 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
+                  className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                 >
                   +
                 </button>
@@ -906,7 +906,7 @@ export default function UnitDetail() {
 
       {/* Destroy Confirmation Modal */}
       {showDestroyConfirm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-sm border border-stone-700/60 bg-stone-900 p-6">
             <div>
               <div className="flex justify-center mb-4">
@@ -939,7 +939,7 @@ export default function UnitDetail() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-sm border border-stone-700/60 bg-stone-900 p-6">
             <div>
               <div className="flex justify-center mb-4">

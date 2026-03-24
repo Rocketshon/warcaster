@@ -93,19 +93,21 @@ export default function GameTracker() {
             <button
               onClick={() => update({ currentRound: Math.max(1, state.currentRound - 1) })}
               disabled={state.currentRound <= 1}
-              className="w-8 h-8 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-stone-900 transition-colors"
+              aria-label="Previous round"
+              className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-stone-900 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <div className="text-center">
-              <div className="text-[10px] text-stone-500 uppercase tracking-wider">Battle Round</div>
+              <div className="text-[10px] text-stone-400 uppercase tracking-wider">Battle Round</div>
               <div className="text-2xl font-bold text-amber-400 font-mono">{state.currentRound}</div>
-              <div className="text-[10px] text-stone-500">of 5</div>
+              <div className="text-[10px] text-stone-400">of 5</div>
             </div>
             <button
               onClick={() => update({ currentRound: Math.min(5, state.currentRound + 1) })}
               disabled={state.currentRound >= 5}
-              className="w-8 h-8 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-stone-900 transition-colors"
+              aria-label="Next round"
+              className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-stone-900 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -157,6 +159,7 @@ export default function GameTracker() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => update({ [vpKey]: Math.max(0, vp - 1) } as Partial<TrackerState>)}
+                          aria-label="Decrease victory points"
                           className="w-12 h-12 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           -
@@ -183,6 +186,7 @@ export default function GameTracker() {
                         )}
                         <button
                           onClick={() => update({ [vpKey]: vp + 1 } as Partial<TrackerState>)}
+                          aria-label="Increase victory points"
                           className="w-12 h-12 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           +
@@ -198,6 +202,7 @@ export default function GameTracker() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => update({ [cpKey]: Math.max(0, cp - 1) } as Partial<TrackerState>)}
+                          aria-label="Decrease command points"
                           className="w-12 h-12 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           -
@@ -224,6 +229,7 @@ export default function GameTracker() {
                         )}
                         <button
                           onClick={() => update({ [cpKey]: cp + 1 } as Partial<TrackerState>)}
+                          aria-label="Increase command points"
                           className="w-12 h-12 rounded-lg border border-amber-500/30 bg-stone-950 text-amber-400 font-bold text-lg hover:bg-stone-900 transition-colors"
                         >
                           +
@@ -249,7 +255,7 @@ export default function GameTracker() {
 
       {/* Reset Confirmation Modal */}
       {showReset && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm relative overflow-hidden rounded-sm border border-red-500/30 bg-stone-900 p-6">
             <div className="relative">
               <div className="flex justify-center mb-4">

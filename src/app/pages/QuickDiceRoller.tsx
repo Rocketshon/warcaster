@@ -47,6 +47,7 @@ export default function QuickDiceRoller() {
         <div className="flex items-center gap-3 px-4 py-3">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Go back"
             className="p-1.5 rounded-lg hover:bg-stone-800 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-stone-400" />
@@ -64,7 +65,8 @@ export default function QuickDiceRoller() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setDiceCount((c) => Math.max(1, c - 1))}
-              className="p-2 rounded-sm bg-stone-800 border border-stone-700 hover:border-stone-600 transition-colors"
+              aria-label="Decrease dice count"
+              className="p-3 rounded-sm bg-stone-800 border border-stone-700 hover:border-stone-600 transition-colors"
             >
               <Minus className="w-4 h-4 text-stone-300" />
             </button>
@@ -73,7 +75,8 @@ export default function QuickDiceRoller() {
             </span>
             <button
               onClick={() => setDiceCount((c) => Math.min(20, c + 1))}
-              className="p-2 rounded-sm bg-stone-800 border border-stone-700 hover:border-stone-600 transition-colors"
+              aria-label="Increase dice count"
+              className="p-3 rounded-sm bg-stone-800 border border-stone-700 hover:border-stone-600 transition-colors"
             >
               <Plus className="w-4 h-4 text-stone-300" />
             </button>

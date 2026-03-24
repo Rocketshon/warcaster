@@ -60,7 +60,7 @@ export function useSyncEffect(
         if (cancelled || !cloudData) return;
         if (cloudData.campaign) {
           setCampaign(cloudData.campaign);
-          setCurrentPlayer(cloudData.player);
+          if (cloudData.player) setCurrentPlayer(cloudData.player);
           setUnits(cloudData.units);
           setBattles(cloudData.battles);
           if (cloudData.players.length > 0 && !cancelled) {

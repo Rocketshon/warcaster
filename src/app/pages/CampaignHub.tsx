@@ -193,7 +193,7 @@ export default function CampaignHub() {
 
       {/* Bottom rotating quote */}
       <div className="relative z-10 mt-8 text-center">
-        <div className="flex items-center justify-center gap-2 text-stone-500 text-xs tracking-wider">
+        <div className="flex items-center justify-center gap-2 text-stone-400 text-xs tracking-wider">
           <div className="w-8 h-px bg-gradient-to-r from-transparent to-stone-700" />
           <span
             className={`uppercase italic max-w-xs text-center transition-opacity duration-400 ${fade ? "opacity-100" : "opacity-0"}`}

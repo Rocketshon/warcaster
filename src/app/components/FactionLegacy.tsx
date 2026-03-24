@@ -66,7 +66,8 @@ function CounterTracker({
       <div className="flex items-center gap-4">
         <button
           onClick={() => onUpdate(Math.max(0, count - 1))}
-          className="w-9 h-9 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
+          aria-label="Decrease"
+          className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
         >
           <Minus className="w-4 h-4" />
         </button>
@@ -75,7 +76,8 @@ function CounterTracker({
         </span>
         <button
           onClick={() => onUpdate(count + 1)}
-          className="w-9 h-9 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
+          aria-label="Increase"
+          className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -105,7 +107,8 @@ function ProgressTracker({
       <div className="flex items-center gap-3 mb-2">
         <button
           onClick={() => onUpdate(Math.max(0, current - 1))}
-          className="w-8 h-8 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
+          aria-label="Decrease"
+          className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
         >
           <Minus className="w-3 h-3" />
         </button>
@@ -119,7 +122,8 @@ function ProgressTracker({
         </div>
         <button
           onClick={() => onUpdate(Math.min(max, current + 1))}
-          className="w-8 h-8 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
+          aria-label="Increase"
+          className="w-11 h-11 rounded-lg border border-emerald-500/30 bg-stone-950 text-emerald-400 flex items-center justify-center hover:bg-stone-800 transition-colors"
         >
           <Plus className="w-3 h-3" />
         </button>
