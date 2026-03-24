@@ -345,7 +345,8 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       if (u.id !== unitId) return u;
       const newXP = u.experience_points + xp;
       const newRank = getRankFromXP(newXP);
-      return { ...u, experience_points: newXP, rank: newRank };
+      // Update crusade_points: increment by 1 per battle participated (each awardXP call = 1 battle)
+      return { ...u, experience_points: newXP, rank: newRank, crusade_points: u.crusade_points + 1 };
     }));
   }, []);
 

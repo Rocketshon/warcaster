@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Swords, ArrowRight } from "lucide-react";
-import { Skull } from "lucide-react";
+import { Swords, ArrowRight, Skull } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useAuth } from "../../lib/AuthContext";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
@@ -165,6 +164,29 @@ export default function CampaignHub() {
               <ArrowRight className="w-5 h-5 text-emerald-500/50" />
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+          </button>
+
+          {/* Quick Battle Card */}
+          <button
+            onClick={() => navigate('/quick-battle')}
+            className="group w-full relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-stone-900 border border-amber-500/30 rounded-sm transition-all duration-300 group-hover:border-amber-500/50 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.15)]" />
+            <div className="relative px-6 py-6 flex items-center justify-between">
+              <div className="flex-1 text-left">
+                <div className="flex items-center gap-3 mb-1">
+                  <Swords className="w-5 h-5 text-amber-500/80" strokeWidth={1.5} />
+                  <h3 className="text-lg tracking-wide text-stone-100 font-semibold">
+                    Quick Battle
+                  </h3>
+                </div>
+                <p className="text-stone-400 text-sm ml-8">
+                  Skip the Crusade. Jump straight into datasheets, rules, dice, and the battle tracker.
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-amber-500/50" />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
           </button>
         </div>
       </div>

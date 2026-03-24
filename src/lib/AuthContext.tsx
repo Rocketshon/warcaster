@@ -1,7 +1,19 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { saveUser, clearUser, loadUser, generateId } from './storage';
 import { trackEvent, trackSession } from './telemetry';
+
+/** Wraps a promise with a timeout. Rejects with the given message if it takes too long. */
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      (val) => { clearTimeout(timer); resolve(val); },
+      (err) => { clearTimeout(timer); reject(err); },
+    );
+  });
+}
 
 // NOTE: cc_profiles.display_name should have a UNIQUE constraint in Supabase:
 //   ALTER TABLE cc_profiles ADD CONSTRAINT cc_profiles_display_name_unique UNIQUE (display_name);
@@ -46,67 +58,83 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (trimmed.length > 30) return { error: 'Username must be 30 characters or less.' };
     if (!/^[a-zA-Z0-9_\- ]+$/.test(trimmed)) return { error: 'Username can only contain letters, numbers, spaces, hyphens, and underscores.' };
 
-    // Check if username is taken (in Supabase)
-    if (isSupabaseConfigured()) {
-      try {
-        const { data: existing } = await supabase
-          .from('cc_profiles')
-          .select('id, display_name')
-          .ilike('display_name', trimmed)
-          .maybeSingle();
+    const TIMEOUT_MS = 10_000;
+    const TIMEOUT_MSG = 'Connection timeout — check your network';
 
-        if (existing) {
-          // Username exists — log in as that user
-          const userObj: SimpleUser = { id: existing.id, username: existing.display_name };
-          setUser(userObj);
-          saveUser({ id: existing.id, email: '', display_name: existing.display_name });
-          trackEvent('sign_in', { method: 'username' });
-          trackSession();
-          return {};
-        }
+    const doSignIn = async (): Promise<{ error?: string }> => {
+      // Check if username is taken (in Supabase)
+      if (isSupabaseConfigured()) {
+        try {
+          const { data: existing } = await supabase
+            .from('cc_profiles')
+            .select('id, display_name')
+            .ilike('display_name', trimmed)
+            .maybeSingle();
 
-        // New username — create profile
-        const newId = generateId();
-        const { error } = await supabase
-          .from('cc_profiles')
-          .insert({ id: newId, display_name: trimmed });
-
-        if (error) {
-          // Handle race condition: another client inserted the same username
-          if (error.code === '23505') {
-            return { error: 'Username already taken.' };
+          if (existing) {
+            // Username exists — log in as that user
+            const userObj: SimpleUser = { id: existing.id, username: existing.display_name };
+            setUser(userObj);
+            saveUser({ id: existing.id, email: '', display_name: existing.display_name });
+            trackEvent('sign_in', { method: 'username' });
+            trackSession();
+            toast.success(`Signed in as ${existing.display_name}`);
+            return {};
           }
-          console.warn('Failed to create cloud profile:', error.message);
-          // Fall through to local-only
-        } else {
-          const userObj: SimpleUser = { id: newId, username: trimmed };
-          setUser(userObj);
-          saveUser({ id: newId, email: '', display_name: trimmed });
-          trackEvent('sign_in', { method: 'username' });
-          trackSession();
-          return {};
+
+          // New username — create profile
+          const newId = generateId();
+          const { error } = await supabase
+            .from('cc_profiles')
+            .insert({ id: newId, display_name: trimmed });
+
+          if (error) {
+            // Handle race condition: another client inserted the same username
+            if (error.code === '23505') {
+              return { error: 'Username already taken.' };
+            }
+            console.warn('Failed to create cloud profile:', error.message);
+            // Fall through to local-only
+          } else {
+            const userObj: SimpleUser = { id: newId, username: trimmed };
+            setUser(userObj);
+            saveUser({ id: newId, email: '', display_name: trimmed });
+            trackEvent('sign_in', { method: 'username' });
+            trackSession();
+            toast.success(`Signed in as ${trimmed}`);
+            return {};
+          }
+        } catch (err) {
+          console.warn('Cloud auth failed, falling back to local:', err);
         }
-      } catch (err) {
-        console.warn('Cloud auth failed, falling back to local:', err);
       }
-    }
 
-    // Local-only fallback
-    const existingLocal = loadUser();
-    if (existingLocal && existingLocal.display_name.toLowerCase() === trimmed.toLowerCase()) {
-      // Same user returning
-      setUser({ id: existingLocal.id, username: existingLocal.display_name });
+      // Local-only fallback
+      const existingLocal = loadUser();
+      if (existingLocal && existingLocal.display_name.toLowerCase() === trimmed.toLowerCase()) {
+        // Same user returning
+        setUser({ id: existingLocal.id, username: existingLocal.display_name });
+        toast.success(`Signed in as ${existingLocal.display_name}`);
+        return {};
+      }
+
+      // Brand new local user
+      const newId = generateId();
+      const userObj: SimpleUser = { id: newId, username: trimmed };
+      setUser(userObj);
+      saveUser({ id: newId, email: '', display_name: trimmed });
+      trackEvent('sign_in', { method: 'username' });
+      trackSession();
+      toast.success(`Signed in as ${trimmed}`);
       return {};
-    }
+    };
 
-    // Brand new local user
-    const newId = generateId();
-    const userObj: SimpleUser = { id: newId, username: trimmed };
-    setUser(userObj);
-    saveUser({ id: newId, email: '', display_name: trimmed });
-    trackEvent('sign_in', { method: 'username' });
-    trackSession();
-    return {};
+    try {
+      return await withTimeout(doSignIn(), TIMEOUT_MS, TIMEOUT_MSG);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : TIMEOUT_MSG;
+      return { error: message };
+    }
   }, []);
 
   const updateUsername = useCallback((newName: string) => {

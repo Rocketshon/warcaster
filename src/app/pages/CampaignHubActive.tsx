@@ -15,6 +15,7 @@ export default function CampaignHubActive() {
   const navigate = useNavigate();
   const { players, battles, units, syncing } = useCrusade();
   const [copied, setCopied] = useState(false);
+  const [showAllBattles, setShowAllBattles] = useState(true);
 
   if (!ready) return null;
 
@@ -29,7 +30,17 @@ export default function CampaignHubActive() {
   const totalBattles = playerBattles.length;
 
   // Recent battles: last 5, sorted newest first (battles are already sorted newest first from context)
-  const recentBattles = playerBattles.slice(0, 5);
+  const displayedBattles = showAllBattles ? battles : playerBattles;
+  const recentBattles = displayedBattles.slice(0, 5);
+
+  // Build a lookup for player names by player_id
+  const playerNameMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const p of players) {
+      map[p.id] = p.name;
+    }
+    return map;
+  }, [players]);
 
   // Attention items for current player's units
   const playerUnits = units.filter(u => u.player_id === currentPlayer?.id);
@@ -298,12 +309,36 @@ export default function CampaignHubActive() {
 
         {/* Recent Battles Section */}
         <div className="mt-8">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-3">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
             <span className="text-xs text-stone-500 uppercase tracking-wider">
               Recent Battles
             </span>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+          </div>
+
+          {/* My Battles / All Battles toggle */}
+          <div className="flex items-center justify-center gap-1 mb-4">
+            <button
+              onClick={() => setShowAllBattles(false)}
+              className={`px-3 py-1 rounded-sm text-xs font-medium transition-all ${
+                !showAllBattles
+                  ? "bg-emerald-600 text-black"
+                  : "bg-stone-800 text-stone-400 hover:text-stone-300"
+              }`}
+            >
+              My Battles
+            </button>
+            <button
+              onClick={() => setShowAllBattles(true)}
+              className={`px-3 py-1 rounded-sm text-xs font-medium transition-all ${
+                showAllBattles
+                  ? "bg-emerald-600 text-black"
+                  : "bg-stone-800 text-stone-400 hover:text-stone-300"
+              }`}
+            >
+              All Battles
+            </button>
           </div>
 
           {recentBattles.length === 0 ? (
@@ -334,6 +369,11 @@ export default function CampaignHubActive() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs text-stone-400">
+                        {showAllBattles && (
+                          <span className="text-emerald-400 font-medium">
+                            {playerNameMap[battle.player_id] ?? "Unknown"}
+                          </span>
+                        )}
                         <span>{battle.mission_name}</span>
                       </div>
                     </div>

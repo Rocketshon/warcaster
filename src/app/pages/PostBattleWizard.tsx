@@ -730,12 +730,19 @@ export default function PostBattleWizard() {
         {/* Bottom button */}
         <div className="p-6 pt-4 border-t border-stone-700/60">
           {currentStep < 5 ? (
-            <button
-              onClick={goToNextStep}
-              className="w-full py-4 rounded-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
-            >
-              Next
-            </button>
+            <div>
+              <button
+                onClick={goToNextStep}
+                className="w-full py-4 rounded-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 text-black hover:from-emerald-500 hover:to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+              >
+                {currentStep === 4 ? "Confirm & Apply Changes" : "Next"}
+              </button>
+              {currentStep === 4 && (
+                <p className="text-xs text-amber-400 text-center mt-2">
+                  This will permanently update your roster with XP, honours, and scars.
+                </p>
+              )}
+            </div>
           ) : (
             <div className="space-y-3">
               <button

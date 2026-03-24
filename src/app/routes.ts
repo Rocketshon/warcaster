@@ -16,6 +16,8 @@ import SpaceMarinesChapters from "./pages/SpaceMarinesChapters";
 import FactionCodex from "./pages/FactionCodex";
 import DatasheetView from "./pages/DatasheetView";
 import GameTracker from "./pages/GameTracker";
+import QuickBattle from "./pages/QuickBattle";
+import QuickDiceRoller from "./pages/QuickDiceRoller";
 import Settings from "./pages/Settings";
 import CampaignHistory from "./pages/CampaignHistory";
 import SignUp from "./pages/SignUp";
@@ -68,6 +70,9 @@ export const router = createBrowserRouter(
         // Rules (no campaign required)
         { path: "/rules", Component: RulesBrowser },
         { path: "/rule/:ruleId", Component: RuleDetail },
+        // Quick Battle (no campaign required)
+        { path: "/quick-battle", Component: QuickBattle },
+        { path: "/quick-dice", Component: QuickDiceRoller },
         // Game Tracker (standalone, no campaign required)
         { path: "/tracker", Component: GameTracker },
         // Settings

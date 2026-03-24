@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { ArrowLeft, Plus, Shield, Zap } from "lucide-react";
 import { getUnitsForFaction } from '../../data';
 import { getFaction, getDataFactionId } from '../../lib/factions';
@@ -53,7 +54,7 @@ export default function DatasheetView() {
         setShowAddSuccess(false);
       }, 2000);
     } else {
-      alert('No active campaign. Join or create a campaign first.');
+      toast.error('Join a campaign first to add units to your roster.');
     }
   };
 

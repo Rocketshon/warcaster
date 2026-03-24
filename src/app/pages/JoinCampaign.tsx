@@ -21,10 +21,12 @@ export default function JoinCampaign() {
   // UI state
   const [showFactionPicker, setShowFactionPicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const handleFactionSelect = (factionId: string, factionName: string, factionIcon: string) => {
     setSelectedFaction({ id: factionId, name: factionName, icon: factionIcon });
     setErrorMessage(""); // Clear error when user makes changes
+    setTouched(true);
   };
 
   const handleJoin = async () => {
@@ -92,6 +94,7 @@ export default function JoinCampaign() {
               onChange={(e) => {
                 setJoinCode(e.target.value.toUpperCase());
                 setErrorMessage(""); // Clear error on input
+                setTouched(true);
               }}
               placeholder="ABC123"
               maxLength={6}
@@ -130,7 +133,7 @@ export default function JoinCampaign() {
               <input
                 type="text"
                 value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
+                onChange={(e) => { setPlayerName(e.target.value); setTouched(true); }}
                 placeholder="Commander Name"
                 className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-stone-100 placeholder:text-stone-500 focus:border-emerald-500/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
@@ -169,6 +172,19 @@ export default function JoinCampaign() {
           >
             Join Campaign
           </button>
+
+          {/* Validation helper text */}
+          {touched && !isFormValid && (
+            <p className="text-xs text-amber-400 mt-2 text-center">
+              {!joinCode.trim()
+                ? "Enter a join code to continue"
+                : !playerName.trim()
+                ? "Enter your commander name"
+                : !selectedFaction
+                ? "Select a faction to continue"
+                : ""}
+            </p>
+          )}
 
           {/* Help Text */}
           <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-4 mt-6">

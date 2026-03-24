@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Swords, ChevronDown, Shield, Star, FileText, ScrollText } from "lucide-react";
 import { toast } from "sonner";
@@ -30,24 +30,76 @@ const WINNER_OPTIONS = [
   { value: "draw", label: "Draw" },
 ];
 
+const DRAFT_KEY = 'crusade_log_battle_draft';
+
+interface BattleDraft {
+  missionName: string;
+  opponentId: string;
+  opponentName: string;
+  opponentFaction: string;
+  battleSize: string;
+  result: string;
+  playerVP: string;
+  opponentVP: string;
+  selectedAgendas: string[];
+  unitsFielded: string[];
+}
+
+function loadDraft(): Partial<BattleDraft> {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as Partial<BattleDraft>;
+  } catch {
+    return {};
+  }
+}
+
 export default function LogBattle() {
   const navigate = useNavigate();
   const { campaign, players, currentPlayer, units, logBattle } = useCrusade();
 
-  const [opponentId, setOpponentId] = useState("");
-  const [opponentName, setOpponentName] = useState("");
-  const [opponentFaction, setOpponentFaction] = useState("");
-  const [missionName, setMissionName] = useState("");
-  const [battleSize, setBattleSize] = useState("Incursion");
-  const [yourScore, setYourScore] = useState("");
-  const [opponentScore, setOpponentScore] = useState("");
-  const [winner, setWinner] = useState("you");
-  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([]);
+  // Restore draft from sessionStorage if available
+  const [draft] = useState(() => loadDraft());
+
+  const [opponentId, setOpponentId] = useState(draft.opponentId ?? "");
+  const [opponentName, setOpponentName] = useState(draft.opponentName ?? "");
+  const [opponentFaction, setOpponentFaction] = useState(draft.opponentFaction ?? "");
+  const [missionName, setMissionName] = useState(draft.missionName ?? "");
+  const [battleSize, setBattleSize] = useState(draft.battleSize ?? "Incursion");
+  const [yourScore, setYourScore] = useState(draft.playerVP ?? "");
+  const [opponentScore, setOpponentScore] = useState(draft.opponentVP ?? "");
+  const [winner, setWinner] = useState(draft.result ?? "you");
+  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>(draft.unitsFielded ?? []);
   const [markedForGreatness, setMarkedForGreatness] = useState<string | null>(null);
-  const [selectedAgendas, setSelectedAgendas] = useState<string[]>([]);
+  const [selectedAgendas, setSelectedAgendas] = useState<string[]>(draft.selectedAgendas ?? []);
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useCustomOpponent, setUseCustomOpponent] = useState(false);
+  const [skipAgendas, setSkipAgendas] = useState(false);
+
+  // Auto-save form state to sessionStorage on every field change
+  const saveDraft = useCallback(() => {
+    const data: BattleDraft = {
+      missionName,
+      opponentId,
+      opponentName,
+      opponentFaction,
+      battleSize,
+      result: winner,
+      playerVP: yourScore,
+      opponentVP: opponentScore,
+      selectedAgendas,
+      unitsFielded: selectedUnitIds,
+    };
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    } catch { /* ignore quota errors */ }
+  }, [missionName, opponentId, opponentName, opponentFaction, battleSize, winner, yourScore, opponentScore, selectedAgendas, selectedUnitIds]);
+
+  useEffect(() => {
+    saveDraft();
+  }, [saveDraft]);
 
   // Build opponent list from players (excluding current player)
   const otherPlayers = players.filter(p => p.id !== currentPlayer?.id);
@@ -99,6 +151,11 @@ export default function LogBattle() {
       return;
     }
 
+    if (!skipAgendas && selectedAgendas.length !== 2) {
+      toast.error("Select exactly 2 agendas");
+      return;
+    }
+
     if (!campaign || !currentPlayer) {
       toast.error("No active campaign");
       return;
@@ -136,6 +193,9 @@ export default function LogBattle() {
       combat_log: [],
       notes: notes.trim(),
     });
+
+    // Clear draft on successful submit
+    sessionStorage.removeItem(DRAFT_KEY);
 
     toast.success(`Battle recorded vs ${finalOpponentName}!`, {
       duration: 3000,
@@ -353,11 +413,25 @@ export default function LogBattle() {
                 );
               })}
             </div>
-            {selectedAgendas.length > 0 && (
+            {selectedAgendas.length > 0 && !skipAgendas && (
               <p className="text-xs text-stone-400 mt-2">
                 {selectedAgendas.length}/2 agenda{selectedAgendas.length !== 1 ? "s" : ""} selected
               </p>
             )}
+
+            {/* Skip agendas checkbox */}
+            <label className="flex items-center gap-2 mt-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={skipAgendas}
+                onChange={(e) => {
+                  setSkipAgendas(e.target.checked);
+                  if (e.target.checked) setSelectedAgendas([]);
+                }}
+                className="w-4 h-4 rounded border-stone-600 bg-stone-800 text-emerald-500 focus:ring-emerald-500/20"
+              />
+              <span className="text-xs text-stone-400">Skip agendas (casual game)</span>
+            </label>
           </div>
 
           {/* Divider */}

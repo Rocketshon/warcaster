@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 const CAMPAIGN_PATHS = ['/home', '/campaign', '/create', '/join', '/player', '/log-battle', '/post-battle', '/battle', '/requisition', '/roster', '/add-unit', '/unit', '/cheat-sheet', '/hall-of-fame', '/campaign-map', '/requisition-store'];
 const CODEX_PATHS = ['/codex', '/datasheet', '/space-marines'];
 const RULES_PATHS = ['/rules', '/rule'];
-const BATTLE_PATHS = ['/battle-lobby', '/battle-live'];
+const BATTLE_PATHS = ['/battle-lobby', '/battle-live', '/quick-battle', '/quick-dice'];
 const SETTINGS_PATHS = ['/settings'];
 
 function getActiveTab(pathname: string): string {
