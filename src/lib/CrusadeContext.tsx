@@ -57,7 +57,12 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   const { user: authUser } = useAuth();
   const [campaign, setCampaign] = useState<Campaign | null>(() => storage.loadCampaign());
   const [currentPlayer, setCurrentPlayer] = useState<CampaignPlayer | null>(() => storage.loadPlayer());
-  const [players, setPlayers] = useState<CampaignPlayer[]>([]);
+  const [players, setPlayers] = useState<CampaignPlayer[]>(() => {
+    try {
+      const cached = localStorage.getItem('crusade_all_players');
+      return cached ? JSON.parse(cached) : [];
+    } catch { return []; }
+  });
   const [units, setUnits] = useState<CrusadeUnit[]>(() => storage.loadUnits());
   const [battles, setBattles] = useState<Battle[]>(() => storage.loadBattles());
   const [campaignHistory, setCampaignHistory] = useState<storage.ArchivedCampaign[]>(() => storage.loadCampaignHistory());
@@ -91,7 +96,10 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
           const { data: allPlayers } = await import('./supabase').then(m =>
             m.supabase.from('cc_campaign_players').select('*').eq('campaign_id', cloudData.campaign!.id)
           );
-          if (allPlayers && !cancelled) setPlayers(allPlayers);
+          if (allPlayers && !cancelled) {
+            setPlayers(allPlayers);
+            localStorage.setItem('crusade_all_players', JSON.stringify(allPlayers));
+          }
         } else {
           // No cloud campaign — try to migrate local data
           const localCampaign = storage.loadCampaign();
