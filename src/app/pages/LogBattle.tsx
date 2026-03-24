@@ -69,7 +69,9 @@ export default function LogBattle() {
   const [battleSize, setBattleSize] = useState(draft.battleSize ?? "Incursion");
   const [yourScore, setYourScore] = useState(draft.playerVP ?? "");
   const [opponentScore, setOpponentScore] = useState(draft.opponentVP ?? "");
-  const [winner, setWinner] = useState(draft.result ?? "you");
+  const validWinners = ['you', 'opponent', 'draw'];
+  const rawResult = draft.result ?? 'you';
+  const [winner, setWinner] = useState(validWinners.includes(rawResult) ? rawResult : 'you');
   const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>(draft.unitsFielded ?? []);
   const [markedForGreatness, setMarkedForGreatness] = useState<string | null>(null);
   const [selectedAgendas, setSelectedAgendas] = useState<string[]>(draft.selectedAgendas ?? []);
@@ -203,7 +205,8 @@ export default function LogBattle() {
       });
 
       navigate("/post-battle", { state: { battleId: newBattleId } });
-    } finally {
+    } catch (err) {
+      toast.error("Failed to record battle. Please try again.");
       setIsSubmitting(false);
     }
   };

@@ -55,6 +55,7 @@ export default function Settings() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(displayName);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
+  const [isSavingName, setIsSavingName] = useState(false);
   const userEmail = "";
 
   // Database stats from real data layer
@@ -94,22 +95,28 @@ export default function Settings() {
 
   const handleSaveName = async () => {
     if (!tempName.trim()) return;
-    // Update in Supabase
-    if (isSupabaseConfigured() && authUser?.id) {
-      const { error } = await supabase
-        .from('cc_profiles')
-        .update({ display_name: tempName.trim() })
-        .eq('id', authUser.id);
-      if (error) {
-        toast.error('Failed to update name');
-        return;
+    if (isSavingName) return;
+    setIsSavingName(true);
+    try {
+      // Update in Supabase
+      if (isSupabaseConfigured() && authUser?.id) {
+        const { error } = await supabase
+          .from('cc_profiles')
+          .update({ display_name: tempName.trim() })
+          .eq('id', authUser.id);
+        if (error) {
+          toast.error('Failed to update name');
+          return;
+        }
       }
+      // Update local storage
+      saveUser({ id: authUser?.id ?? '', email: '', display_name: tempName.trim() });
+      updateUsername(tempName.trim());
+      toast.success('Name updated');
+      setIsEditingName(false);
+    } finally {
+      setIsSavingName(false);
     }
-    // Update local storage
-    saveUser({ id: authUser?.id ?? '', email: '', display_name: tempName.trim() });
-    updateUsername(tempName.trim());
-    toast.success('Name updated');
-    setIsEditingName(false);
   };
 
   const handleCancelEdit = () => {
@@ -171,6 +178,9 @@ export default function Settings() {
       } catch {
         alert("Failed to parse import file.");
       }
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read file. Please try again.');
     };
     reader.readAsText(file);
     // Reset input so the same file can be re-selected
@@ -234,7 +244,8 @@ export default function Settings() {
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={handleSaveName}
-                        className="px-3 py-1 text-sm rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 text-black font-bold hover:from-emerald-500 hover:to-emerald-400 transition-all"
+                        disabled={isSavingName}
+                        className="px-3 py-1 text-sm rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 text-black font-bold hover:from-emerald-500 hover:to-emerald-400 transition-all disabled:opacity-50"
                       >
                         Save
                       </button>

@@ -164,7 +164,7 @@ export function initOfflineQueue(): () => void {
   if (listenerAttached) return () => {};
   listenerAttached = true;
   onlineHandler = () => {
-    flushQueue();
+    flushQueue().catch(err => console.error('[OfflineQueue] Auto-flush failed:', err));
   };
   window.addEventListener('online', onlineHandler);
   return () => {

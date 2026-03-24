@@ -51,13 +51,25 @@ export function useRealtimeSubscription(
       },
       onBattleChange: (payload) => {
         if (payload.eventType === 'INSERT') {
-          const newBattle = payload.new as unknown as Battle;
+          const raw = payload.new as unknown as Battle;
+          const newBattle = {
+            ...raw,
+            combat_log: Array.isArray(raw.combat_log) ? raw.combat_log : [],
+            agendas: Array.isArray(raw.agendas) ? raw.agendas : [],
+            units_fielded: Array.isArray(raw.units_fielded) ? raw.units_fielded : [],
+          };
           setBattles(prev => {
             if (prev.find(b => b.id === newBattle.id)) return prev;
             return [newBattle, ...prev];
           });
         } else if (payload.eventType === 'UPDATE') {
-          const updated = payload.new as unknown as Battle;
+          const raw = payload.new as unknown as Battle;
+          const updated = {
+            ...raw,
+            combat_log: Array.isArray(raw.combat_log) ? raw.combat_log : [],
+            agendas: Array.isArray(raw.agendas) ? raw.agendas : [],
+            units_fielded: Array.isArray(raw.units_fielded) ? raw.units_fielded : [],
+          };
           setBattles(prev => prev.map(b => b.id === updated.id ? updated : b));
         }
       },
@@ -70,13 +82,25 @@ export function useRealtimeSubscription(
         }
 
         if (payload.eventType === 'INSERT') {
-          const newUnit = payload.new as unknown as CrusadeUnit;
+          const raw = payload.new as unknown as CrusadeUnit;
+          const newUnit = {
+            ...raw,
+            battle_honours: Array.isArray(raw.battle_honours) ? raw.battle_honours : [],
+            battle_scars: Array.isArray(raw.battle_scars) ? raw.battle_scars : [],
+            faction_legacy: raw.faction_legacy && typeof raw.faction_legacy === 'object' ? raw.faction_legacy : {},
+          };
           setUnits(prev => {
             if (prev.find(u => u.id === newUnit.id)) return prev;
             return [...prev, newUnit];
           });
         } else if (payload.eventType === 'UPDATE') {
-          const updated = payload.new as unknown as CrusadeUnit;
+          const raw = payload.new as unknown as CrusadeUnit;
+          const updated = {
+            ...raw,
+            battle_honours: Array.isArray(raw.battle_honours) ? raw.battle_honours : [],
+            battle_scars: Array.isArray(raw.battle_scars) ? raw.battle_scars : [],
+            faction_legacy: raw.faction_legacy && typeof raw.faction_legacy === 'object' ? raw.faction_legacy : {},
+          };
           setUnits(prev => prev.map(u => u.id === updated.id ? updated : u));
         } else if (payload.eventType === 'DELETE') {
           const deleted = payload.old as unknown as { id: string };

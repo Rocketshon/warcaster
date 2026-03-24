@@ -62,7 +62,7 @@ export default function PostBattleWizard() {
   // Get fielded units: from battle.units_fielded, or fall back to all roster units
   const fieldedUnits = useMemo(() => {
     if (!latestBattle) return [];
-    if (latestBattle.units_fielded.length > 0) {
+    if ((latestBattle.units_fielded ?? []).length > 0) {
       return latestBattle.units_fielded
         .map(id => units.find(u => u.id === id))
         .filter(Boolean) as typeof units;

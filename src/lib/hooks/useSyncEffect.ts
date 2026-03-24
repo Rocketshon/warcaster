@@ -75,7 +75,7 @@ export function useSyncEffect(
         }
         await flushQueue();
       } catch (err) {
-        console.warn('Cloud sync failed, using local data:', err);
+        console.warn('Cloud sync failed:', err);
       } finally {
         if (!cancelled) setSyncing(false);
       }

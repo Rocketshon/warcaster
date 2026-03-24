@@ -213,6 +213,7 @@ export default function CampaignHubActive() {
                 >
                   <p className="text-sm text-stone-200">{a.text}</p>
                   <p className="text-xs text-stone-500 mt-1">
+                    {a.author && <span className="text-stone-400">{a.author} &middot; </span>}
                     {formatAnnouncementDate(a.created_at)}
                   </p>
                 </div>

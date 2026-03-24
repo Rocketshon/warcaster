@@ -51,7 +51,7 @@ export default function BattleDetail() {
       result: battle.result,
       playerVP: battle.player_vp,
       opponentVP: battle.opponent_vp,
-      combatLog: battle.combat_log.map(e => ({
+      combatLog: (battle.combat_log ?? []).map(e => ({
         attacker_unit_name: e.attacker_unit_name,
         attacker_weapon: e.attacker_weapon,
         defender_unit_name: e.defender_unit_name,
@@ -108,7 +108,7 @@ export default function BattleDetail() {
   }
 
   // Get fielded units from battle data mapped against roster
-  const fieldedUnits = battle.units_fielded
+  const fieldedUnits = (battle.units_fielded ?? [])
     .map(unitId => units.find(u => u.id === unitId))
     .filter(Boolean) as typeof units;
 

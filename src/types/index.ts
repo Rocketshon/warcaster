@@ -50,7 +50,7 @@ export interface Campaign {
   created_at: string;
   current_round: number;
   owner_id: string;
-  announcements?: { id: string; text: string; created_at: string }[];
+  announcements?: { id: string; text: string; author: string; created_at: string }[];
 }
 
 export interface CampaignPlayer {

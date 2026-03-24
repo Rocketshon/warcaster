@@ -3,7 +3,7 @@
 
 import { supabase, isSupabaseConfigured } from './supabase';
 import * as storage from './storage';
-import type { Campaign, CampaignPlayer, CrusadeUnit, Battle } from '../types';
+import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, FactionId } from '../types';
 
 // ---------------------------------------------------------------------------
 // Push helpers — send local data to Supabase
@@ -182,10 +182,14 @@ export async function pullCampaignFromCloud(userId: string): Promise<{
     const campaign = campaignRow as Campaign;
 
     // Fetch ALL players in this campaign (full rows to avoid a second round-trip)
-    const { data: allPlayers } = await supabase
+    const { data: allPlayers, error: playersErr } = await supabase
       .from('cc_campaign_players')
       .select('*')
       .eq('campaign_id', campaign.id);
+    if (playersErr) {
+      console.error('[Sync] Failed to fetch campaign players:', playersErr.message);
+      return null;
+    }
     const allPlayerRows = (allPlayers ?? []) as CampaignPlayer[];
     const allPlayerIds = allPlayerRows.map((p) => p.id);
 
@@ -216,8 +220,18 @@ export async function pullCampaignFromCloud(userId: string): Promise<{
       campaign,
       player,
       players: allPlayerRows,
-      units: (unitRows ?? []) as CrusadeUnit[],
-      battles: (battleRows ?? []) as Battle[],
+      units: (unitRows ?? []).map((u: any) => ({
+        ...u,
+        battle_honours: Array.isArray(u.battle_honours) ? u.battle_honours : [],
+        battle_scars: Array.isArray(u.battle_scars) ? u.battle_scars : [],
+        faction_legacy: u.faction_legacy && typeof u.faction_legacy === 'object' ? u.faction_legacy : {},
+      })) as CrusadeUnit[],
+      battles: (battleRows ?? []).map((b: any) => ({
+        ...b,
+        combat_log: Array.isArray(b.combat_log) ? b.combat_log : [],
+        agendas: Array.isArray(b.agendas) ? b.agendas : [],
+        units_fielded: Array.isArray(b.units_fielded) ? b.units_fielded : [],
+      })) as Battle[],
     };
   } catch (e) {
     console.error('[Sync] pullCampaignFromCloud exception:', e);
@@ -234,7 +248,7 @@ export async function joinCampaignCloud(
   joinCode: string,
   userId: string,
   playerName: string,
-  factionId: string,
+  factionId: FactionId,
 ): Promise<{ success: boolean; campaign?: Campaign; player?: CampaignPlayer; error?: string }> {
   if (!isSupabaseConfigured()) {
     return { success: false, error: 'Supabase is not configured' };
@@ -278,7 +292,7 @@ export async function joinCampaignCloud(
       campaign_id: campaign.id,
       user_id: userId,
       name: playerName,
-      faction_id: factionId as CampaignPlayer['faction_id'],
+      faction_id: factionId,
       supply_used: 0,
       requisition_points: campaign.starting_rp,
       battles_played: 0,

@@ -134,7 +134,10 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
 
     // Push to cloud
     if (isSupabaseConfigured() && authUser?.id) {
-      sync.createCampaignCloud(newCampaign, player).catch(console.warn);
+      sync.createCampaignCloud(newCampaign, player).catch((err) => {
+        console.warn('Cloud campaign creation failed, queuing:', err);
+        queueMutation({ type: 'campaign', action: 'create', data: { campaign: newCampaign, player } });
+      });
     }
 
     trackEvent('campaign_created');
@@ -150,16 +153,21 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
         setCampaign(result.campaign);
         setCurrentPlayer(result.player);
         // Pull full data (includes the complete player list)
-        const cloudData = await sync.pullCampaignFromCloud(authUser.id);
-        if (cloudData) {
-          if (cloudData.players) {
-            setPlayers(cloudData.players);
+        try {
+          const cloudData = await sync.pullCampaignFromCloud(authUser.id);
+          if (cloudData) {
+            if (cloudData.players?.length) {
+              setPlayers(cloudData.players);
+            } else {
+              setPlayers(prev => [...prev, result.player!]);
+            }
+            setUnits(cloudData.units);
+            setBattles(cloudData.battles);
           } else {
             setPlayers(prev => [...prev, result.player!]);
           }
-          setUnits(cloudData.units);
-          setBattles(cloudData.battles);
-        } else {
+        } catch (pullErr) {
+          console.warn('Post-join cloud pull failed, using local data:', pullErr);
           setPlayers(prev => [...prev, result.player!]);
         }
         trackEvent('campaign_joined');
@@ -464,6 +472,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       const announcement = {
         id: storage.generateId(),
         text,
+        author: authUser?.username ?? 'Campaign Master',
         created_at: new Date().toISOString(),
       };
       const updated = {
@@ -476,7 +485,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       }
       return updated;
     });
-  }, []);
+  }, [authUser]);
 
   return (
     <CrusadeContext.Provider value={{
