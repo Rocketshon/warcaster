@@ -57,6 +57,11 @@ export function clearCampaign(): void {
   localStorage.removeItem(STORAGE_KEYS.PLAYER);
   localStorage.removeItem(STORAGE_KEYS.UNITS);
   localStorage.removeItem(STORAGE_KEYS.BATTLES);
+
+  // Clean up battle story keys
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('crusade_battle_story_'))
+    .forEach(k => localStorage.removeItem(k));
 }
 
 // --- Player ---

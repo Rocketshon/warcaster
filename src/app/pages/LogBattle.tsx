@@ -454,6 +454,7 @@ export default function LogBattle() {
               <input
                 id="your-vp"
                 type="number"
+                inputMode="numeric"
                 value={yourScore}
                 onChange={(e) => setYourScore(e.target.value)}
                 placeholder="0"
@@ -471,6 +472,7 @@ export default function LogBattle() {
               <input
                 id="opponent-vp"
                 type="number"
+                inputMode="numeric"
                 value={opponentScore}
                 onChange={(e) => setOpponentScore(e.target.value)}
                 placeholder="0"

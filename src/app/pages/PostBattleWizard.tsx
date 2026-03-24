@@ -5,6 +5,8 @@ import { useCrusade } from "../../lib/CrusadeContext";
 import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
 import { generateId } from "../../lib/storage";
+import { updatePlayerInCloud } from "../../lib/sync";
+import { isSupabaseConfigured } from "../../lib/supabase";
 
 // Battle scars options (game rules, not mock data)
 const BATTLE_SCARS = [
@@ -245,11 +247,20 @@ export default function PostBattleWizard() {
       awardRequisition(1);
     }
 
-    // Persist guard BEFORE state update so it survives unmount mid-update (Bug 6 fix)
+    // Persist guard BEFORE state update so it survives unmount mid-update
     if (latestBattle) {
       sessionStorage.setItem('lastProcessedBattleId', latestBattle.id);
     }
     setChangesApplied(true);
+
+    // Push player data to cloud immediately so it isn't lost on navigation
+    if (isSupabaseConfigured() && currentPlayer) {
+      setTimeout(() => {
+        if (currentPlayer) {
+          updatePlayerInCloud(currentPlayer).catch(console.warn);
+        }
+      }, 100);
+    }
   };
 
   const goToNextStep = () => {

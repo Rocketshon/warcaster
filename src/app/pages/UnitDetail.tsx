@@ -768,6 +768,7 @@ export default function UnitDetail() {
                   <label className="block text-xs text-stone-400 uppercase tracking-wider mb-1">Points Cost</label>
                   <input
                     type="number"
+                    inputMode="numeric"
                     value={editPoints}
                     onChange={(e) => setEditPoints(Number(e.target.value))}
                     min="0"

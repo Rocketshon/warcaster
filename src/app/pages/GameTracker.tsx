@@ -165,6 +165,7 @@ export default function GameTracker() {
                           <input
                             autoFocus
                             type="number"
+                            inputMode="numeric"
                             value={editValue}
                             onChange={(e) => setEditValue(e.target.value)}
                             onBlur={() => handleCounterSubmit(vpKey)}
@@ -205,6 +206,7 @@ export default function GameTracker() {
                           <input
                             autoFocus
                             type="number"
+                            inputMode="numeric"
                             value={editValue}
                             onChange={(e) => setEditValue(e.target.value)}
                             onBlur={() => handleCounterSubmit(cpKey)}

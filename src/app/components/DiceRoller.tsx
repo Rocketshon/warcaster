@@ -204,6 +204,7 @@ export default function DiceRoller({ count, target, label, onComplete, mode }: D
               <input
                 key={i}
                 type="number"
+                inputMode="numeric"
                 min={1}
                 max={6}
                 value={val}

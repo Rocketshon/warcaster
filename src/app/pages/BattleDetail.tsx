@@ -70,6 +70,12 @@ export default function BattleDetail() {
       // Persist to localStorage
       if (id) {
         localStorage.setItem(STORY_KEY_PREFIX + id, finalText);
+
+        // Prune old stories to limit unbounded growth
+        const allKeys = Object.keys(localStorage).filter(k => k.startsWith('crusade_battle_story_'));
+        if (allKeys.length > 20) {
+          allKeys.sort().slice(0, allKeys.length - 20).forEach(k => localStorage.removeItem(k));
+        }
       }
     } catch (err) {
       setStoryError(err instanceof Error ? err.message : "Failed to generate story");

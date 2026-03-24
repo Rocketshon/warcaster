@@ -22,13 +22,11 @@ export default function AddUnit() {
   const [selectedModelTier, setSelectedModelTier] = useState(0);
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
 
-  if (!ready) return null;
-
-  const factionId = currentPlayer.faction_id;
-  const factionName = getFactionName(factionId);
-
   // Load real datasheets for this faction
-  const allFactionUnits = useMemo(() => getUnitsForFaction(getDataFactionId(factionId)), [factionId]);
+  const allFactionUnits = useMemo(() => {
+    if (!ready) return [];
+    return getUnitsForFaction(getDataFactionId(currentPlayer.faction_id));
+  }, [ready, ready ? currentPlayer.faction_id : null]);
 
   // Filter units based on search (name + keywords)
   const filteredUnits = useMemo(() => {
@@ -40,6 +38,11 @@ export default function AddUnit() {
         unit.keywords.some((kw) => kw.toLowerCase().includes(q))
     );
   }, [allFactionUnits, searchQuery]);
+
+  if (!ready) return null;
+
+  const factionId = currentPlayer.faction_id;
+  const factionName = getFactionName(factionId);
 
   const handleUnitSelect = (unit: Datasheet) => {
     setSelectedUnit(unit);
@@ -297,6 +300,7 @@ export default function AddUnit() {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={customPoints}
                   onChange={(e) => setCustomPoints(Number(e.target.value))}
                   min="0"

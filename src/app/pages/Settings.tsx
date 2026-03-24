@@ -352,6 +352,7 @@ export default function Settings() {
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
+                    inputMode="numeric"
                     min={0}
                     step={50}
                     value={cmSupplyLimit}
@@ -373,6 +374,7 @@ export default function Settings() {
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
+                    inputMode="numeric"
                     min={0}
                     step={1}
                     value={cmStartingRp}

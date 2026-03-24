@@ -102,6 +102,14 @@ export default function RequisitionSpending() {
       return;
     }
 
+    // For repair-recuperate, defer RP spending until a scar is actually selected
+    if (selectedRequisition.id === "repair-recuperate") {
+      setConfirmDialogOpen(false);
+      setTimeout(() => setUnitPickerOpen(true), 500);
+      setSelectedRequisition(null);
+      return;
+    }
+
     // Deduct RP via context
     const success = spendRequisition(selectedRequisition.cost);
     if (!success) {
@@ -120,8 +128,6 @@ export default function RequisitionSpending() {
     // Handle specific requisition actions
     if (selectedRequisition.id === "fresh-troops") {
       setTimeout(() => navigate("/add-unit"), 500);
-    } else if (selectedRequisition.id === "repair-recuperate") {
-      setTimeout(() => setUnitPickerOpen(true), 500);
     }
 
     setSelectedRequisition(null);
@@ -140,6 +146,15 @@ export default function RequisitionSpending() {
 
   const handleSelectScar = (scarId: string, scarName: string) => {
     if (!selectedUnit) return;
+
+    // Deduct RP only when scar is actually selected (not before)
+    const success = spendRequisition(1);
+    if (!success) {
+      toast.error("Not enough RP");
+      setScarPickerOpen(false);
+      setSelectedUnit(null);
+      return;
+    }
 
     removeBattleScar(selectedUnit.id, scarId);
     toast.success(`Removed ${scarName} from ${selectedUnit.name}`);

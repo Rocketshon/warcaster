@@ -90,6 +90,7 @@ export default function CreateCampaign() {
             </label>
             <input
               type="number"
+              inputMode="numeric"
               value={supplyLimit}
               onChange={(e) => setSupplyLimit(parseInt(e.target.value) || 0)}
               min={1}
@@ -105,6 +106,7 @@ export default function CreateCampaign() {
             </label>
             <input
               type="number"
+              inputMode="numeric"
               value={startingRequisition}
               onChange={(e) => setStartingRequisition(parseInt(e.target.value) || 0)}
               min={0}

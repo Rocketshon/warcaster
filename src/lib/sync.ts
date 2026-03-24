@@ -507,17 +507,17 @@ export async function migrateLocalData(userId: string): Promise<boolean> {
       return true;
     }
 
-    // Re-map owner/user IDs to the Supabase user
+    // Re-map owner/user IDs to the Supabase user (avoid mutating originals)
     if (localCampaign) {
-      localCampaign.owner_id = userId;
-      storage.saveCampaign(localCampaign);
-      await pushCampaignToCloud(localCampaign);
+      const updatedCampaign = { ...localCampaign, owner_id: userId };
+      await pushCampaignToCloud(updatedCampaign);
+      storage.saveCampaign(updatedCampaign);
     }
 
     if (localPlayer) {
-      localPlayer.user_id = userId;
-      storage.savePlayer(localPlayer);
-      await pushPlayerToCloud(localPlayer);
+      const updatedPlayer = { ...localPlayer, user_id: userId };
+      await pushPlayerToCloud(updatedPlayer);
+      storage.savePlayer(updatedPlayer);
     }
 
     // Push all units (they reference player_id, which stays the same)
