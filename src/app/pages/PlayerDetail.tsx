@@ -63,7 +63,7 @@ export default function PlayerDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
+    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -169,7 +169,7 @@ export default function PlayerDetail() {
               <div
                 key={unit.id}
                 onClick={() => navigate(`/unit/${unit.id}`)}
-                className="rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
+                className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
               >
                 <div className="p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -222,7 +222,7 @@ export default function PlayerDetail() {
                 <div
                   key={battle.id}
                   onClick={() => navigate(`/battle/${battle.id}`)}
-                  className="rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
+                  className="relative overflow-hidden rounded-sm border border-stone-700/60 bg-stone-900 cursor-pointer hover:border-emerald-500/50 transition-all"
                 >
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-3 mb-2">

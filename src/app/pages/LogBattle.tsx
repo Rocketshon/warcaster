@@ -149,7 +149,7 @@ export default function LogBattle() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
+    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
@@ -190,8 +190,14 @@ export default function LogBattle() {
                 <select
                   value={opponentId}
                   onChange={(e) => {
-                    setOpponentId(e.target.value);
-                    const p = otherPlayers.find(p => p.id === e.target.value);
+                    const val = e.target.value;
+                    setOpponentId(val);
+                    if (!val) {
+                      setOpponentName('');
+                      setOpponentFaction('');
+                      return;
+                    }
+                    const p = otherPlayers.find(pl => pl.id === val);
                     if (p) {
                       setOpponentName(p.name);
                       setOpponentFaction(getFactionName(p.faction_id));
@@ -240,10 +246,11 @@ export default function LogBattle() {
 
           {/* Mission Name */}
           <div>
-            <label className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
+            <label htmlFor="mission-name" className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
               Mission Name
             </label>
             <input
+              id="mission-name"
               type="text"
               value={missionName}
               onChange={(e) => setMissionName(e.target.value)}
@@ -254,10 +261,10 @@ export default function LogBattle() {
 
           {/* Battle Size - Segmented Control */}
           <div>
-            <label className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
+            <label htmlFor="battle-size" className="block text-sm font-medium text-stone-300 mb-2 tracking-wide">
               Battle Size
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div id="battle-size" className="grid grid-cols-2 gap-2">
               {BATTLE_SIZES.map((size) => (
                 <button
                   key={size}
@@ -346,11 +353,12 @@ export default function LogBattle() {
           <div className="grid grid-cols-2 gap-4">
             {/* Your VP */}
             <div>
-              <label className="block text-sm font-medium text-stone-300 mb-1 tracking-wide">
+              <label htmlFor="your-vp" className="block text-sm font-medium text-stone-300 mb-1 tracking-wide">
                 Your VP
               </label>
               <p className="text-xs text-stone-500 mb-2">(Victory Points)</p>
               <input
+                id="your-vp"
                 type="number"
                 value={yourScore}
                 onChange={(e) => setYourScore(e.target.value)}
@@ -362,11 +370,12 @@ export default function LogBattle() {
 
             {/* Opponent VP */}
             <div>
-              <label className="block text-sm font-medium text-stone-300 mb-1 tracking-wide">
+              <label htmlFor="opponent-vp" className="block text-sm font-medium text-stone-300 mb-1 tracking-wide">
                 Opponent VP
               </label>
               <p className="text-xs text-stone-500 mb-2">(Victory Points)</p>
               <input
+                id="opponent-vp"
                 type="number"
                 value={opponentScore}
                 onChange={(e) => setOpponentScore(e.target.value)}
@@ -379,10 +388,10 @@ export default function LogBattle() {
 
           {/* Winner Selection - Radio Buttons */}
           <div>
-            <label className="block text-sm font-medium text-stone-300 mb-3 tracking-wide">
+            <label htmlFor="result" className="block text-sm font-medium text-stone-300 mb-3 tracking-wide">
               Result
             </label>
-            <div className="flex gap-3">
+            <div id="result" className="flex gap-3">
               {WINNER_OPTIONS.map((option) => (
                 <button
                   key={option.value}

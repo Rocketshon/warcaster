@@ -330,7 +330,7 @@ export default function PostBattleWizard() {
         </div>
 
         {/* Content area */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-visible p-6">
           {/* STEP 1 - Mark Casualties */}
           {currentStep === 1 && (
             <div>

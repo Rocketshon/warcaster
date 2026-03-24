@@ -420,7 +420,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       if (u.id !== unitId) return u;
       const newXP = u.experience_points + xp;
       const newRank = getRankFromXP(newXP);
-      return { ...u, experience_points: newXP, rank: newRank };
+      return { ...u, experience_points: newXP, rank: newRank, battles_played: u.battles_played + 1, battles_survived: u.battles_survived + 1 };
     }));
   }, []);
 
@@ -450,7 +450,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const markDestroyed = useCallback((unitId: string) => {
-    setUnits(prev => prev.map(u => u.id === unitId ? { ...u, is_destroyed: true } : u));
+    setUnits(prev => prev.map(u => u.id === unitId ? { ...u, battles_played: u.battles_played + 1, is_destroyed: true } : u));
   }, []);
 
   const spendRequisition = useCallback((amount: number) => {

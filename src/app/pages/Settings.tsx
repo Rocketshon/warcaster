@@ -18,9 +18,11 @@ import {
 } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useAuth } from "../../lib/AuthContext";
-import { saveCampaign, savePlayer, saveUnits, saveBattles } from "../../lib/storage";
+import { saveCampaign, savePlayer, saveUnits, saveBattles, saveUser } from "../../lib/storage";
 import { getAllFactionSlugs, getAllUnits } from "../../data";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
+import { supabase, isSupabaseConfigured } from "../../lib/supabase";
+import { toast } from "sonner";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -76,8 +78,22 @@ export default function Settings() {
     navigate("/sign-in");
   };
 
-  const handleSaveName = () => {
-    // TODO: Update display name in Supabase profile when sync is implemented
+  const handleSaveName = async () => {
+    if (!tempName.trim()) return;
+    // Update in Supabase
+    if (isSupabaseConfigured() && authUser?.id) {
+      const { error } = await supabase
+        .from('cc_profiles')
+        .update({ display_name: tempName.trim() })
+        .eq('id', authUser.id);
+      if (error) {
+        toast.error('Failed to update name');
+        return;
+      }
+    }
+    // Update local storage
+    saveUser({ id: authUser?.id ?? '', email: '', display_name: tempName.trim() });
+    toast.success('Name updated');
     setIsEditingName(false);
   };
 
@@ -93,7 +109,7 @@ export default function Settings() {
           setShowShareSuccess(true);
           setTimeout(() => setShowShareSuccess(false), 2000);
         })
-        .catch(() => { /* clipboard write failed silently */ });
+        .catch(() => toast.error("Couldn't copy — tap and hold to copy manually"));
     }
   };
 

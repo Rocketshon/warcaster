@@ -67,6 +67,17 @@ export default function BattleLobby() {
           </div>
         </div>
 
+        {/* No opponents message */}
+        {displayPlayers.filter(p => p.id !== currentPlayer?.id).length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-stone-400 mb-2">No opponents in your campaign yet.</p>
+            <p className="text-stone-500 text-sm mb-4">Share your join code to invite players.</p>
+            <button onClick={() => navigate('/campaign/active')} className="px-4 py-2 rounded-sm border border-stone-700 text-stone-300 hover:border-emerald-500/50 transition-all">
+              Back to Campaign
+            </button>
+          </div>
+        )}
+
         {/* Player list */}
         <div className="space-y-3">
           {displayPlayers.map((player) => {

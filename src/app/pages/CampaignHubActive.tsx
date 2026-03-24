@@ -52,7 +52,7 @@ export default function CampaignHubActive() {
         });
         setTimeout(() => setCopied(false), 2000);
       })
-      .catch(() => { /* clipboard write failed silently */ });
+      .catch(() => toast.error("Couldn't copy — tap and hold to copy manually"));
   };
 
   const handlePlayerClick = (playerId: string) => {

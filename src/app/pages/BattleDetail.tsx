@@ -301,7 +301,7 @@ export default function BattleDetail() {
                       className="rounded-sm border border-stone-700/60 bg-stone-900 p-3 flex items-center justify-between"
                     >
                       <span className="text-sm text-stone-400">{unit.custom_name}</span>
-                      <span className="font-bold text-emerald-400">{unit.experience_points} XP</span>
+                      <span className="font-bold text-emerald-400">{unit.experience_points} Current XP</span>
                     </div>
                   ))}
                 </div>

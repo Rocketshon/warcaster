@@ -268,7 +268,7 @@ export default function FactionCodex() {
   );
 
   return (
-    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-8">
+    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
       {/* Animated Background Effects */}
       {animationType && <AnimatedBackground type={animationType} />}
 
