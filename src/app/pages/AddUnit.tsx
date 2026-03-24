@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Search, Plus, X, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getUnitsForFaction } from "../../data";
 import { toTitleCase } from "../../lib/formatText";
@@ -11,8 +12,9 @@ import WeaponStatTable from "../components/WeaponStatTable";
 import WargearOptionsPanel, { WargearAbilitiesPanel } from "../components/WargearOptionsPanel";
 
 export default function AddUnit() {
+  const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
-  const { campaign, currentPlayer, addUnit } = useCrusade();
+  const { addUnit } = useCrusade();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<Datasheet | null>(null);
   const [customName, setCustomName] = useState("");
@@ -20,14 +22,7 @@ export default function AddUnit() {
   const [selectedModelTier, setSelectedModelTier] = useState(0);
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
 
-  // If no campaign, redirect to /home
-  useEffect(() => {
-    if (!campaign) {
-      navigate("/home", { replace: true });
-    }
-  }, [campaign, navigate]);
-
-  if (!campaign || !currentPlayer) return null;
+  if (!ready) return null;
 
   const factionId = currentPlayer.faction_id;
   const factionName = getFactionName(factionId);

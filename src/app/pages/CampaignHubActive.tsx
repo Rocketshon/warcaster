@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { Copy, Check, Skull, Plus, Swords, AlertCircle, Trophy, Megaphone, Map } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
 import { getResultColor } from "../../lib/ranks";
 import { getResultLabel, formatRecord } from "../../lib/formatText";
@@ -10,18 +11,12 @@ import { getUnitAttentionItems } from "../../lib/attention";
 import type { AttentionItem } from "../../lib/attention";
 
 export default function CampaignHubActive() {
+  const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
-  const { campaign, players, currentPlayer, battles, units } = useCrusade();
+  const { players, battles, units } = useCrusade();
   const [copied, setCopied] = useState(false);
 
-  // If no campaign, redirect to home
-  useEffect(() => {
-    if (!campaign) {
-      navigate("/home", { replace: true });
-    }
-  }, [campaign, navigate]);
-
-  if (!campaign) return null;
+  if (!ready) return null;
 
   // Build the players list — for local-first, show currentPlayer (and any others in the array)
   const displayPlayers = players.length > 0

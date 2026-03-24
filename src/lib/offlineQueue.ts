@@ -10,19 +10,13 @@ import {
   updateUnitInCloud,
 } from './sync';
 import { isSupabaseConfigured } from './supabase';
-import type { Campaign, CampaignPlayer, CrusadeUnit, Battle } from '../types';
+import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, QueuedMutation } from '../types';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface QueuedMutation {
-  id: string;
-  type: 'campaign' | 'player' | 'unit' | 'battle';
-  action: 'create' | 'update' | 'delete';
-  data: unknown;
-  timestamp: number;
-}
+export type { QueuedMutation } from '../types';
 
 const QUEUE_KEY = 'crusade_sync_queue';
 

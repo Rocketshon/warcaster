@@ -1,9 +1,18 @@
 // Battle Narrator — generates immersive Warhammer 40K narrative accounts
 // using the Claude API via direct fetch (no SDK, browser-compatible)
 
-// NOTE: VITE_CLAUDE_API_KEY is exposed in the client bundle.
-// For production, proxy through a Supabase Edge Function.
-// Current usage is acceptable for personal/friends-only use.
+// ⚠️  SECURITY WARNING ⚠️
+// ---------------------------------------------------------------------------
+// VITE_CLAUDE_API_KEY is bundled into the client-side JavaScript.
+// Anyone who opens DevTools can read it. This is acceptable ONLY for
+// personal / friends-only use behind the canGenerateStory() gate.
+//
+// Before making this app public:
+//   1. Remove VITE_CLAUDE_API_KEY from the client bundle entirely.
+//   2. Create a Supabase Edge Function (e.g. /functions/v1/narrate) that
+//      holds the key server-side and proxies requests to the Anthropic API.
+//   3. Call that Edge Function from this file instead of api.anthropic.com.
+// ---------------------------------------------------------------------------
 const CLAUDE_API_KEY = import.meta.env.VITE_CLAUDE_API_KEY;
 
 export interface NarratorInput {

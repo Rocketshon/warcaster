@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { safeGetItem, safeSetItem } from "../../lib/storage";
 import type { CrusadeUnit } from "../../types";
 import {
   AlertDialog,
@@ -39,19 +40,14 @@ interface RequisitionHistoryEntry {
 }
 
 function loadHistory(key: string): RequisitionHistoryEntry[] {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return safeGetItem<RequisitionHistoryEntry[]>(key, []);
 }
 
 function saveHistoryEntry(key: string, entry: RequisitionHistoryEntry) {
   const history = loadHistory(key);
   history.unshift(entry);
   // Keep last 50 entries
-  localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
+  safeSetItem(key, JSON.stringify(history.slice(0, 50)));
 }
 
 // --- Requisition definitions ---

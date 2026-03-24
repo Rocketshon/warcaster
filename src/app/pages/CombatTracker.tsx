@@ -12,7 +12,7 @@ import {
   type CombatInput,
   type CombatResult,
 } from "../../lib/combatEngine";
-import { generateId } from "../../lib/storage";
+import { generateId, safeGetItem, safeSetItem, STORAGE_KEYS } from "../../lib/storage";
 import DiceRoller from "../components/DiceRoller";
 import CombatLog from "../components/CombatLog";
 import type { CrusadeUnit, Datasheet, WeaponProfile, CombatEngagement } from "../../types";
@@ -35,23 +35,13 @@ function parseAttackCount(a: string): number {
 type Phase = "shooting" | "melee";
 type CombatStep = "select" | "weapon" | "preview" | "roll-hit" | "roll-wound" | "roll-save" | "result";
 
-const DICE_MODE_KEY = "crusade_dice_mode";
-
 function getDiceMode(): "digital" | "manual" {
-  try {
-    const stored = localStorage.getItem(DICE_MODE_KEY);
-    return stored === "manual" ? "manual" : "digital";
-  } catch {
-    return "digital";
-  }
+  const stored = safeGetItem<string>(STORAGE_KEYS.DICE_MODE, "digital");
+  return stored === "manual" ? "manual" : "digital";
 }
 
 function setDiceMode(mode: "digital" | "manual") {
-  try {
-    localStorage.setItem(DICE_MODE_KEY, mode);
-  } catch {
-    // ignore
-  }
+  safeSetItem(STORAGE_KEYS.DICE_MODE, JSON.stringify(mode));
 }
 
 export default function CombatTracker() {

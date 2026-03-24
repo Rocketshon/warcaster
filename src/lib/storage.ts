@@ -1,18 +1,24 @@
 // Local storage helpers for offline-first approach
 
-import type { Campaign, CampaignPlayer, CrusadeUnit, Battle } from '../types';
+import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, ArchivedCampaign, UserSession } from '../types';
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   CAMPAIGN: 'crusade_campaign',
   PLAYER: 'crusade_player',
   UNITS: 'crusade_units',
   BATTLES: 'crusade_battles',
   CAMPAIGN_HISTORY: 'crusade_history',
   USER: 'crusade_user',
+  ALL_PLAYERS: 'crusade_all_players',
+  DICE_MODE: 'crusade_dice_mode',
+  REQUISITION_HISTORY: 'crusade_requisition_history',
+  TUTORIAL_COMPLETED: 'crusade_tutorial_completed',
+  LAST_PROCESSED_BATTLE: 'crusade_last_processed_battle',
+  BATTLE_STORIES: 'crusade_battle_stories',
 } as const;
 
 /** Safely write to localStorage with quota error handling */
-function safeSetItem(key: string, value: string): void {
+export function safeSetItem(key: string, value: string): void {
   try {
     localStorage.setItem(key, value);
   } catch (e) {
@@ -26,7 +32,7 @@ function safeSetItem(key: string, value: string): void {
 }
 
 /** Safely read and parse JSON from localStorage, returning fallback on any error */
-function safeGetItem<T>(key: string, fallback: T): T {
+export function safeGetItem<T>(key: string, fallback: T): T {
   try {
     const data = localStorage.getItem(key);
     if (data === null) return fallback;
@@ -107,19 +113,7 @@ export function addBattle(battle: Battle): void {
 }
 
 // --- Campaign History ---
-export interface ArchivedCampaign {
-  id: string;
-  name: string;
-  faction_id: string;
-  faction_name: string;
-  faction_icon: string;
-  start_date: string;
-  end_date: string;
-  wins: number;
-  losses: number;
-  draws: number;
-  total_battles: number;
-}
+export type { ArchivedCampaign } from '../types';
 
 export function saveCampaignHistory(history: ArchivedCampaign[]): void {
   safeSetItem(STORAGE_KEYS.CAMPAIGN_HISTORY, JSON.stringify(history));
@@ -136,11 +130,7 @@ export function archiveCampaign(archive: ArchivedCampaign): void {
 }
 
 // --- User session ---
-export interface UserSession {
-  id: string;
-  email: string;
-  display_name: string;
-}
+export type { UserSession } from '../types';
 
 export function saveUser(user: UserSession): void {
   safeSetItem(STORAGE_KEYS.USER, JSON.stringify(user));

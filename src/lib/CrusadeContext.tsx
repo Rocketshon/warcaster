@@ -1,14 +1,14 @@
-import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import type { Campaign, CampaignPlayer, CrusadeUnit, Battle, FactionId } from '../types';
 import * as storage from './storage';
 import * as sync from './sync';
-import { subscribeToCampaign, unsubscribeFromCampaign } from './realtime';
-import { initOfflineQueue, queueMutation, flushQueue } from './offlineQueue';
+import { initOfflineQueue, queueMutation } from './offlineQueue';
 import { isSupabaseConfigured } from './supabase';
 import { useAuth } from './AuthContext';
 import { getRankFromXP } from './ranks';
 import { getFactionName, getFactionIcon } from './factions';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import { useSyncEffect } from './hooks/useSyncEffect';
+import { useRealtimeSubscription } from './hooks/useRealtimeSubscription';
 
 interface CrusadeState {
   // Campaign
@@ -59,28 +59,12 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   const { user: authUser } = useAuth();
   const [campaign, setCampaign] = useState<Campaign | null>(() => storage.loadCampaign());
   const [currentPlayer, setCurrentPlayer] = useState<CampaignPlayer | null>(() => storage.loadPlayer());
-  const [players, setPlayers] = useState<CampaignPlayer[]>(() => {
-    try {
-      const cached = localStorage.getItem('crusade_all_players');
-      return cached ? JSON.parse(cached) : [];
-    } catch { return []; }
-  });
+  const [players, setPlayers] = useState<CampaignPlayer[]>(() =>
+    storage.safeGetItem<CampaignPlayer[]>(storage.STORAGE_KEYS.ALL_PLAYERS, [])
+  );
   const [units, setUnits] = useState<CrusadeUnit[]>(() => storage.loadUnits());
   const [battles, setBattles] = useState<Battle[]>(() => storage.loadBattles());
   const [campaignHistory, setCampaignHistory] = useState<storage.ArchivedCampaign[]>(() => storage.loadCampaignHistory());
-
-  const realtimeChannelRef = useRef<RealtimeChannel | null>(null);
-
-  const playerIdsRef = useRef<string[]>([]);
-  useEffect(() => {
-    playerIdsRef.current = players.map(p => p.id);
-  }, [players]);
-
-  // Persist on change (localStorage cache)
-  useEffect(() => { if (campaign) storage.saveCampaign(campaign); }, [campaign]);
-  useEffect(() => { if (currentPlayer) storage.savePlayer(currentPlayer); }, [currentPlayer]);
-  useEffect(() => { storage.saveUnits(units); }, [units]);
-  useEffect(() => { storage.saveBattles(battles); }, [battles]);
 
   // Initialize offline queue listener
   useEffect(() => {
@@ -88,95 +72,20 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     return cleanup;
   }, []);
 
-  // Pull from cloud on auth change
-  useEffect(() => {
-    if (!authUser?.id || !isSupabaseConfigured()) return;
-    let cancelled = false;
+  // Sync effects: localStorage persistence, cloud pull on auth, debounced player sync
+  const syncSetters = useMemo(() => ({
+    setCampaign, setCurrentPlayer, setPlayers, setUnits, setBattles,
+  }), []);
 
-    (async () => {
-      try {
-        const cloudData = await sync.pullCampaignFromCloud(authUser.id);
-        if (cancelled || !cloudData) return;
-        if (cloudData.campaign) {
-          setCampaign(cloudData.campaign);
-          setCurrentPlayer(cloudData.player);
-          setUnits(cloudData.units);
-          setBattles(cloudData.battles);
-          // Use players already fetched by pullCampaignFromCloud (no second round-trip)
-          if (cloudData.players.length > 0 && !cancelled) {
-            setPlayers(cloudData.players);
-            localStorage.setItem('crusade_all_players', JSON.stringify(cloudData.players));
-          }
-        } else {
-          // No cloud campaign — try to migrate local data
-          const localCampaign = storage.loadCampaign();
-          if (localCampaign) {
-            await sync.migrateLocalData(authUser.id);
-          }
-        }
-        // Flush any pending offline mutations
-        await flushQueue();
-      } catch (err) {
-        console.warn('Cloud sync failed, using local data:', err);
-      }
-    })();
+  useSyncEffect(campaign, currentPlayer, units, battles, authUser, syncSetters);
 
-    return () => { cancelled = true; };
-  }, [authUser?.id]);
+  // Realtime subscriptions (extracted hook handles playerIdsRef internally)
+  const playerIds = useMemo(() => players.map(p => p.id), [players]);
+  const realtimeCallbacks = useMemo(() => ({
+    setPlayers, setCurrentPlayer, setBattles, setUnits,
+  }), []);
 
-  // Realtime subscriptions
-  useEffect(() => {
-    if (!campaign?.id || !isSupabaseConfigured()) return;
-
-    const currentPlayerIds = playerIdsRef.current;
-    const channel = subscribeToCampaign(campaign.id, {
-      onPlayerChange: (payload) => {
-        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-          const updated = payload.new as unknown as CampaignPlayer;
-          setPlayers(prev => {
-            const exists = prev.find(p => p.id === updated.id);
-            if (exists) return prev.map(p => p.id === updated.id ? updated : p);
-            return [...prev, updated];
-          });
-          if (updated.user_id === authUser?.id) {
-            setCurrentPlayer(updated);
-          }
-        }
-      },
-      onBattleChange: (payload) => {
-        if (payload.eventType === 'INSERT') {
-          const newBattle = payload.new as unknown as Battle;
-          setBattles(prev => {
-            if (prev.find(b => b.id === newBattle.id)) return prev;
-            return [newBattle, ...prev];
-          });
-        }
-      },
-      onUnitChange: (payload) => {
-        if (payload.eventType === 'INSERT') {
-          const newUnit = payload.new as unknown as CrusadeUnit;
-          setUnits(prev => {
-            if (prev.find(u => u.id === newUnit.id)) return prev;
-            return [...prev, newUnit];
-          });
-        } else if (payload.eventType === 'UPDATE') {
-          const updated = payload.new as unknown as CrusadeUnit;
-          setUnits(prev => prev.map(u => u.id === updated.id ? updated : u));
-        } else if (payload.eventType === 'DELETE') {
-          const deleted = payload.old as unknown as { id: string };
-          setUnits(prev => prev.filter(u => u.id !== deleted.id));
-        }
-      },
-    }, currentPlayerIds);
-    realtimeChannelRef.current = channel;
-
-    return () => {
-      if (realtimeChannelRef.current) {
-        unsubscribeFromCampaign(realtimeChannelRef.current);
-        realtimeChannelRef.current = null;
-      }
-    };
-  }, [campaign?.id, authUser?.id]);
+  useRealtimeSubscription(campaign?.id, authUser?.id, playerIds, realtimeCallbacks);
 
   const createCampaign = useCallback((
     name: string, supplyLimit: number, startingRp: number, playerName: string, factionId: FactionId
@@ -264,16 +173,6 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     }
     return { success: false, error: 'Campaign not found. Check the join code.' };
   }, [authUser, campaign]);
-
-  // Sync player to cloud whenever player state changes
-  useEffect(() => {
-    if (currentPlayer && isSupabaseConfigured()) {
-      const timer = setTimeout(() => {
-        sync.updatePlayerInCloud(currentPlayer).catch(console.warn);
-      }, 1000); // Debounce 1s to avoid rapid-fire updates
-      return () => clearTimeout(timer);
-    }
-  }, [currentPlayer]);
 
   const leaveCampaign = useCallback(() => {
     // Read current state for archiving before clearing
@@ -474,15 +373,16 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
     setUnits(prev => prev.map(u => u.id === unitId ? { ...u, is_destroyed: true } : u));
   }, []);
 
+  // P2-5 fix: single setBattles call instead of two
   const updateBattle = useCallback((battleId: string, updates: Partial<Battle>) => {
-    setBattles(prev => prev.map(b => b.id === battleId ? { ...b, ...updates } : b));
-    // Push to cloud
     setBattles(prev => {
-      const updated = prev.find(b => b.id === battleId);
-      if (updated && isSupabaseConfigured()) {
-        sync.pushBattleToCloud(updated).catch(console.warn);
+      const updated = prev.map(b => b.id === battleId ? { ...b, ...updates } : b);
+      // Push to cloud outside the setter
+      const battle = updated.find(b => b.id === battleId);
+      if (battle && isSupabaseConfigured()) {
+        sync.pushBattleToCloud(battle).catch(console.warn);
       }
-      return prev;
+      return updated;
     });
   }, []);
 

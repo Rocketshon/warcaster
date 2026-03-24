@@ -11,6 +11,25 @@ const NAV_ITEMS = [
   { path: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 
+const CAMPAIGN_PATHS = ['/home', '/campaign', '/create', '/join', '/player', '/log-battle', '/post-battle', '/battle', '/requisition', '/roster', '/add-unit', '/unit', '/cheat-sheet', '/hall-of-fame', '/campaign-map', '/requisition-store'];
+const CODEX_PATHS = ['/codex', '/datasheet', '/space-marines'];
+const RULES_PATHS = ['/rules', '/rule'];
+const BATTLE_PATHS = ['/battle-lobby', '/battle-live'];
+const SETTINGS_PATHS = ['/settings'];
+
+function getActiveTab(pathname: string): string {
+  for (const [tab, paths] of [
+    ['/home', CAMPAIGN_PATHS],
+    ['/codex', CODEX_PATHS],
+    ['/rules', RULES_PATHS],
+    ['/battle-lobby', BATTLE_PATHS],
+    ['/settings', SETTINGS_PATHS],
+  ] as const) {
+    if (paths.some(p => pathname.startsWith(p))) return tab;
+  }
+  return '/home';
+}
+
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,52 +47,7 @@ export default function BottomNav() {
   }
 
   // Determine which tab is active based on current path
-  const activeTab = NAV_ITEMS.find((item) => {
-    if (item.path === '/home') {
-      // "Campaign" tab covers: /home, /campaign/*, /create-campaign, /join-campaign,
-      // /player/*, /log-battle, /post-battle, /battle/*, /requisition, /roster, /add-unit, /unit/*
-      return (
-        location.pathname === '/home' ||
-        location.pathname.startsWith('/campaign') ||
-        location.pathname.startsWith('/create') ||
-        location.pathname.startsWith('/join') ||
-        location.pathname.startsWith('/player') ||
-        location.pathname.startsWith('/log-battle') ||
-        location.pathname.startsWith('/post-battle') ||
-        location.pathname.startsWith('/battle/') ||
-        location.pathname.startsWith('/requisition') ||
-        location.pathname.startsWith('/roster') ||
-        location.pathname.startsWith('/add-unit') ||
-        location.pathname.startsWith('/unit') ||
-        location.pathname.startsWith('/hall-of-fame') ||
-        location.pathname.startsWith('/campaign-map') ||
-        location.pathname.startsWith('/requisition-store') ||
-        location.pathname === '/cheat-sheet' ||
-        location.pathname.startsWith('/cheat-sheet/')
-      );
-    }
-    if (item.path === '/codex') {
-      return (
-        location.pathname === '/codex' ||
-        location.pathname.startsWith('/codex/') ||
-        location.pathname.startsWith('/datasheet') ||
-        location.pathname.startsWith('/space-marines')
-      );
-    }
-    if (item.path === '/rules') {
-      return (
-        location.pathname === '/rules' ||
-        location.pathname.startsWith('/rule/')
-      );
-    }
-    if (item.path === '/battle-lobby') {
-      return (
-        location.pathname === '/battle-lobby' ||
-        location.pathname.startsWith('/battle-live')
-      );
-    }
-    return location.pathname === item.path;
-  })?.path ?? '/home';
+  const activeTab = getActiveTab(location.pathname);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-stone-950 border-t border-stone-800">

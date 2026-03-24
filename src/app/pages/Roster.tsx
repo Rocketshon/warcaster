@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Plus, Sword, Skull, Award, AlertTriangle, ChevronDown, ChevronUp, ScrollText, Store } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getRankFromXP, getRankColor, getXPThresholdForRank } from "../../lib/ranks";
 import { getRulesForFaction } from "../../data";
@@ -9,21 +10,15 @@ import { getUnitAttentionItems } from "../../lib/attention";
 import type { UnitRank, UnitStatus } from "../../types";
 
 export default function Roster() {
+  const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
-  const { campaign, currentPlayer, units, removeUnit, setDetachment } = useCrusade();
+  const { units, removeUnit, setDetachment } = useCrusade();
   const [showRemove, setShowRemove] = useState<string | null>(null);
   const [showDetachmentPicker, setShowDetachmentPicker] = useState(false);
   const [statusFilter, setStatusFilter] = useState<UnitStatus | 'all'>('all');
   const [expandedUnitId, setExpandedUnitId] = useState<string | null>(null);
 
-  // If no campaign, redirect to /home
-  useEffect(() => {
-    if (!campaign) {
-      navigate("/home", { replace: true });
-    }
-  }, [campaign, navigate]);
-
-  if (!campaign || !currentPlayer) return null;
+  if (!ready) return null;
 
   const factionName = getFactionName(currentPlayer.faction_id);
   const dataFactionId = getDataFactionId(currentPlayer.faction_id);

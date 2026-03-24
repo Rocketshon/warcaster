@@ -6,13 +6,18 @@ import { getRulesForFaction } from '../../data';
 import { useCrusade } from '../../lib/CrusadeContext';
 import { getFaction, getFactionName, getDataFactionId } from '../../lib/factions';
 import { FormattedRuleText, getStratagemTypeColor, getEnhancementCardColors } from '../../lib/formatText';
-import type { RulesSection } from '../../types';
+import type { RulesSection, DetachmentEnhancement, DetachmentStratagem, DetachmentData, CrusadeRule, FactionId } from '../../types';
+
+type FactionData =
+  | { type: 'army_rules'; rules: string[] }
+  | { type: 'detachment'; detachment: DetachmentData }
+  | { type: 'crusade_rules'; rules: CrusadeRule[] | undefined };
 
 // Parse a rule ID like "core-5" or "crusade-2" or "faction-det-1" etc.
 function lookupRule(
   ruleId: string,
   factionId?: string
-): { title: string; source: string; sourceType: string; section: RulesSection | null; factionData?: any } | null {
+): { title: string; source: string; sourceType: string; section: RulesSection | null; factionData?: FactionData } | null {
   // Core rules: "core-{index}"
   if (ruleId.startsWith('core-') && CORE_RULES) {
     const idx = parseInt(ruleId.replace('core-', ''), 10);
@@ -35,9 +40,9 @@ function lookupRule(
 
   // Faction rules
   if (ruleId.startsWith('faction-') && factionId) {
-    const factionRules = getRulesForFaction(getDataFactionId(factionId as any));
+    const factionRules = getRulesForFaction(getDataFactionId(factionId as FactionId));
     if (!factionRules) return null;
-    const factionName = getFactionName(factionId as any);
+    const factionName = getFactionName(factionId as FactionId);
 
     if (ruleId === 'faction-army-rules') {
       return {
@@ -321,8 +326,8 @@ export default function RuleDetail() {
                 Enhancements
               </h2>
               <div className="space-y-3">
-                {det.enhancements.map((enh: any, idx: number) => {
-                  const factionMeta = currentPlayer?.faction_id ? getFaction(currentPlayer.faction_id as any) : undefined;
+                {det.enhancements.map((enh: DetachmentEnhancement, idx: number) => {
+                  const factionMeta = currentPlayer?.faction_id ? getFaction(currentPlayer.faction_id as FactionId) : undefined;
                   const enhColors = getEnhancementCardColors(factionMeta?.color ?? 'emerald');
                   return (
                   <div
@@ -348,7 +353,7 @@ export default function RuleDetail() {
                 Stratagems
               </h2>
               <div className="space-y-3">
-                {det.stratagems.map((strat: any, idx: number) => (
+                {det.stratagems.map((strat: DetachmentStratagem, idx: number) => (
                   <div
                     key={idx}
                     className="relative overflow-hidden rounded-sm border border-purple-500/20 bg-gradient-to-br from-purple-950/20 to-stone-950 p-4"
@@ -393,7 +398,7 @@ export default function RuleDetail() {
     if (rule.factionData.type === 'crusade_rules') {
       return (
         <div className="space-y-4">
-          {rule.factionData.rules.map((cr: any, idx: number) => (
+          {rule.factionData.rules?.map((cr: CrusadeRule, idx: number) => (
             <div
               key={idx}
               className="relative overflow-hidden rounded-sm border border-amber-500/20 bg-stone-900 p-4"

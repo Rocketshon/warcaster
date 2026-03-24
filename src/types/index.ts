@@ -281,3 +281,47 @@ export interface GeneralRulesDocument {
   name: string;
   sections: RulesSection[];
 }
+
+// --- Archived Campaign ---
+export interface ArchivedCampaign {
+  id: string;
+  name: string;
+  faction_id: string;
+  faction_name: string;
+  faction_icon: string;
+  start_date: string;
+  end_date: string;
+  wins: number;
+  losses: number;
+  draws: number;
+  total_battles: number;
+}
+
+// --- User Session ---
+export interface UserSession {
+  id: string;
+  email: string;
+  display_name: string;
+}
+
+// --- Offline Queue ---
+export interface QueuedMutation {
+  id: string;
+  type: 'campaign' | 'player' | 'unit' | 'battle';
+  action: 'create' | 'update' | 'delete';
+  data: unknown;
+  timestamp: number;
+}
+
+// --- Faction Rule Data (for RuleDetail rendering) ---
+export interface FactionRuleData {
+  detachments?: Array<{
+    name: string;
+    rule?: { name: string; text: string };
+    enhancements?: Array<{ name: string; cost?: string; text: string }>;
+    stratagems?: Array<{ name: string; cp?: string; type?: string; when?: string; target?: string; effect?: string; restrictions?: string }>;
+  }>;
+  army_rules?: Array<{ name: string; text: string }>;
+  crusade_rules?: Array<{ name: string; text: string }>;
+  boarding_actions?: Array<{ name: string; text: string }>;
+}

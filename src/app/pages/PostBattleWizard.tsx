@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { ArrowLeft, Check, ChevronDown, X, Award, Zap, Skull, TrendingUp, Trophy } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
 import { generateId } from "../../lib/storage";
 
@@ -40,14 +41,12 @@ interface UnitState {
 }
 
 export default function PostBattleWizard() {
+  const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
   const location = useLocation();
-  const { campaign, battles, units, currentPlayer, awardXP, recordBattleParticipation, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
+  const { battles, units, awardXP, recordBattleParticipation, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
 
-  // Guard: redirect if no campaign or player
-  useEffect(() => {
-    if (!campaign || !currentPlayer) navigate('/home');
-  }, [campaign, currentPlayer, navigate]);
+  if (!ready) return null;
 
   // Get the battle by ID from location state, or fall back to most recent
   const targetBattleId = (location.state as { battleId?: string } | null)?.battleId;

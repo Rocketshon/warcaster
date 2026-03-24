@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useAuth } from "../../lib/AuthContext";
-import { saveCampaign, savePlayer, saveUnits, saveBattles, saveUser } from "../../lib/storage";
+import { saveCampaign, savePlayer, saveUnits, saveBattles, saveUser, STORAGE_KEYS } from "../../lib/storage";
 import { getAllFactionSlugs, getAllUnits } from "../../data";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
@@ -75,11 +75,11 @@ export default function Settings() {
   const handleSignOut = async () => {
     setShowSignOutDialog(false);
     // Clear campaign data from localStorage
-    localStorage.removeItem('crusade_campaign');
-    localStorage.removeItem('crusade_player');
-    localStorage.removeItem('crusade_units');
-    localStorage.removeItem('crusade_battles');
-    localStorage.removeItem('crusade_all_players');
+    localStorage.removeItem(STORAGE_KEYS.CAMPAIGN);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER);
+    localStorage.removeItem(STORAGE_KEYS.UNITS);
+    localStorage.removeItem(STORAGE_KEYS.BATTLES);
+    localStorage.removeItem(STORAGE_KEYS.ALL_PLAYERS);
     await signOut();
     navigate("/sign-in");
   };

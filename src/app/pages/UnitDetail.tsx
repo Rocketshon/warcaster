@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, Shield, Edit, Plus, Award, AlertTriangle, Skull, ChevronDown, ChevronUp, Star, Trash2, Sparkles, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
+import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
 import { getUnitsForFaction, getRulesForFaction } from "../../data";
@@ -15,10 +16,9 @@ import { getFactionLegacyConfig } from "../../lib/factionLegacy";
 
 export default function UnitDetail() {
   const { unitId } = useParams<{ unitId: string }>();
+  const { campaign, currentPlayer, ready } = useCampaignGuard();
   const navigate = useNavigate();
   const {
-    campaign,
-    currentPlayer,
     units,
     updateUnit,
     awardXP,
@@ -39,13 +39,6 @@ export default function UnitDetail() {
   const [editNotes, setEditNotes] = useState("");
   const [showEnhancementPicker, setShowEnhancementPicker] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-
-  // If no campaign, redirect to /home
-  useEffect(() => {
-    if (!campaign) {
-      navigate("/home", { replace: true });
-    }
-  }, [campaign, navigate]);
 
   const unit = units.find((u) => u.id === unitId);
 
@@ -142,7 +135,7 @@ export default function UnitDetail() {
     return results;
   }, [currentPlayer, datasheet]);
 
-  if (!campaign || !currentPlayer) return null;
+  if (!ready) return null;
 
   if (!unit) {
     return (
@@ -168,10 +161,12 @@ export default function UnitDetail() {
       ? 'battle_scarred'
       : unit.status;
 
-  // Auto-sync status if it diverges
-  if (effectiveStatus !== unit.status) {
-    updateUnit(unit.id, { status: effectiveStatus });
-  }
+  // Auto-sync status if it diverges (in a useEffect to avoid side effects during render)
+  useEffect(() => {
+    if (effectiveStatus !== unit.status) {
+      updateUnit(unit.id, { status: effectiveStatus });
+    }
+  }, [effectiveStatus, unit.status, unit.id, updateUnit]);
 
   const statusLabel = (s: UnitStatus) => {
     switch (s) {
