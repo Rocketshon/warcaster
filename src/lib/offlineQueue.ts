@@ -101,7 +101,7 @@ export async function flushQueue(): Promise<{ succeeded: number; failed: number 
   }
 
   if (succeeded > 0) {
-    console.log(`[OfflineQueue] Flushed ${succeeded} mutations (${failed} failed)`);
+    // Flushed ${succeeded} mutations (${failed} failed)
   }
 
   return { succeeded, failed };
@@ -164,7 +164,6 @@ export function initOfflineQueue(): () => void {
   if (listenerAttached) return () => {};
   listenerAttached = true;
   onlineHandler = () => {
-    console.log('[OfflineQueue] Back online — flushing queue');
     flushQueue();
   };
   window.addEventListener('online', onlineHandler);

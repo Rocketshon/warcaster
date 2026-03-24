@@ -4,6 +4,7 @@ import { Copy, Check, Skull, Plus, Swords, AlertCircle, Trophy, Megaphone, Map }
 import { toast } from "sonner";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
+import { isFeatureEnabled } from "../../lib/featureFlags";
 import { getFactionName, getFactionIcon } from "../../lib/factions";
 import { getResultColor } from "../../lib/ranks";
 import { getResultLabel, formatRecord } from "../../lib/formatText";
@@ -11,13 +12,14 @@ import { getUnitAttentionItems } from "../../lib/attention";
 import type { AttentionItem } from "../../lib/attention";
 
 export default function CampaignHubActive() {
-  const { campaign, currentPlayer, ready } = useCampaignGuard();
+  const guard = useCampaignGuard();
   const navigate = useNavigate();
   const { players, battles, units, syncing } = useCrusade();
   const [copied, setCopied] = useState(false);
   const [showAllBattles, setShowAllBattles] = useState(true);
 
-  if (!ready) return null;
+  if (!guard.ready) return null;
+  const { campaign, currentPlayer } = guard;
 
   // Build the players list — for local-first, show currentPlayer (and any others in the array)
   const displayPlayers = players.length > 0
@@ -388,40 +390,46 @@ export default function CampaignHubActive() {
         </div>
 
         {/* Battle Mode Link */}
-        <button
-          onClick={() => navigate("/battle-lobby")}
-          className="mt-6 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)] transition-all group"
-        >
-          <Swords className="w-5 h-5 text-red-500 group-hover:text-red-400 transition-colors" />
-          <span className="text-sm font-semibold text-stone-100 group-hover:text-red-400 transition-colors">
-            Battle Mode
-          </span>
-          <span className="ml-auto text-xs text-stone-500">Live Combat</span>
-        </button>
+        {isFeatureEnabled('COMBAT_TRACKER') && (
+          <button
+            onClick={() => navigate("/battle-lobby")}
+            className="mt-6 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)] transition-all group"
+          >
+            <Swords className="w-5 h-5 text-red-500 group-hover:text-red-400 transition-colors" />
+            <span className="text-sm font-semibold text-stone-100 group-hover:text-red-400 transition-colors">
+              Battle Mode
+            </span>
+            <span className="ml-auto text-xs text-stone-500">Live Combat</span>
+          </button>
+        )}
 
         {/* Hall of Fame Link */}
-        <button
-          onClick={() => navigate("/hall-of-fame")}
-          className="mt-3 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-amber-500/50 hover:shadow-[0_0_15px_rgba(245,158,11,0.15)] transition-all group"
-        >
-          <Trophy className="w-5 h-5 text-amber-500 group-hover:text-amber-400 transition-colors" />
-          <span className="text-sm font-semibold text-stone-100 group-hover:text-amber-400 transition-colors">
-            Hall of Fame
-          </span>
-          <span className="ml-auto text-xs text-stone-500">Stats &amp; Achievements</span>
-        </button>
+        {isFeatureEnabled('HALL_OF_FAME') && (
+          <button
+            onClick={() => navigate("/hall-of-fame")}
+            className="mt-3 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-amber-500/50 hover:shadow-[0_0_15px_rgba(245,158,11,0.15)] transition-all group"
+          >
+            <Trophy className="w-5 h-5 text-amber-500 group-hover:text-amber-400 transition-colors" />
+            <span className="text-sm font-semibold text-stone-100 group-hover:text-amber-400 transition-colors">
+              Hall of Fame
+            </span>
+            <span className="ml-auto text-xs text-stone-500">Stats &amp; Achievements</span>
+          </button>
+        )}
 
         {/* Campaign Map Link */}
-        <button
-          onClick={() => navigate("/campaign-map")}
-          className="mt-3 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all group"
-        >
-          <Map className="w-5 h-5 text-emerald-500 group-hover:text-emerald-400 transition-colors" />
-          <span className="text-sm font-semibold text-stone-100 group-hover:text-emerald-400 transition-colors">
-            Campaign Map
-          </span>
-          <span className="ml-auto text-xs text-stone-500">Territory Control</span>
-        </button>
+        {isFeatureEnabled('CAMPAIGN_MAP') && (
+          <button
+            onClick={() => navigate("/campaign-map")}
+            className="mt-3 w-full rounded-sm border border-stone-700/60 bg-stone-900 p-4 flex items-center gap-3 hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all group"
+          >
+            <Map className="w-5 h-5 text-emerald-500 group-hover:text-emerald-400 transition-colors" />
+            <span className="text-sm font-semibold text-stone-100 group-hover:text-emerald-400 transition-colors">
+              Campaign Map
+            </span>
+            <span className="ml-auto text-xs text-stone-500">Territory Control</span>
+          </button>
+        )}
       </div>
 
       {/* Floating Action Button - Log Battle */}

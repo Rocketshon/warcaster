@@ -13,10 +13,11 @@ import WargearOptionsPanel, { WargearAbilitiesPanel } from "../components/Wargea
 import { FormattedRuleText } from "../../lib/formatText";
 import FactionLegacy from "../components/FactionLegacy";
 import { getFactionLegacyConfig } from "../../lib/factionLegacy";
+import { isFeatureEnabled } from "../../lib/featureFlags";
 
 export default function UnitDetail() {
   const { unitId } = useParams<{ unitId: string }>();
-  const { campaign, currentPlayer, ready } = useCampaignGuard();
+  const guard = useCampaignGuard();
   const navigate = useNavigate();
   const {
     units,
@@ -44,15 +45,15 @@ export default function UnitDetail() {
 
   // Load matching datasheet from faction data
   const datasheet: Datasheet | undefined = useMemo(() => {
-    if (!currentPlayer || !unit) return undefined;
-    const factionUnits = getUnitsForFaction(getDataFactionId(currentPlayer.faction_id));
+    if (!guard.currentPlayer || !unit) return undefined;
+    const factionUnits = getUnitsForFaction(getDataFactionId(guard.currentPlayer.faction_id));
     return factionUnits.find((ds) => ds.name === unit.datasheet_name);
-  }, [currentPlayer, unit]);
+  }, [guard.currentPlayer, unit]);
 
   // Load faction enhancements from all detachments
   const factionEnhancements = useMemo(() => {
-    if (!currentPlayer) return [];
-    const rules = getRulesForFaction(getDataFactionId(currentPlayer.faction_id));
+    if (!guard.currentPlayer) return [];
+    const rules = getRulesForFaction(getDataFactionId(guard.currentPlayer.faction_id));
     if (!rules) return [];
     const enhancements: { detachment: string; name: string; cost: string; text: string }[] = [];
     for (const det of rules.detachments) {
@@ -61,7 +62,7 @@ export default function UnitDetail() {
       }
     }
     return enhancements;
-  }, [currentPlayer]);
+  }, [guard.currentPlayer]);
 
   // Filter enhancements by unit keyword eligibility
   const filteredEnhancements = useMemo(() => {
@@ -98,8 +99,8 @@ export default function UnitDetail() {
 
   // Match stratagems whose target field references this unit's keywords
   const matchingStratagems = useMemo(() => {
-    if (!currentPlayer || !datasheet) return [];
-    const rules = getRulesForFaction(getDataFactionId(currentPlayer.faction_id));
+    if (!guard.currentPlayer || !datasheet) return [];
+    const rules = getRulesForFaction(getDataFactionId(guard.currentPlayer.faction_id));
     if (!rules) return [];
 
     // Collect unit keywords (uppercase)
@@ -133,9 +134,10 @@ export default function UnitDetail() {
     }
 
     return results;
-  }, [currentPlayer, datasheet]);
+  }, [guard.currentPlayer, datasheet]);
 
-  if (!ready) return null;
+  if (!guard.ready) return null;
+  const { campaign, currentPlayer } = guard;
 
   if (!unit) {
     return (
@@ -656,7 +658,7 @@ export default function UnitDetail() {
           </div>
 
           {/* Faction Legacy */}
-          {currentPlayer && getFactionLegacyConfig(currentPlayer.faction_id) && (
+          {isFeatureEnabled('FACTION_LEGACY') && currentPlayer && getFactionLegacyConfig(currentPlayer.faction_id) && (
             <div className="mb-4">
               <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider flex items-center gap-2 mb-3">
                 <Sparkles className="w-4 h-4 text-purple-400" />

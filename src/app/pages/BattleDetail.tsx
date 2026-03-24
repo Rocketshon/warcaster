@@ -7,6 +7,7 @@ import { getResultLabel, getBattleSizeColor } from "../../lib/formatText";
 import { getFactionIcon, getFactionName, FACTIONS } from "../../lib/factions";
 import { generateBattleStory, canGenerateStory } from "../../lib/battleNarrator";
 import type { NarratorInput } from "../../lib/battleNarrator";
+import { isFeatureEnabled } from "../../lib/featureFlags";
 
 // localStorage key for persisted stories
 const STORY_KEY_PREFIX = "crusade_battle_story_";
@@ -324,7 +325,7 @@ export default function BattleDetail() {
                 <div className="space-y-2">
                   {fieldedUnits
                     .filter(u => u.battle_honours.length > 0)
-                    .map((unit) =>
+                    .flatMap((unit) =>
                       unit.battle_honours.map((honour) => (
                         <div
                           key={`${unit.id}-${honour.id}`}
@@ -351,7 +352,7 @@ export default function BattleDetail() {
                 <div className="space-y-2">
                   {fieldedUnits
                     .filter(u => u.battle_scars.length > 0)
-                    .map((unit) =>
+                    .flatMap((unit) =>
                       unit.battle_scars.map((scar) => (
                         <div
                           key={`${unit.id}-${scar.id}`}
@@ -387,7 +388,7 @@ export default function BattleDetail() {
           )}
 
           {/* Battle Story Section */}
-          <div>
+          {isFeatureEnabled('BATTLE_NARRATOR') && <div>
             <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3 flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               Battle Narrative
@@ -459,7 +460,7 @@ export default function BattleDetail() {
                 <span className="text-sm text-amber-400">Chronicling the battle...</span>
               </div>
             )}
-          </div>
+          </div>}
         </div>
       </div>
     </div>

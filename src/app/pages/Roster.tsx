@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { ArrowLeft, Plus, Sword, Skull, Award, AlertTriangle, ChevronDown, ChevronUp, ScrollText, Store } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
+import { isFeatureEnabled } from "../../lib/featureFlags";
 import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getRankFromXP, getRankColor, getXPThresholdForRank } from "../../lib/ranks";
 import { getRulesForFaction } from "../../data";
@@ -10,7 +11,7 @@ import { getUnitAttentionItems } from "../../lib/attention";
 import type { UnitRank, UnitStatus } from "../../types";
 
 export default function Roster() {
-  const { campaign, currentPlayer, ready } = useCampaignGuard();
+  const guard = useCampaignGuard();
   const navigate = useNavigate();
   const { units, removeUnit, setDetachment } = useCrusade();
   const [showRemove, setShowRemove] = useState<string | null>(null);
@@ -18,7 +19,8 @@ export default function Roster() {
   const [statusFilter, setStatusFilter] = useState<UnitStatus | 'all'>('all');
   const [expandedUnitId, setExpandedUnitId] = useState<string | null>(null);
 
-  if (!ready) return null;
+  if (!guard.ready) return null;
+  const { campaign, currentPlayer } = guard;
 
   const factionName = getFactionName(currentPlayer.faction_id);
   const dataFactionId = getDataFactionId(currentPlayer.faction_id);
@@ -89,7 +91,7 @@ export default function Roster() {
   if (playerUnits.length === 0) {
     // Empty State
     return (
-      <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-black flex flex-col p-6 pb-24 relative overflow-hidden">
         <div className="relative z-10 w-full max-w-md mx-auto">
           {/* Back button */}
           <button
@@ -205,22 +207,24 @@ export default function Roster() {
         </div>
 
         {/* Requisition Store Button */}
-        <button
-          onClick={() => navigate('/requisition-store')}
-          className="w-full mb-6 relative overflow-hidden rounded-sm border border-emerald-500/30 bg-stone-900 p-4 hover:border-emerald-500/50 transition-all group"
-        >
-          <div className="relative flex items-center gap-3">
-            <Store className="w-5 h-5 text-emerald-500" />
-            <div className="text-left">
-              <span className="text-sm font-semibold text-stone-100 block">
-                Requisition Store
-              </span>
-              <span className="text-xs text-stone-500">
-                Spend RP on upgrades, recruits, and more
-              </span>
+        {isFeatureEnabled('REQUISITION_STORE') && (
+          <button
+            onClick={() => navigate('/requisition-store')}
+            className="w-full mb-6 relative overflow-hidden rounded-sm border border-emerald-500/30 bg-stone-900 p-4 hover:border-emerald-500/50 transition-all group"
+          >
+            <div className="relative flex items-center gap-3">
+              <Store className="w-5 h-5 text-emerald-500" />
+              <div className="text-left">
+                <span className="text-sm font-semibold text-stone-100 block">
+                  Requisition Store
+                </span>
+                <span className="text-xs text-stone-500">
+                  Spend RP on upgrades, recruits, and more
+                </span>
+              </div>
             </div>
-          </div>
-        </button>
+          </button>
+        )}
 
         {/* Detachment Picker */}
         {detachments.length > 0 && (

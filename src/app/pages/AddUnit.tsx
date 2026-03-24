@@ -7,12 +7,12 @@ import { useCampaignGuard } from "../../lib/hooks/useCampaignGuard";
 import { getFactionName, getDataFactionId } from "../../lib/factions";
 import { getUnitsForFaction } from "../../data";
 import { toTitleCase } from "../../lib/formatText";
-import type { Datasheet } from "../../types";
+import type { Datasheet, FactionId } from "../../types";
 import WeaponStatTable from "../components/WeaponStatTable";
 import WargearOptionsPanel, { WargearAbilitiesPanel } from "../components/WargearOptionsPanel";
 
 export default function AddUnit() {
-  const { campaign, currentPlayer, ready } = useCampaignGuard();
+  const guard = useCampaignGuard();
   const navigate = useNavigate();
   const { addUnit } = useCrusade();
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,11 +22,14 @@ export default function AddUnit() {
   const [selectedModelTier, setSelectedModelTier] = useState(0);
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
 
+  // Extract factionId safely before useMemo
+  const factionId: FactionId | null = guard.ready ? guard.currentPlayer.faction_id : null;
+
   // Load real datasheets for this faction
   const allFactionUnits = useMemo(() => {
-    if (!ready) return [];
-    return getUnitsForFaction(getDataFactionId(currentPlayer.faction_id));
-  }, [ready, ready ? currentPlayer.faction_id : null]);
+    if (!factionId) return [];
+    return getUnitsForFaction(getDataFactionId(factionId as FactionId));
+  }, [factionId]);
 
   // Filter units based on search (name + keywords)
   const filteredUnits = useMemo(() => {
@@ -39,10 +42,10 @@ export default function AddUnit() {
     );
   }, [allFactionUnits, searchQuery]);
 
-  if (!ready) return null;
+  if (!guard.ready) return null;
 
-  const factionId = currentPlayer.faction_id;
-  const factionName = getFactionName(factionId);
+  const { campaign, currentPlayer } = guard;
+  const factionName = getFactionName(currentPlayer.faction_id);
 
   const handleUnitSelect = (unit: Datasheet) => {
     setSelectedUnit(unit);

@@ -176,13 +176,29 @@ export function resolveCombat(input: CombatInput): CombatResult {
   const woundTarget = Math.max(2, Math.min(6, baseWoundTarget - woundModifier));
   const woundRolls = manualWoundRolls ?? rollMultipleD6(hits);
   let wounds = autoWounds;
+  let criticalWounds = 0;
   for (const roll of woundRolls) {
     if (roll === 1) continue; // Unmodified 1 always fails
-    if (roll === 6) { wounds++; continue; } // Unmodified 6 always wounds
+    if (roll === 6) { wounds++; criticalWounds++; continue; } // Unmodified 6 always wounds (critical)
     if (roll >= woundTarget) wounds++;
   }
 
-  // 4. Save rolls
+  // Handle DEVASTATING WOUNDS trait: critical wounds (unmodified 6s) bypass saves
+  // and deal mortal wounds equal to the damage characteristic
+  const hasDevastatingWounds = weapon.traits?.some(
+    t => t.toUpperCase().includes('DEVASTATING WOUNDS')
+  );
+  let mortalWoundDamage = 0;
+  if (hasDevastatingWounds && criticalWounds > 0) {
+    // Critical wounds bypass saves entirely — deal damage directly
+    for (let i = 0; i < criticalWounds; i++) {
+      mortalWoundDamage += parseDiceString(weapon.D);
+    }
+    // Remove critical wounds from the pool that goes through saves
+    wounds -= criticalWounds;
+  }
+
+  // 4. Save rolls (only for non-devastating wounds)
   const saveTarget = getEffectiveSave(defenderSv, weapon.AP, defenderInvuln);
   const saveRolls = manualSaveRolls ?? rollMultipleD6(wounds);
   let failedSaves = 0;
@@ -194,15 +210,12 @@ export function resolveCombat(input: CombatInput): CombatResult {
   // 5. Damage
   const woundsPerModel = parseInt(defenderW) || 1;
   const damagePerFailedSave: number[] = [];
-  let totalDamage = 0;
+  let totalDamage = mortalWoundDamage; // Start with mortal wound damage from devastating wounds
   for (let i = 0; i < failedSaves; i++) {
     const dmg = parseDiceString(weapon.D);
     damagePerFailedSave.push(dmg);
     totalDamage += dmg;
   }
-
-  // Handle DEVASTATING WOUNDS trait (mortal wounds on critical wound)
-  // TODO: implement when we track mortal wounds separately
 
   const modelsDestroyed = Math.floor(totalDamage / woundsPerModel);
 
