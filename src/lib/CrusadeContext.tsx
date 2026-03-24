@@ -35,10 +35,12 @@ interface CrusadeState {
 
   // Actions — Post-Battle
   awardXP: (unitId: string, xp: number) => void;
+  recordBattleParticipation: (unitId: string, survived: boolean) => void;
   addBattleHonour: (unitId: string, honour: CrusadeUnit['battle_honours'][0]) => void;
   addBattleScar: (unitId: string, scar: CrusadeUnit['battle_scars'][0]) => void;
   removeBattleScar: (unitId: string, scarId: string) => void;
   markDestroyed: (unitId: string) => void;
+  updateBattle: (battleId: string, updates: Partial<Battle>) => void;
   spendRequisition: (amount: number) => boolean;
   awardRequisition: (amount: number) => void;
 
@@ -428,7 +430,18 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       if (u.id !== unitId) return u;
       const newXP = u.experience_points + xp;
       const newRank = getRankFromXP(newXP);
-      return { ...u, experience_points: newXP, rank: newRank, battles_played: u.battles_played + 1, battles_survived: u.battles_survived + 1 };
+      return { ...u, experience_points: newXP, rank: newRank };
+    }));
+  }, []);
+
+  const recordBattleParticipation = useCallback((unitId: string, survived: boolean) => {
+    setUnits(prev => prev.map(u => {
+      if (u.id !== unitId) return u;
+      return {
+        ...u,
+        battles_played: u.battles_played + 1,
+        battles_survived: survived ? u.battles_survived + 1 : u.battles_survived,
+      };
     }));
   }, []);
 
@@ -458,7 +471,19 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const markDestroyed = useCallback((unitId: string) => {
-    setUnits(prev => prev.map(u => u.id === unitId ? { ...u, battles_played: u.battles_played + 1, is_destroyed: true } : u));
+    setUnits(prev => prev.map(u => u.id === unitId ? { ...u, is_destroyed: true } : u));
+  }, []);
+
+  const updateBattle = useCallback((battleId: string, updates: Partial<Battle>) => {
+    setBattles(prev => prev.map(b => b.id === battleId ? { ...b, ...updates } : b));
+    // Push to cloud
+    setBattles(prev => {
+      const updated = prev.find(b => b.id === battleId);
+      if (updated && isSupabaseConfigured()) {
+        sync.pushBattleToCloud(updated).catch(console.warn);
+      }
+      return prev;
+    });
   }, []);
 
   const spendRequisition = useCallback((amount: number) => {
@@ -531,7 +556,7 @@ export function CrusadeProvider({ children }: { children: ReactNode }) {
       createCampaign, joinCampaign, leaveCampaign, setDetachment,
       units, addUnit: addUnitFn, updateUnit: updateUnitFn, removeUnit: removeUnitFn,
       battles, logBattle, getPlayerBattles,
-      awardXP, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, spendRequisition, awardRequisition,
+      awardXP, recordBattleParticipation, addBattleHonour, addBattleScar, removeBattleScar, markDestroyed, updateBattle, spendRequisition, awardRequisition,
       updateCampaignSettings, removePlayer: removePlayerFn, postAnnouncement,
       campaignHistory,
     }}>

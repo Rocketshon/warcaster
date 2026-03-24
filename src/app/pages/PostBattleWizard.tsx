@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { ArrowLeft, Check, ChevronDown, X, Award, Zap, Skull, TrendingUp, Trophy } from "lucide-react";
 import { useCrusade } from "../../lib/CrusadeContext";
 import { getRankFromXP, getRankColor } from "../../lib/ranks";
@@ -41,15 +41,19 @@ interface UnitState {
 
 export default function PostBattleWizard() {
   const navigate = useNavigate();
-  const { campaign, battles, units, currentPlayer, awardXP, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
+  const location = useLocation();
+  const { campaign, battles, units, currentPlayer, awardXP, recordBattleParticipation, addBattleScar, addBattleHonour, markDestroyed, awardRequisition } = useCrusade();
 
   // Guard: redirect if no campaign or player
   useEffect(() => {
     if (!campaign || !currentPlayer) navigate('/home');
   }, [campaign, currentPlayer, navigate]);
 
-  // Get the most recent battle
-  const latestBattle = battles[0] ?? null;
+  // Get the battle by ID from location state, or fall back to most recent
+  const targetBattleId = (location.state as { battleId?: string } | null)?.battleId;
+  const latestBattle = targetBattleId
+    ? battles.find(b => b.id === targetBattleId) ?? battles[0] ?? null
+    : battles[0] ?? null;
 
   // Guard: prevent double-apply on back-navigation remount
   const alreadyProcessed = latestBattle && sessionStorage.getItem('lastProcessedBattleId') === latestBattle.id;
@@ -193,6 +197,9 @@ export default function PostBattleWizard() {
       if (state.xpGained > 0) {
         awardXP(unit.id, state.xpGained);
       }
+
+      // Record battle participation (survived = not destroyed)
+      recordBattleParticipation(unit.id, !state.destroyed);
 
       // Mark destroyed
       if (state.destroyed) {

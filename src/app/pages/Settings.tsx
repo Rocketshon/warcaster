@@ -74,6 +74,12 @@ export default function Settings() {
 
   const handleSignOut = async () => {
     setShowSignOutDialog(false);
+    // Clear campaign data from localStorage
+    localStorage.removeItem('crusade_campaign');
+    localStorage.removeItem('crusade_player');
+    localStorage.removeItem('crusade_units');
+    localStorage.removeItem('crusade_battles');
+    localStorage.removeItem('crusade_all_players');
     await signOut();
     navigate("/sign-in");
   };

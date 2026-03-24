@@ -57,7 +57,7 @@ function setDiceMode(mode: "digital" | "manual") {
 export default function CombatTracker() {
   const navigate = useNavigate();
   const { opponentId } = useParams<{ opponentId: string }>();
-  const { players, currentPlayer, units } = useCrusade();
+  const { players, currentPlayer, units, battles, updateBattle } = useCrusade();
 
   // State
   const [phase, setPhase] = useState<Phase>("shooting");
@@ -305,6 +305,14 @@ export default function CombatTracker() {
     };
 
     setEngagements((prev) => [engagement, ...prev]);
+
+    // Save engagement to the most recent battle
+    const latestBattle = battles[0];
+    if (latestBattle) {
+      const updatedLog = [...(latestBattle.combat_log || []), engagement];
+      updateBattle(latestBattle.id, { combat_log: updatedLog });
+    }
+
     resetCombat();
   };
 
@@ -337,6 +345,20 @@ export default function CombatTracker() {
   useEffect(() => {
     setDiceModeState(getDiceMode());
   }, []);
+
+  // Guard: no own units
+  if (myUnits.length === 0) {
+    return (
+      <div className="min-h-screen bg-black p-6 pb-24">
+        <button onClick={() => navigate(-1)} className="mb-4 text-stone-400">&larr; Back</button>
+        <div className="text-center py-12">
+          <p className="text-stone-400 mb-2">You have no units in your roster.</p>
+          <p className="text-stone-500 text-sm mb-4">Add units before entering battle.</p>
+          <button onClick={() => navigate('/add-unit')} className="px-4 py-2 rounded-sm bg-emerald-600 text-black font-semibold">Add Units</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black flex flex-col pb-24">

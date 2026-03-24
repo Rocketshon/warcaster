@@ -45,6 +45,9 @@ export default function BottomNav() {
         location.pathname.startsWith('/roster') ||
         location.pathname.startsWith('/add-unit') ||
         location.pathname.startsWith('/unit') ||
+        location.pathname.startsWith('/hall-of-fame') ||
+        location.pathname.startsWith('/campaign-map') ||
+        location.pathname.startsWith('/requisition-store') ||
         location.pathname === '/cheat-sheet' ||
         location.pathname.startsWith('/cheat-sheet/')
       );

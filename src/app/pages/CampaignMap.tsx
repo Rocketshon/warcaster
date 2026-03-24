@@ -14,6 +14,7 @@ export default function CampaignMap() {
 
   const [territories, setTerritories] = useState<Territory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState<Territory | null>(null);
   const [newName, setNewName] = useState("");
@@ -28,12 +29,18 @@ export default function CampaignMap() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
+    setError(null);
+    const { data, error: fetchError } = await supabase
       .from("cc_territories")
       .select("*")
       .eq("campaign_id", campaign.id)
       .order("created_at", { ascending: true });
-    if (!error && data) {
+    if (fetchError) {
+      setError('Failed to load territories');
+      setLoading(false);
+      return;
+    }
+    if (data) {
       setTerritories(data as Territory[]);
     }
     setLoading(false);
@@ -182,11 +189,19 @@ export default function CampaignMap() {
         </div>
 
         {/* Territories */}
+        {error && !loading && (
+          <div className="text-center py-12">
+            <p className="text-red-400 mb-2">{error}</p>
+            <button onClick={fetchTerritories} className="px-4 py-2 rounded-sm border border-stone-700 text-stone-300">
+              Retry
+            </button>
+          </div>
+        )}
         {loading ? (
           <div className="text-center text-stone-500 text-sm py-12">
             Loading territories...
           </div>
-        ) : territories.length === 0 ? (
+        ) : !error && territories.length === 0 ? (
           <div className="rounded-sm border border-stone-700/60 bg-stone-900 p-8 text-center">
             <Map className="w-10 h-10 text-stone-700 mx-auto mb-3" strokeWidth={1.5} />
             <p className="text-stone-400 text-sm mb-1">No territories set up</p>

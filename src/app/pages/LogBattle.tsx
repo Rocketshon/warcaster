@@ -93,11 +93,6 @@ export default function LogBattle() {
       return;
     }
 
-    if (otherPlayers.length > 0 && !opponentId && !opponentName.trim()) {
-      toast.error("Please select an opponent from the list");
-      return;
-    }
-
     if (!missionName.trim()) {
       toast.error("Please enter a mission name");
       return;
@@ -123,7 +118,7 @@ export default function LogBattle() {
       ? getFactionName(selectedOpponent.faction_id)
       : opponentFaction.trim();
 
-    logBattle({
+    const newBattleId = logBattle({
       campaign_id: campaign.id,
       player_id: currentPlayer.id,
       opponent_id: opponentId || '',
@@ -145,7 +140,7 @@ export default function LogBattle() {
       duration: 3000,
     });
 
-    navigate("/post-battle");
+    navigate("/post-battle", { state: { battleId: newBattleId } });
   };
 
   return (

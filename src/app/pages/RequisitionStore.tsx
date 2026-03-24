@@ -38,22 +38,20 @@ interface RequisitionHistoryEntry {
   date: string; // ISO string
 }
 
-const HISTORY_KEY = "crusade_requisition_history";
-
-function loadHistory(): RequisitionHistoryEntry[] {
+function loadHistory(key: string): RequisitionHistoryEntry[] {
   try {
-    const raw = localStorage.getItem(HISTORY_KEY);
+    const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-function saveHistoryEntry(entry: RequisitionHistoryEntry) {
-  const history = loadHistory();
+function saveHistoryEntry(key: string, entry: RequisitionHistoryEntry) {
+  const history = loadHistory(key);
   history.unshift(entry);
   // Keep last 50 entries
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+  localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
 }
 
 // --- Requisition definitions ---
@@ -190,9 +188,10 @@ function formatDate(iso: string): string {
 
 export default function RequisitionStore() {
   const navigate = useNavigate();
-  const { campaign, currentPlayer, units, spendRequisition, removeBattleScar } =
+  const { campaign, currentPlayer, units, spendRequisition, removeBattleScar, updateCampaignSettings } =
     useCrusade();
 
+  const historyKey = `crusade_requisition_history_${campaign?.id ?? 'local'}`;
   const currentRP = currentPlayer?.requisition_points ?? 0;
   const playerUnits = useMemo(
     () => units.filter((u) => u.player_id === currentPlayer?.id),
@@ -215,8 +214,8 @@ export default function RequisitionStore() {
   // History
   const [history, setHistory] = useState<RequisitionHistoryEntry[]>([]);
   useEffect(() => {
-    setHistory(loadHistory());
-  }, []);
+    setHistory(loadHistory(historyKey));
+  }, [historyKey]);
 
   const unitsWithScars = useMemo(
     () =>
@@ -251,10 +250,10 @@ export default function RequisitionStore() {
         cost,
         date: new Date().toISOString(),
       };
-      saveHistoryEntry(entry);
-      setHistory(loadHistory());
+      saveHistoryEntry(historyKey, entry);
+      setHistory(loadHistory(historyKey));
     },
-    []
+    [historyKey]
   );
 
   const handleConfirm = useCallback(() => {
@@ -284,6 +283,11 @@ export default function RequisitionStore() {
       return;
     }
 
+    // Update supply limit if applicable
+    if (selectedReq.id === 'increase-supply-limit' && campaign) {
+      updateCampaignSettings({ supply_limit: campaign.supply_limit + 100 });
+    }
+
     setConfirmOpen(false);
     toast.success(`${selectedReq.name} acquired!`);
     recordHistory(selectedReq.name, selectedReq.cost);
@@ -300,6 +304,8 @@ export default function RequisitionStore() {
     spendRequisition,
     recordHistory,
     navigate,
+    campaign,
+    updateCampaignSettings,
   ]);
 
   const handleSelectUnit = useCallback(
