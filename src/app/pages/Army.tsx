@@ -102,8 +102,19 @@ function PointsSelector({ mode, onSelect }: { mode: 'standard' | 'crusade'; onSe
 function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect: (name: string) => void }) {
   const detachments = useMemo(() => {
     const dataFactionId = getDataFactionId(factionId as FactionId);
-    const rules = getRulesForFaction(dataFactionId);
-    return rules?.detachments ?? [];
+    const parentRules = getRulesForFaction(dataFactionId);
+    const parentDetachments = parentRules?.detachments ?? [];
+
+    // If this is a chapter (e.g. space_wolves), also get chapter-specific detachments
+    if (dataFactionId !== factionId) {
+      const chapterRules = getRulesForFaction(factionId as FactionId);
+      const chapterDetachments = chapterRules?.detachments ?? [];
+      // Merge: chapter-specific first, then parent, deduped by name
+      const seen = new Set(chapterDetachments.map(d => d.name));
+      return [...chapterDetachments, ...parentDetachments.filter(d => !seen.has(d.name))];
+    }
+
+    return parentDetachments;
   }, [factionId]);
 
   if (detachments.length === 0) {
