@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
-import { useMemo, useCallback } from "react";
-import { ArrowLeft, ChevronRight, BookOpen } from "lucide-react";
+import { useMemo, useCallback, useState } from "react";
+import { ArrowLeft, ChevronRight, BookOpen, Search, X } from "lucide-react";
 import { FACTIONS, getDataFactionId } from '../../lib/factions';
 import { getUnitsForFaction, getRulesForFaction } from '../../data';
 import type { FactionId } from '../../types';
@@ -51,6 +51,35 @@ export default function CodexHome() {
     };
   }), []);
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Global unit search across all factions
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    const results: { name: string; factionId: string; factionName: string; factionIcon: string; keywords: string[] }[] = [];
+    for (const f of FACTIONS) {
+      const dataId = getDataFactionId(f.id);
+      const units = getUnitsForFaction(dataId);
+      for (const unit of units) {
+        if (
+          unit.name.toLowerCase().includes(q) ||
+          unit.keywords?.some((k: string) => k.toLowerCase().includes(q))
+        ) {
+          results.push({
+            name: unit.name,
+            factionId: f.id,
+            factionName: f.name,
+            factionIcon: f.icon,
+            keywords: unit.keywords ?? [],
+          });
+        }
+      }
+      if (results.length >= 30) break;
+    }
+    return results;
+  }, [searchQuery]);
+
   const handleFactionClick = useCallback((faction: (typeof factionList)[0]) => {
     if (faction.hasChapters) {
       navigate("/space-marines-chapters");
@@ -89,6 +118,57 @@ export default function CodexHome() {
           <p className="text-[#8b7355] text-sm">
             Browse all faction codexes
           </p>
+        </div>
+
+        {/* Global Unit Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8b7355]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search units across all factions..."
+              className="w-full pl-10 pr-10 py-3 rounded-sm border border-[#d4c5a9] bg-[#f5efe6] text-[#2c2416] text-sm placeholder:text-[#8b7355]/60 focus:outline-none focus:border-[#b8860b] transition-colors"
+              inputMode="search"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8b7355] hover:text-[#2c2416]"
+                aria-label="Clear search"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Search Results */}
+          {searchResults.length > 0 && (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs text-[#8b7355]">{searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found</p>
+              {searchResults.map((result, idx) => (
+                <button
+                  key={`${result.factionId}-${result.name}-${idx}`}
+                  onClick={() => navigate(`/datasheet/${result.factionId}/${encodeURIComponent(result.name)}`)}
+                  className="w-full text-left rounded-sm border border-[#d4c5a9] bg-[#f5efe6] hover:border-[#b8860b] transition-all p-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{result.factionIcon}</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-[#2c2416] truncate">{result.name}</h4>
+                      <p className="text-xs text-[#8b7355]">{result.factionName}</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-[#8b7355] flex-shrink-0" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {searchQuery.length >= 2 && searchResults.length === 0 && (
+            <p className="mt-3 text-sm text-[#8b7355] text-center">No units found for "{searchQuery}"</p>
+          )}
         </div>
 
         {/* Imperium */}

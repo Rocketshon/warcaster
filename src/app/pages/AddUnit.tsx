@@ -11,7 +11,7 @@ import WeaponStatTable from "../components/WeaponStatTable";
 
 export default function AddUnit() {
   const navigate = useNavigate();
-  const { addUnit, factionId: armyFactionId } = useArmy();
+  const { addUnit, factionId: armyFactionId, army, mode, pointsCap, supplyLimit } = useArmy();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<Datasheet | null>(null);
   const [customName, setCustomName] = useState("");
@@ -83,11 +83,24 @@ export default function AddUnit() {
     }
 
     const role = selectedUnit.keywords.length > 0 ? selectedUnit.keywords[0] : '';
+
+    // Check if adding would go over budget
+    const cap = mode === 'crusade' ? supplyLimit : pointsCap;
+    const currentTotal = army.reduce((sum, u) => sum + u.points_cost, 0);
+    const newTotal = currentTotal + customPoints;
+
     addUnit(selectedUnit.name, customPoints, role);
 
-    toast.success(`${customName} added to army!`, {
-      duration: 3000,
-    });
+    if (newTotal > cap && cap > 0) {
+      const overAmount = newTotal - cap;
+      toast.warning(`Adding this unit puts you ${overAmount.toLocaleString()} pts over budget`, {
+        duration: 4000,
+      });
+    } else {
+      toast.success(`${customName} added to army!`, {
+        duration: 3000,
+      });
+    }
 
     navigate("/army");
   };

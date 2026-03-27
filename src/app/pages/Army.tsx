@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Plus, ChevronRight, Trash2, Pencil, Check } from 'lucide-react';
+import { Plus, ChevronRight, Trash2, Pencil, Check, ChevronDown, Scale, Share2, AlertTriangle } from 'lucide-react';
 import { useArmy, type ArmyUnit } from '../../lib/ArmyContext';
 import { FACTIONS, getDataFactionId } from '../../lib/factions';
-import { getRulesForFaction } from '../../data';
-import type { FactionId } from '../../types';
+import { getRulesForFaction, getUnitsForFaction } from '../../data';
+import { FormattedRuleText } from '../../lib/formatText';
+import type { FactionId, Datasheet } from '../../types';
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -150,14 +151,17 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
   );
 }
 
-function StandardUnitCard({ unit, onRemove }: { unit: ArmyUnit; onRemove: () => void }) {
+function StandardUnitCard({ unit, onRemove, wouldFixOver }: { unit: ArmyUnit; onRemove: () => void; wouldFixOver?: boolean }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg">
+    <div className={`flex items-center justify-between p-3 bg-[#f5efe6] border rounded-lg ${wouldFixOver ? 'border-amber-400' : 'border-[#d4c5a9]'}`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium text-[#2c2416] truncate">{unit.custom_name}</span>
           {unit.role && (
             <span className="text-xs px-2 py-0.5 bg-[#e8dfd3] text-[#5c4a32] rounded-full">{unit.role}</span>
+          )}
+          {wouldFixOver && (
+            <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">over</span>
           )}
         </div>
       </div>
@@ -171,7 +175,7 @@ function StandardUnitCard({ unit, onRemove }: { unit: ArmyUnit; onRemove: () => 
   );
 }
 
-function CrusadeUnitCard({ unit, onRemove }: { unit: ArmyUnit; onRemove: () => void }) {
+function CrusadeUnitCard({ unit, onRemove, wouldFixOver }: { unit: ArmyUnit; onRemove: () => void; wouldFixOver?: boolean }) {
   const xpForNextRank = unit.rank === 'Legendary' ? 100 :
     unit.rank === 'Heroic' ? 51 :
     unit.rank === 'Battle-hardened' ? 31 :
@@ -179,10 +183,15 @@ function CrusadeUnitCard({ unit, onRemove }: { unit: ArmyUnit; onRemove: () => v
   const xpProgress = Math.min((unit.experience_points / xpForNextRank) * 100, 100);
 
   return (
-    <div className="p-4 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg space-y-2">
+    <div className={`p-4 bg-[#f5efe6] border rounded-lg space-y-2 ${wouldFixOver ? 'border-amber-400' : 'border-[#d4c5a9]'}`}>
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-[#2c2416]">{unit.custom_name}</div>
+          <div className="font-medium text-[#2c2416] flex items-center gap-2">
+            {unit.custom_name}
+            {wouldFixOver && (
+              <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">over</span>
+            )}
+          </div>
           <div className="text-xs text-[#8b7355]">{unit.points_cost} pts</div>
         </div>
         <div className="flex items-center gap-2">
@@ -222,6 +231,67 @@ function CrusadeUnitCard({ unit, onRemove }: { unit: ArmyUnit; onRemove: () => v
       <div className="text-xs text-[#8b7355]">
         {unit.battles_played} battles / {unit.battles_survived} survived
       </div>
+    </div>
+  );
+}
+
+function DetachmentRuleCard({ factionId, detachmentName }: { factionId: string; detachmentName: string | null }) {
+  const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
+
+  const detachment = useMemo(() => {
+    if (!factionId || !detachmentName) return null;
+    const dataFactionId = getDataFactionId(factionId as FactionId);
+    const rules = getRulesForFaction(dataFactionId);
+    return rules?.detachments?.find(d => d.name === detachmentName) ?? null;
+  }, [factionId, detachmentName]);
+
+  if (!detachmentName) {
+    return (
+      <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg px-4 py-3">
+        <p className="text-sm text-[#8b7355]">
+          No detachment selected.{' '}
+          <button
+            onClick={() => navigate('/army')}
+            className="text-[#b8860b] font-medium underline hover:text-[#9a7209]"
+          >
+            Pick a detachment
+          </button>
+        </p>
+      </div>
+    );
+  }
+
+  if (!detachment?.rule) {
+    return (
+      <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg px-4 py-3">
+        <p className="text-sm font-semibold text-[#2c2416]">{detachmentName}</p>
+        <p className="text-xs text-[#8b7355] mt-1">No rule data available for this detachment.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#efe9de] transition-colors"
+      >
+        <div>
+          <span className="text-sm font-semibold text-[#2c2416]">{detachmentName}</span>
+          {detachment.rule.name && (
+            <span className="ml-2 text-xs text-[#b8860b] font-medium">{detachment.rule.name}</span>
+          )}
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-[#8b7355] transition-transform ${expanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {expanded && (
+        <div className="px-4 pb-4 border-t border-[#b8860b]/20">
+          <FormattedRuleText text={detachment.rule.text} className="mt-3 [&_h3]:text-[#b8860b] [&_h4]:text-[#b8860b] [&_p]:text-[#5c4a32] [&_li]:text-[#5c4a32] [&_.text-emerald-400]:text-[#b8860b] [&_.text-stone-300]:text-[#5c4a32]" />
+        </div>
+      )}
     </div>
   );
 }
@@ -301,6 +371,52 @@ export default function Army() {
     );
   }
 
+  const isOverBudget = totalPoints > cap;
+  const overBy = totalPoints - cap;
+
+  // Role classification for composition chart
+  const ROLE_KEYWORDS = ['CHARACTER', 'EPIC HERO', 'BATTLELINE', 'DEDICATED TRANSPORT', 'FAST ATTACK', 'HEAVY SUPPORT', 'ELITES', 'LORD OF WAR', 'FORTIFICATION'] as const;
+  const ROLE_COLORS: Record<string, string> = {
+    'CHARACTER': '#b8860b',
+    'EPIC HERO': '#b8860b',
+    'BATTLELINE': '#16a34a',
+    'DEDICATED TRANSPORT': '#2563eb',
+    'FAST ATTACK': '#9333ea',
+    'HEAVY SUPPORT': '#dc2626',
+    'ELITES': '#0891b2',
+    'LORD OF WAR': '#ea580c',
+    'FORTIFICATION': '#6b7280',
+    'Other': '#9ca3af',
+  };
+
+  // Build datasheet lookup for keywords
+  const datasheetLookup = useMemo(() => {
+    if (!factionId) return new Map<string, Datasheet>();
+    const units = getUnitsForFaction(getDataFactionId(factionId as FactionId));
+    const map = new Map<string, Datasheet>();
+    for (const u of units) map.set(u.name, u);
+    return map;
+  }, [factionId]);
+
+  // Compute role breakdown
+  const roleBreakdown = useMemo(() => {
+    const breakdown = new Map<string, number>();
+    for (const unit of army) {
+      const ds = datasheetLookup.get(unit.datasheet_name);
+      let role = 'Other';
+      if (ds) {
+        const upperKw = ds.keywords.map(k => k.toUpperCase());
+        for (const r of ROLE_KEYWORDS) {
+          if (upperKw.includes(r)) { role = r; break; }
+        }
+      }
+      breakdown.set(role, (breakdown.get(role) ?? 0) + unit.points_cost);
+    }
+    return breakdown;
+  }, [army, datasheetLookup]);
+
+  const [compositionOpen, setCompositionOpen] = useState(false);
+
   // Step 4: Army builder
   return (
     <div className="min-h-screen bg-[#faf6f0] px-4 pt-6 pb-24">
@@ -364,6 +480,86 @@ export default function Army() {
         </div>
       </div>
 
+      {/* Detachment Rule Quick-Reference */}
+      <DetachmentRuleCard factionId={factionId} detachmentName={detachmentName} />
+
+      {/* Action buttons row */}
+      {army.length > 0 && (
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => navigate('/weapon-compare')}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
+                       text-sm font-medium text-[#b8860b] hover:border-[#b8860b] hover:bg-[#e8dfd3] transition-colors"
+          >
+            <Scale className="w-4 h-4" />
+            Compare Weapons
+          </button>
+          <button
+            onClick={() => navigate('/army-export')}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
+                       text-sm font-medium text-[#b8860b] hover:border-[#b8860b] hover:bg-[#e8dfd3] transition-colors"
+          >
+            <Share2 className="w-4 h-4" />
+            Export
+          </button>
+        </div>
+      )}
+
+      {/* Army Composition Breakdown */}
+      {army.length > 0 && (
+        <div className="mb-4 border border-[#d4c5a9] bg-[#f5efe6] rounded-lg overflow-hidden">
+          <button
+            onClick={() => setCompositionOpen(!compositionOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#efe9de] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#2c2416]">Army Composition</span>
+            <ChevronDown
+              className={`w-4 h-4 text-[#8b7355] transition-transform ${compositionOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {compositionOpen && (
+            <div className="px-4 pb-4 border-t border-[#d4c5a9] pt-3 space-y-2">
+              {[...roleBreakdown.entries()]
+                .sort((a, b) => b[1] - a[1])
+                .map(([role, pts]) => {
+                  const pct = totalPoints > 0 ? Math.round((pts / totalPoints) * 100) : 0;
+                  const color = ROLE_COLORS[role] ?? ROLE_COLORS['Other'];
+                  const displayName = role === 'EPIC HERO' ? 'Epic Hero'
+                    : role === 'DEDICATED TRANSPORT' ? 'Transport'
+                    : role === 'FAST ATTACK' ? 'Fast Attack'
+                    : role === 'HEAVY SUPPORT' ? 'Heavy Support'
+                    : role === 'LORD OF WAR' ? 'Lord of War'
+                    : role.charAt(0) + role.slice(1).toLowerCase();
+                  return (
+                    <div key={role}>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="font-medium text-[#2c2416]">{displayName}</span>
+                        <span className="text-[#8b7355]">{pts}pts ({pct}%)</span>
+                      </div>
+                      <div className="w-full h-3 bg-[#e8dfd3] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${pct}%`, backgroundColor: color }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Over budget banner */}
+      {isOverBudget && army.length > 0 && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-300 rounded-lg">
+          <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <span className="text-sm font-semibold text-red-700">
+            Over budget by {overBy.toLocaleString()} pts
+          </span>
+        </div>
+      )}
+
       {/* Unit list */}
       {army.length === 0 ? (
         <div className="text-center py-16">
@@ -377,21 +573,23 @@ export default function Army() {
         </div>
       ) : (
         <div className="space-y-2">
-          {army.map(unit => (
-            mode === 'crusade' ? (
-              <CrusadeUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} />
+          {army.map(unit => {
+            // Show "over" indicator if removing this unit would bring total under cap
+            const wouldFix = isOverBudget && (totalPoints - unit.points_cost) <= cap;
+            return mode === 'crusade' ? (
+              <CrusadeUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} wouldFixOver={wouldFix} />
             ) : (
-              <StandardUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} />
-            )
-          ))}
+              <StandardUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} wouldFixOver={wouldFix} />
+            );
+          })}
         </div>
       )}
 
       {/* Points footer */}
       <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
-        <div className="max-w-md mx-auto bg-[#f5efe6] border border-[#d4c5a9] rounded-lg px-4 py-2 flex items-center justify-between shadow-sm">
-          <span className="text-sm text-[#8b7355]">Total</span>
-          <span className={`text-sm font-bold ${pointsColor}`}>
+        <div className={`max-w-md mx-auto rounded-lg px-4 py-2 flex items-center justify-between shadow-sm ${isOverBudget ? 'bg-red-50 border border-red-300' : 'bg-[#f5efe6] border border-[#d4c5a9]'}`}>
+          <span className={`text-sm ${isOverBudget ? 'text-red-600' : 'text-[#8b7355]'}`}>Total</span>
+          <span className={`text-sm font-bold ${isOverBudget ? 'text-red-700' : pointsColor}`}>
             {totalPoints.toLocaleString()} / {cap.toLocaleString()} pts
           </span>
         </div>

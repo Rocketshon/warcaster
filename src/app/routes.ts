@@ -11,6 +11,8 @@ import SpaceMarinesChapters from './pages/SpaceMarinesChapters';
 import RulesBrowser from './pages/RulesBrowser';
 import RuleDetail from './pages/RuleDetail';
 import PhaseNavigator from './pages/PhaseNavigator';
+import ArmyExport from './pages/ArmyExport';
+import WeaponCompare from './pages/WeaponCompare';
 
 const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
 
@@ -23,6 +25,8 @@ export const router = createBrowserRouter([
       { path: "home", Component: Home },
       { path: "army", Component: Army },
       { path: "add-unit", Component: AddUnit },
+      { path: "army-export", Component: ArmyExport },
+      { path: "weapon-compare", Component: WeaponCompare },
       { path: "unit/:unitId", Component: UnitDetail },
       { path: "codex", Component: CodexHome },
       { path: "codex/:factionId", Component: FactionCodex },

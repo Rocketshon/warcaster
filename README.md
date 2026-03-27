@@ -1,21 +1,30 @@
 # Warcaster
 
-A simple Warhammer 40,000 army builder with Standard and Crusade modes. Build your army list, browse faction datasheets, and track crusade progression -- all from your phone.
+**Warhammer 40K Army Builder & Battle Aid**
 
-Built by [Obelus Labs](https://github.com/Rocketshon).
+Build competitive army lists, track crusade progression, and navigate the battle phases -- all from your phone.
+
+<!-- Screenshot placeholder: add app screenshot here -->
 
 ## Features
 
-- **Army Building** -- Standard mode for matched play lists, Crusade mode for narrative campaigns
-- **Codex Browser** -- Browse datasheets for all factions with stats, weapons, and abilities
-- **Crusade Tracking** -- XP, ranks, battle honours, and battle scars per unit
-- **Rules Reference** -- Core rules, faction rules, stratagems, and enhancements
-- **PWA** -- Installable, works offline, full-screen on mobile
+- **Army Builder** -- Create and manage army lists with full points validation
+- **Multi-Army Lists** -- Save and switch between multiple army configurations
+- **Standard & Crusade Modes** -- Matched play list building and narrative crusade tracking
+- **Detachment Picker** -- Browse and select detachments with rules, enhancements, and stratagems
+- **Phase Navigator** -- Step-by-step battle phase guide with relevant abilities and stratagems
+- **Codex Browser** -- Full datasheets for all factions with stats, weapons, and abilities
+- **Rules Reference** -- Core rules, faction rules, stratagems, and enhancements at your fingertips
+- **Army Export** -- Share your army list as formatted text
+- **Points Validation** -- Real-time points tracking against your army's cap
+- **Weapon Comparison** -- Side-by-side weapon profile comparison with stat highlighting
 
 ## Tech Stack
 
-- **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite
-- **Hosting:** GitHub Pages
+- **React 19** + **TypeScript**
+- **Tailwind CSS 4**
+- **Vite**
+- **PWA** -- Installable, works offline, full-screen on mobile
 
 ## Local Development
 
@@ -27,32 +36,6 @@ npm install
 npm run dev
 ```
 
-## Architecture
-
-```
-src/
-  app/
-    components/    # Shared UI components (BottomNav, WeaponStatTable, etc.)
-    pages/         # Route-level page components
-    routes.ts      # React Router route definitions
-    App.tsx        # Root component with providers
-  lib/
-    ArmyContext.tsx # Army state management (units, mode, faction)
-    factions.ts    # Faction metadata and ID mapping
-    formatText.ts  # Text formatting utilities
-  data/            # Auto-generated faction data (units, rules, general)
-  types/           # TypeScript interfaces
-```
-
-## Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build |
-| `npm test` | Run unit and integration tests |
-| `npm run lint` | Run ESLint |
-
 ## License
 
 Private project. All rights reserved.
@@ -63,4 +46,4 @@ This is a fan-made tool for personal use. Warhammer 40,000 and all associated na
 
 ---
 
-If this tool helped your crusade, consider giving it a star -- it helps others discover it.
+Built by [Obelus Labs](https://github.com/Rocketshon).

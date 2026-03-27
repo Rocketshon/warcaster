@@ -61,7 +61,7 @@ interface ArmyState {
   setDetachment: (name: string | null) => void;
   setPointsCap: (cap: number) => void;
   setSupplyLimit: (limit: number) => void;
-  addUnit: (datasheetName: string, pointsCost: number, role?: string) => void;
+  addUnit: (datasheetName: string, pointsCost: number, role?: string) => { overBudget: boolean; overBy: number };
   removeUnit: (unitId: string) => void;
   updateUnit: (unitId: string, updates: Partial<ArmyUnit>) => void;
   clearArmy: () => void;
@@ -212,7 +212,7 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
   const setPointsCap = useCallback((cap: number) => setPointsCapState(cap), []);
   const setSupplyLimit = useCallback((limit: number) => setSupplyLimitState(limit), []);
 
-  const addUnit = useCallback((datasheetName: string, pointsCost: number, role?: string) => {
+  const addUnit = useCallback((datasheetName: string, pointsCost: number, role?: string): { overBudget: boolean; overBy: number } => {
     const unit: ArmyUnit = {
       id: crypto.randomUUID(),
       datasheet_name: datasheetName,
@@ -230,7 +230,13 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
       is_destroyed: false,
     };
     setArmy(prev => [...prev, unit]);
-  }, [factionId]);
+
+    // Check if over budget after adding
+    const cap = mode === 'crusade' ? supplyLimit : pointsCap;
+    const currentTotal = army.reduce((sum, u) => sum + u.points_cost, 0) + pointsCost;
+    const overBy = currentTotal - cap;
+    return { overBudget: overBy > 0 && cap > 0, overBy: Math.max(0, overBy) };
+  }, [factionId, mode, supplyLimit, pointsCap, army]);
 
   const removeUnit = useCallback((unitId: string) => {
     setArmy(prev => prev.filter(u => u.id !== unitId));
