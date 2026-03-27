@@ -2,12 +2,14 @@ import { RouterProvider } from 'react-router';
 import { Toaster } from 'sonner';
 import { router } from './routes';
 import { ArmyProvider } from '../lib/ArmyContext';
+import { CollectionProvider } from '../lib/CollectionContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <ErrorBoundary>
       <ArmyProvider>
+      <CollectionProvider>
         <RouterProvider router={router} />
         <Toaster
           position="top-center"
@@ -19,6 +21,7 @@ export default function App() {
             },
           }}
         />
+      </CollectionProvider>
       </ArmyProvider>
     </ErrorBoundary>
   );

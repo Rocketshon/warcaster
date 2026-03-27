@@ -13,6 +13,9 @@ import RuleDetail from './pages/RuleDetail';
 import PhaseNavigator from './pages/PhaseNavigator';
 import ArmyExport from './pages/ArmyExport';
 import WeaponCompare from './pages/WeaponCompare';
+import GameTracker from './pages/GameTracker';
+import MatchMode from './pages/MatchMode';
+import Collection from './pages/Collection';
 
 const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
 
@@ -27,12 +30,15 @@ export const router = createBrowserRouter([
       { path: "add-unit", Component: AddUnit },
       { path: "army-export", Component: ArmyExport },
       { path: "weapon-compare", Component: WeaponCompare },
+      { path: "game-tracker", Component: GameTracker },
+      { path: "match-mode", Component: MatchMode },
       { path: "unit/:unitId", Component: UnitDetail },
       { path: "codex", Component: CodexHome },
       { path: "codex/:factionId", Component: FactionCodex },
       { path: "datasheet/:factionId/:datasheetName", Component: DatasheetView },
       { path: "space-marines-chapters", Component: SpaceMarinesChapters },
       { path: "battle-aid", Component: PhaseNavigator },
+      { path: "collection", Component: Collection },
       { path: "rules", Component: RulesBrowser },
       { path: "rule/:ruleId", Component: RuleDetail },
       { path: "*", lazy: () => import('./pages/NotFound').then(m => ({ Component: m.default })) },

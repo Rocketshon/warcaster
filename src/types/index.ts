@@ -304,6 +304,21 @@ export interface UserSession {
   display_name: string;
 }
 
+// --- Collection & Painting Tracker ---
+export type PaintingStage = 'unassembled' | 'assembled' | 'primed' | 'basecoated' | 'painted' | 'based' | 'complete';
+
+export interface CollectionItem {
+  id: string;
+  name: string;
+  factionId: string;
+  datasheetName: string;
+  quantity: number;
+  stage: PaintingStage;
+  notes: string;
+  addedAt: string;
+  paintRecipe?: string;
+}
+
 // --- Offline Queue ---
 export interface QueuedMutation {
   id: string;

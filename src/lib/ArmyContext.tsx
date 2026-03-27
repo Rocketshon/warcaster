@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { syncArmiesToIDB, recoverArmiesFromIDB, initDB } from './offlineStore';
 // Inline rank calculation (was in ranks.ts)
 function getRankFromXP(xp: number): string {
   if (xp >= 51) return 'Legendary';
@@ -194,6 +195,37 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
   // Persist saved armies & active ID
   useEffect(() => { saveJSON(KEYS.savedArmies, savedArmies); }, [savedArmies]);
   useEffect(() => { saveJSON(KEYS.activeArmyId, activeArmyId); }, [activeArmyId]);
+
+  // Mirror saved armies to IndexedDB (background, non-blocking)
+  useEffect(() => {
+    syncArmiesToIDB(savedArmies).catch(() => { /* IndexedDB unavailable */ });
+  }, [savedArmies]);
+
+  // On first mount: if localStorage has no armies, try recovering from IndexedDB
+  useEffect(() => {
+    if (savedArmies.length > 0) return; // Already have data
+    let cancelled = false;
+    (async () => {
+      try {
+        await initDB();
+        const recovered = await recoverArmiesFromIDB<SavedArmy>();
+        if (cancelled || recovered.length === 0) return;
+        setSavedArmies(recovered);
+        const first = recovered[0];
+        setActiveArmyId(first.id);
+        setModeState(first.mode);
+        setFactionState(first.factionId);
+        setDetachmentState(first.detachmentName);
+        setPointsCapState(first.pointsCap);
+        setSupplyLimitState(first.supplyLimit);
+        setArmy(first.units);
+      } catch {
+        // IndexedDB unavailable — no recovery possible
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Sync current state back to savedArmies whenever it changes
   useEffect(() => {

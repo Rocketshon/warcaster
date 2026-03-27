@@ -57,7 +57,7 @@ export default function AppLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-[#faf6f0]">
+    <div className="min-h-screen bg-[#0a0a0f]">
       {showSplash && <SplashOverlay onDone={() => setShowSplash(false)} />}
       {/* Page content with bottom padding for nav bar */}
       <div className="pb-20">

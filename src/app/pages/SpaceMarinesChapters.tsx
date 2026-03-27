@@ -41,13 +41,13 @@ export default function SpaceMarinesChapters() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
 
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
           onClick={() => navigate("/codex")}
-          className="flex items-center gap-2 text-stone-400 hover:text-emerald-500 transition-colors mb-6"
+          className="flex items-center gap-2 text-stone-400 hover:text-[#c9a84c] transition-colors mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="text-sm">Back to Codex Library</span>
@@ -77,7 +77,7 @@ export default function SpaceMarinesChapters() {
             <button
               key={chapter.id}
               onClick={() => handleChapterClick(chapter)}
-              className="w-full rounded-sm border border-stone-700/60 bg-stone-900 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
+              className="w-full rounded-sm border border-stone-700/60 bg-stone-900 hover:border-[#c9a84c]/50 hover:bg-[#c9a84c]/5 transition-all group"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${chapter.bgGlow} to-transparent opacity-50`} />
               <div className="relative p-4 flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function SpaceMarinesChapters() {
                     <span>{chapter.detachments} detachments</span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-emerald-500 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-stone-500 group-hover:text-[#c9a84c] transition-colors" />
               </div>
             </button>
           ))}

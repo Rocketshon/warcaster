@@ -33,7 +33,6 @@ function getFactionColors(colorKey: string) {
 export default function CodexHome() {
   const navigate = useNavigate();
 
-  // Build faction list dynamically from real data
   const factionList = useMemo(() => FACTIONS.map((f) => {
     const colors = getFactionColors(f.color);
     const dataId = getDataFactionId(f.id);
@@ -53,7 +52,6 @@ export default function CodexHome() {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Global unit search across all factions
   const searchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (q.length < 2) return [];
@@ -89,18 +87,58 @@ export default function CodexHome() {
     }
   }, [navigate, factionList]);
 
-  // Group factions
   const imperiumFactions = useMemo(() => factionList.filter((f) => f.category === "imperium"), [factionList]);
   const chaosFactions = useMemo(() => factionList.filter((f) => f.category === "chaos"), [factionList]);
   const xenosFactions = useMemo(() => factionList.filter((f) => f.category === "xenos"), [factionList]);
 
+  const renderFactionGroup = (label: string, emoji: string, factions: typeof factionList) => (
+    <div className="mb-8">
+      <h2 className="text-sm font-semibold text-[#8a8690] uppercase tracking-wider mb-3 flex items-center gap-2">
+        <span>{emoji}</span>
+        {label}
+      </h2>
+      <div className="space-y-3">
+        {factions.map((faction) => (
+          <button
+            key={faction.id}
+            onClick={() => handleFactionClick(faction)}
+            className="w-full relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24] hover:border-[#c9a84c] transition-all group"
+          >
+            <div className={`absolute inset-0 bg-gradient-to-br ${faction.bgGlow} to-transparent opacity-30`} />
+            <div className="relative p-4 flex items-center gap-4">
+              <div className="text-3xl">{faction.icon}</div>
+              <div className="flex-1 text-left">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-base font-semibold text-[#e8e4de]">
+                    {faction.name}
+                  </h3>
+                  {faction.hasChapters && (
+                    <span className="text-xs text-[#c9a84c]/70 italic">
+                      View Chapters
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 text-xs text-[#8a8690]">
+                  <span>{faction.datasheets} datasheets</span>
+                  <span>•</span>
+                  <span>{faction.detachments} detachments</span>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[#8a8690] group-hover:text-[#c9a84c] transition-colors" />
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-[#faf6f0] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-[#8b7355] hover:text-[#b8860b] transition-colors mb-6"
+          className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="text-sm">Back</span>
@@ -109,14 +147,12 @@ export default function CodexHome() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-3">
-            <div className="relative">
-              <BookOpen className="w-12 h-12 text-[#b8860b]/80" strokeWidth={1.5} />
-            </div>
+            <BookOpen className="w-12 h-12 text-[#c9a84c]/80" strokeWidth={1.5} />
           </div>
-          <h1 className="text-2xl font-bold text-[#2c2416] mb-2 tracking-wider">
+          <h1 className="text-2xl font-bold text-[#e8e4de] mb-2 tracking-wider">
             Codex Library
           </h1>
-          <p className="text-[#8b7355] text-sm">
+          <p className="text-[#8a8690] text-sm">
             Browse all faction codexes
           </p>
         </div>
@@ -124,19 +160,19 @@ export default function CodexHome() {
         {/* Global Unit Search */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8b7355]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8690]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search units across all factions..."
-              className="w-full pl-10 pr-10 py-3 rounded-sm border border-[#d4c5a9] bg-[#f5efe6] text-[#2c2416] text-sm placeholder:text-[#8b7355]/60 focus:outline-none focus:border-[#b8860b] transition-colors"
+              className="w-full pl-10 pr-10 py-3 rounded-lg border border-[#2a2a35] bg-[#1a1a24] text-[#e8e4de] text-sm placeholder:text-[#8a8690]/40 focus:outline-none focus:border-[#c9a84c] transition-colors"
               inputMode="search"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8b7355] hover:text-[#2c2416]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8a8690] hover:text-[#e8e4de]"
                 aria-label="Clear search"
               >
                 <X className="w-4 h-4" />
@@ -147,20 +183,20 @@ export default function CodexHome() {
           {/* Search Results */}
           {searchResults.length > 0 && (
             <div className="mt-3 space-y-2">
-              <p className="text-xs text-[#8b7355]">{searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found</p>
+              <p className="text-xs text-[#8a8690]">{searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found</p>
               {searchResults.map((result, idx) => (
                 <button
                   key={`${result.factionId}-${result.name}-${idx}`}
                   onClick={() => navigate(`/datasheet/${result.factionId}/${encodeURIComponent(result.name)}`)}
-                  className="w-full text-left rounded-sm border border-[#d4c5a9] bg-[#f5efe6] hover:border-[#b8860b] transition-all p-3"
+                  className="w-full text-left rounded-lg border border-[#2a2a35] bg-[#1a1a24] hover:border-[#c9a84c] transition-all p-3"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xl">{result.factionIcon}</span>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-[#2c2416] truncate">{result.name}</h4>
-                      <p className="text-xs text-[#8b7355]">{result.factionName}</p>
+                      <h4 className="text-sm font-semibold text-[#e8e4de] truncate">{result.name}</h4>
+                      <p className="text-xs text-[#8a8690]">{result.factionName}</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[#8b7355] flex-shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-[#8a8690] flex-shrink-0" />
                   </div>
                 </button>
               ))}
@@ -168,112 +204,13 @@ export default function CodexHome() {
           )}
 
           {searchQuery.length >= 2 && searchResults.length === 0 && (
-            <p className="mt-3 text-sm text-[#8b7355] text-center">No units found for "{searchQuery}"</p>
+            <p className="mt-3 text-sm text-[#8a8690] text-center">No units found for "{searchQuery}"</p>
           )}
         </div>
 
-        {/* Imperium */}
-        <div className="mb-8">
-          <h2 className="text-sm font-semibold text-[#8b7355] uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span className="text-amber-500">⚜️</span>
-            Imperium
-          </h2>
-          <div className="space-y-3">
-            {imperiumFactions.map((faction) => (
-              <button
-                key={faction.id}
-                onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-sm border border-[#d4c5a9] bg-[#f5efe6] hover:border-[#b8860b] transition-all group"
-              >
-                <div className="relative p-4 flex items-center gap-4">
-                  <div className="text-3xl">{faction.icon}</div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-base font-semibold text-[#2c2416]">
-                        {faction.name}
-                      </h3>
-                      {faction.hasChapters && (
-                        <span className="text-xs text-[#b8860b]/70 italic">
-                          View Chapters
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-[#8b7355]">
-                      <span>{faction.datasheets} datasheets</span>
-                      <span>•</span>
-                      <span>{faction.detachments} detachments</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-[#8b7355] group-hover:text-[#b8860b] transition-colors" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Chaos */}
-        <div className="mb-8">
-          <h2 className="text-sm font-semibold text-[#8b7355] uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span className="text-red-500">🔥</span>
-            Chaos
-          </h2>
-          <div className="space-y-3">
-            {chaosFactions.map((faction) => (
-              <button
-                key={faction.id}
-                onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-sm border border-[#d4c5a9] bg-[#f5efe6] hover:border-[#b8860b] transition-all group"
-              >
-                <div className="relative p-4 flex items-center gap-4">
-                  <div className="text-3xl">{faction.icon}</div>
-                  <div className="flex-1 text-left">
-                    <h3 className="text-base font-semibold text-[#2c2416] mb-1">
-                      {faction.name}
-                    </h3>
-                    <div className="flex items-center gap-3 text-xs text-[#8b7355]">
-                      <span>{faction.datasheets} datasheets</span>
-                      <span>•</span>
-                      <span>{faction.detachments} detachments</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-[#8b7355] group-hover:text-[#b8860b] transition-colors" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Xenos */}
-        <div className="mb-8">
-          <h2 className="text-sm font-semibold text-[#8b7355] uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span className="text-purple-500">👽</span>
-            Xenos
-          </h2>
-          <div className="space-y-3">
-            {xenosFactions.map((faction) => (
-              <button
-                key={faction.id}
-                onClick={() => handleFactionClick(faction)}
-                className="w-full relative overflow-hidden rounded-sm border border-[#d4c5a9] bg-[#f5efe6] hover:border-[#b8860b] transition-all group"
-              >
-                <div className="relative p-4 flex items-center gap-4">
-                  <div className="text-3xl">{faction.icon}</div>
-                  <div className="flex-1 text-left">
-                    <h3 className="text-base font-semibold text-[#2c2416] mb-1">
-                      {faction.name}
-                    </h3>
-                    <div className="flex items-center gap-3 text-xs text-[#8b7355]">
-                      <span>{faction.datasheets} datasheets</span>
-                      <span>•</span>
-                      <span>{faction.detachments} detachments</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-[#8b7355] group-hover:text-[#b8860b] transition-colors" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+        {renderFactionGroup('Imperium', '\u269C\uFE0F', imperiumFactions)}
+        {renderFactionGroup('Chaos', '\uD83D\uDD25', chaosFactions)}
+        {renderFactionGroup('Xenos', '\uD83D\uDC7D', xenosFactions)}
       </div>
     </div>
   );

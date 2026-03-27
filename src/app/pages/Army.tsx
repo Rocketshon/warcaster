@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Plus, ChevronRight, Trash2, Pencil, Check, ChevronDown, Scale, Share2, AlertTriangle } from 'lucide-react';
+import { Plus, ChevronRight, Trash2, Pencil, Check, ChevronDown, Scale, Share2, AlertTriangle, Target, Users } from 'lucide-react';
 import { useArmy, type ArmyUnit } from '../../lib/ArmyContext';
 import { FACTIONS, getDataFactionId } from '../../lib/factions';
 import { getRulesForFaction, getUnitsForFaction } from '../../data';
 import { FormattedRuleText } from '../../lib/formatText';
+import { getFactionArt } from '../../lib/artMap';
 import type { FactionId, Datasheet } from '../../types';
 
 // ---------------------------------------------------------------------------
@@ -20,21 +21,21 @@ function FactionGrid({ onSelect }: { onSelect: (id: string) => void }) {
 
   return (
     <div className="space-y-6">
-      <h2 className="font-serif text-xl font-bold text-[#b8860b] text-center">Select Your Faction</h2>
+      <h2 className="font-serif text-xl font-bold text-[#c9a84c] text-center">Select Your Faction</h2>
       {categories.map(cat => (
         <div key={cat.label}>
-          <h3 className="text-sm font-semibold text-[#8b7355] uppercase tracking-wider mb-2">{cat.label}</h3>
+          <h3 className="text-sm font-semibold text-[#8a8690] uppercase tracking-wider mb-2">{cat.label}</h3>
           <div className="grid grid-cols-2 gap-2">
             {cat.factions.map(f => (
               <button
                 key={f.id}
                 onClick={() => onSelect(f.id)}
-                className="flex items-center gap-2 p-3 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
-                           hover:border-[#b8860b] transition-colors text-left
-                           focus:outline-none focus:ring-2 focus:ring-[#b8860b]"
+                className="flex items-center gap-2 p-3 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                           hover:border-[#c9a84c] transition-colors text-left
+                           focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
               >
                 <span className="text-lg">{f.icon}</span>
-                <span className="text-sm font-medium text-[#2c2416] truncate">{f.name}</span>
+                <span className="text-sm font-medium text-[#e8e4de] truncate">{f.name}</span>
               </button>
             ))}
           </div>
@@ -52,8 +53,8 @@ function PointsSelector({ mode, onSelect }: { mode: 'standard' | 'crusade'; onSe
   if (mode === 'crusade') {
     return (
       <div className="space-y-4 text-center">
-        <h2 className="font-serif text-xl font-bold text-[#b8860b]">Set Supply Limit</h2>
-        <p className="text-sm text-[#8b7355]">Enter your crusade supply limit in points</p>
+        <h2 className="font-serif text-xl font-bold text-[#c9a84c]">Set Supply Limit</h2>
+        <p className="text-sm text-[#8a8690]">Enter your crusade supply limit in points</p>
         <input
           type="number"
           min={500}
@@ -61,8 +62,8 @@ function PointsSelector({ mode, onSelect }: { mode: 'standard' | 'crusade'; onSe
           step={250}
           value={supplyValue}
           onChange={e => setSupplyValue(Number(e.target.value) || 0)}
-          className="w-32 mx-auto block px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg text-center
-                     text-[#2c2416] focus:outline-none focus:ring-2 focus:ring-[#b8860b]"
+          className="w-32 mx-auto block px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg text-center
+                     text-[#e8e4de] focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
           onKeyDown={e => {
             if (e.key === 'Enter') {
               onSelect(supplyValue || 1000);
@@ -71,7 +72,7 @@ function PointsSelector({ mode, onSelect }: { mode: 'standard' | 'crusade'; onSe
         />
         <button
           onClick={() => onSelect(supplyValue || 1000)}
-          className="px-6 py-2 bg-[#b8860b] text-[#faf6f0] font-semibold rounded-lg hover:bg-[#9a7209] transition-colors"
+          className="px-6 py-2 bg-[#c9a84c] text-[#0a0a0f] font-semibold rounded-lg hover:bg-[#b8960f] transition-colors"
         >
           Confirm
         </button>
@@ -81,15 +82,15 @@ function PointsSelector({ mode, onSelect }: { mode: 'standard' | 'crusade'; onSe
 
   return (
     <div className="space-y-4 text-center">
-      <h2 className="font-serif text-xl font-bold text-[#b8860b]">Select Points Limit</h2>
+      <h2 className="font-serif text-xl font-bold text-[#c9a84c]">Select Points Limit</h2>
       <div className="flex flex-wrap justify-center gap-2">
         {POINTS_OPTIONS.map(pts => (
           <button
             key={pts}
             onClick={() => onSelect(pts)}
-            className="px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-full text-sm font-medium text-[#2c2416]
-                       hover:border-[#b8860b] hover:bg-[#e8dfd3] transition-colors
-                       focus:outline-none focus:ring-2 focus:ring-[#b8860b]"
+            className="px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-full text-sm font-medium text-[#e8e4de]
+                       hover:border-[#c9a84c] hover:bg-[#22222e] transition-colors
+                       focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
           >
             {pts.toLocaleString()} pts
           </button>
@@ -105,11 +106,9 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
     const parentRules = getRulesForFaction(dataFactionId);
     const parentDetachments = parentRules?.detachments ?? [];
 
-    // If this is a chapter (e.g. space_wolves), also get chapter-specific detachments
     if (dataFactionId !== factionId) {
       const chapterRules = getRulesForFaction(factionId as FactionId);
       const chapterDetachments = chapterRules?.detachments ?? [];
-      // Merge: chapter-specific first, then parent, deduped by name
       const seen = new Set(chapterDetachments.map(d => d.name));
       return [...chapterDetachments, ...parentDetachments.filter(d => !seen.has(d.name))];
     }
@@ -120,11 +119,11 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
   if (detachments.length === 0) {
     return (
       <div className="space-y-4 text-center">
-        <h2 className="font-serif text-xl font-bold text-[#b8860b]">No Detachments Available</h2>
-        <p className="text-sm text-[#8b7355]">This faction has no detachment data. You can continue without one.</p>
+        <h2 className="font-serif text-xl font-bold text-[#c9a84c]">No Detachments Available</h2>
+        <p className="text-sm text-[#8a8690]">This faction has no detachment data. You can continue without one.</p>
         <button
           onClick={() => onSelect('')}
-          className="px-6 py-2 bg-[#b8860b] text-[#faf6f0] font-semibold rounded-lg hover:bg-[#9a7209] transition-colors"
+          className="px-6 py-2 bg-[#c9a84c] text-[#0a0a0f] font-semibold rounded-lg hover:bg-[#b8960f] transition-colors"
         >
           Continue
         </button>
@@ -134,7 +133,7 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
 
   return (
     <div className="space-y-4">
-      <h2 className="font-serif text-xl font-bold text-[#b8860b] text-center">Select Detachment</h2>
+      <h2 className="font-serif text-xl font-bold text-[#c9a84c] text-center">Select Detachment</h2>
       <div className="grid grid-cols-1 gap-3">
         {detachments.map((det) => {
           const ruleText = det.rule?.text ?? '';
@@ -143,16 +142,16 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
             <button
               key={det.name}
               onClick={() => onSelect(det.name)}
-              className="text-left p-4 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
-                         hover:border-[#b8860b] transition-colors
-                         focus:outline-none focus:ring-2 focus:ring-[#b8860b]"
+              className="text-left p-4 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                         hover:border-[#c9a84c] transition-colors
+                         focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
             >
-              <h3 className="text-sm font-semibold text-[#2c2416] mb-1">{det.name}</h3>
+              <h3 className="text-sm font-semibold text-[#e8e4de] mb-1">{det.name}</h3>
               {det.rule?.name && (
-                <p className="text-xs font-medium text-[#b8860b] mb-1">{det.rule.name}</p>
+                <p className="text-xs font-medium text-[#c9a84c] mb-1">{det.rule.name}</p>
               )}
               {truncated && (
-                <p className="text-xs text-[#8b7355] leading-relaxed">{truncated}</p>
+                <p className="text-xs text-[#8a8690] leading-relaxed">{truncated}</p>
               )}
             </button>
           );
@@ -162,23 +161,47 @@ function DetachmentPicker({ factionId, onSelect }: { factionId: string; onSelect
   );
 }
 
-function StandardUnitCard({ unit, onRemove, wouldFixOver }: { unit: ArmyUnit; onRemove: () => void; wouldFixOver?: boolean }) {
+const ROLE_BORDER_COLORS: Record<string, string> = {
+  'CHARACTER': 'border-l-[#c9a84c]',
+  'EPIC HERO': 'border-l-[#c9a84c]',
+  'BATTLELINE': 'border-l-green-500',
+  'DEDICATED TRANSPORT': 'border-l-blue-500',
+  'FAST ATTACK': 'border-l-purple-500',
+  'HEAVY SUPPORT': 'border-l-red-500',
+  'ELITES': 'border-l-cyan-500',
+  'LORD OF WAR': 'border-l-orange-500',
+  'FORTIFICATION': 'border-l-gray-500',
+  'Other': 'border-l-[#2a2a35]',
+};
+
+function getUnitRoleBorder(keywords: string[]): string {
+  const upper = keywords.map(k => k.toUpperCase());
+  for (const [role, cls] of Object.entries(ROLE_BORDER_COLORS)) {
+    if (upper.includes(role)) return cls;
+  }
+  return ROLE_BORDER_COLORS['Other'];
+}
+
+function StandardUnitCard({ unit, onRemove, wouldFixOver, datasheetLookup }: { unit: ArmyUnit; onRemove: () => void; wouldFixOver?: boolean; datasheetLookup: Map<string, Datasheet> }) {
+  const ds = datasheetLookup.get(unit.datasheet_name);
+  const borderCls = ds ? getUnitRoleBorder(ds.keywords) : 'border-l-[#2a2a35]';
+
   return (
-    <div className={`flex items-center justify-between p-3 bg-[#f5efe6] border rounded-lg ${wouldFixOver ? 'border-amber-400' : 'border-[#d4c5a9]'}`}>
+    <div className={`flex items-center justify-between p-3 bg-[#1a1a24] border border-[#2a2a35] border-l-4 ${borderCls} rounded-lg ${wouldFixOver ? 'ring-1 ring-amber-400/50' : ''}`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-[#2c2416] truncate">{unit.custom_name}</span>
+          <span className="font-medium text-[#e8e4de] truncate">{unit.custom_name}</span>
           {unit.role && (
-            <span className="text-xs px-2 py-0.5 bg-[#e8dfd3] text-[#5c4a32] rounded-full">{unit.role}</span>
+            <span className="text-xs px-2 py-0.5 bg-[#12121a] text-[#a09ca6] rounded-full">{unit.role}</span>
           )}
           {wouldFixOver && (
-            <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">over</span>
+            <span className="text-xs px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded font-medium">over</span>
           )}
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold text-[#b8860b]">{unit.points_cost} pts</span>
-        <button onClick={onRemove} className="text-[#8b7355] hover:text-[#991b1b] transition-colors" aria-label="Remove unit">
+        <span className="text-sm font-semibold text-[#c9a84c]">{unit.points_cost} pts</span>
+        <button onClick={onRemove} className="text-[#8a8690] hover:text-red-500 transition-colors" aria-label="Remove unit">
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
@@ -194,52 +217,52 @@ function CrusadeUnitCard({ unit, onRemove, wouldFixOver }: { unit: ArmyUnit; onR
   const xpProgress = Math.min((unit.experience_points / xpForNextRank) * 100, 100);
 
   return (
-    <div className={`p-4 bg-[#f5efe6] border rounded-lg space-y-2 ${wouldFixOver ? 'border-amber-400' : 'border-[#d4c5a9]'}`}>
+    <div className={`p-4 bg-[#1a1a24] border rounded-lg space-y-2 ${wouldFixOver ? 'border-amber-400/50' : 'border-[#2a2a35]'}`}>
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-[#2c2416] flex items-center gap-2">
+          <div className="font-medium text-[#e8e4de] flex items-center gap-2">
             {unit.custom_name}
             {wouldFixOver && (
-              <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">over</span>
+              <span className="text-xs px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded font-medium">over</span>
             )}
           </div>
-          <div className="text-xs text-[#8b7355]">{unit.points_cost} pts</div>
+          <div className="text-xs text-[#8a8690]">{unit.points_cost} pts</div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs px-2 py-0.5 bg-[#b8860b]/15 text-[#b8860b] font-semibold rounded-full border border-[#b8860b]/30">
+          <span className="text-xs px-2 py-0.5 bg-[#c9a84c]/15 text-[#c9a84c] font-semibold rounded-full border border-[#c9a84c]/30">
             {unit.rank}
           </span>
-          <button onClick={onRemove} className="text-[#8b7355] hover:text-[#991b1b] transition-colors" aria-label="Remove unit">
+          <button onClick={onRemove} className="text-[#8a8690] hover:text-red-500 transition-colors" aria-label="Remove unit">
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* XP progress bar */}
-      <div className="w-full h-2 bg-[#e8dfd3] rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-[#12121a] rounded-full overflow-hidden">
         <div
           className="h-full bg-green-600 rounded-full transition-all"
           style={{ width: `${xpProgress}%` }}
         />
       </div>
-      <div className="text-xs text-[#8b7355]">{unit.experience_points} XP</div>
+      <div className="text-xs text-[#8a8690]">{unit.experience_points} XP</div>
 
       {/* Battle honours & scars */}
       <div className="flex flex-wrap gap-1">
         {unit.battle_honours.map(h => (
-          <span key={h.id} className="text-xs px-2 py-0.5 bg-[#b8860b]/15 text-[#b8860b] rounded-full">
+          <span key={h.id} className="text-xs px-2 py-0.5 bg-[#c9a84c]/15 text-[#c9a84c] rounded-full">
             {h.name}
           </span>
         ))}
         {unit.battle_scars.map(s => (
-          <span key={s.id} className="text-xs px-2 py-0.5 bg-red-100 text-red-800 rounded-full">
+          <span key={s.id} className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded-full">
             {s.name}
           </span>
         ))}
       </div>
 
       {/* Stats */}
-      <div className="text-xs text-[#8b7355]">
+      <div className="text-xs text-[#8a8690]">
         {unit.battles_played} battles / {unit.battles_survived} survived
       </div>
     </div>
@@ -264,12 +287,12 @@ function DetachmentRuleCard({ factionId, detachmentName }: { factionId: string; 
 
   if (!detachmentName) {
     return (
-      <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg px-4 py-3">
-        <p className="text-sm text-[#8b7355]">
+      <div className="mb-4 border border-[#c9a84c]/30 bg-[#1a1a24] rounded-lg px-4 py-3">
+        <p className="text-sm text-[#8a8690]">
           No detachment selected.{' '}
           <button
             onClick={() => navigate('/army')}
-            className="text-[#b8860b] font-medium underline hover:text-[#9a7209]"
+            className="text-[#c9a84c] font-medium underline hover:text-[#b8960f]"
           >
             Pick a detachment
           </button>
@@ -280,32 +303,32 @@ function DetachmentRuleCard({ factionId, detachmentName }: { factionId: string; 
 
   if (!detachment?.rule) {
     return (
-      <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg px-4 py-3">
-        <p className="text-sm font-semibold text-[#2c2416]">{detachmentName}</p>
-        <p className="text-xs text-[#8b7355] mt-1">No rule data available for this detachment.</p>
+      <div className="mb-4 border border-[#c9a84c]/30 bg-[#1a1a24] rounded-lg px-4 py-3">
+        <p className="text-sm font-semibold text-[#e8e4de]">{detachmentName}</p>
+        <p className="text-xs text-[#8a8690] mt-1">No rule data available for this detachment.</p>
       </div>
     );
   }
 
   return (
-    <div className="mb-4 border border-[#b8860b]/30 bg-[#f5f0e8] rounded-lg overflow-hidden">
+    <div className="mb-4 border border-[#c9a84c]/30 bg-[#1a1a24] rounded-lg overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#efe9de] transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#22222e] transition-colors"
       >
         <div>
-          <span className="text-sm font-semibold text-[#2c2416]">{detachmentName}</span>
+          <span className="text-sm font-semibold text-[#e8e4de]">{detachmentName}</span>
           {detachment.rule.name && (
-            <span className="ml-2 text-xs text-[#b8860b] font-medium">{detachment.rule.name}</span>
+            <span className="ml-2 text-xs text-[#c9a84c] font-medium">{detachment.rule.name}</span>
           )}
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-[#8b7355] transition-transform ${expanded ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-[#8a8690] transition-transform ${expanded ? 'rotate-180' : ''}`}
         />
       </button>
       {expanded && (
-        <div className="px-4 pb-4 border-t border-[#b8860b]/20">
-          <FormattedRuleText text={detachment.rule.text} className="mt-3 [&_h3]:text-[#b8860b] [&_h4]:text-[#b8860b] [&_p]:text-[#5c4a32] [&_li]:text-[#5c4a32] [&_.text-emerald-400]:text-[#b8860b] [&_.text-stone-300]:text-[#5c4a32]" />
+        <div className="px-4 pb-4 border-t border-[#c9a84c]/20">
+          <FormattedRuleText text={detachment.rule.text} className="mt-3" />
         </div>
       )}
     </div>
@@ -313,13 +336,13 @@ function DetachmentRuleCard({ factionId, detachmentName }: { factionId: string; 
 }
 
 // ---------------------------------------------------------------------------
-// Constants (static — no reason to be inside the component)
+// Constants (static)
 // ---------------------------------------------------------------------------
 
 const ROLE_KEYWORDS = ['CHARACTER', 'EPIC HERO', 'BATTLELINE', 'DEDICATED TRANSPORT', 'FAST ATTACK', 'HEAVY SUPPORT', 'ELITES', 'LORD OF WAR', 'FORTIFICATION'] as const;
 const ROLE_COLORS: Record<string, string> = {
-  'CHARACTER': '#b8860b',
-  'EPIC HERO': '#b8860b',
+  'CHARACTER': '#c9a84c',
+  'EPIC HERO': '#c9a84c',
   'BATTLELINE': '#16a34a',
   'DEDICATED TRANSPORT': '#2563eb',
   'FAST ATTACK': '#9333ea',
@@ -355,7 +378,6 @@ export default function Army() {
     setEditingName(false);
   };
 
-  // Build datasheet lookup for keywords (must be before early returns to avoid hooks violation)
   const datasheetLookup = useMemo(() => {
     if (!factionId) return new Map<string, Datasheet>();
     const units = getUnitsForFaction(getDataFactionId(factionId as FactionId));
@@ -364,7 +386,6 @@ export default function Army() {
     return map;
   }, [factionId]);
 
-  // Compute role breakdown (must be before early returns to avoid hooks violation)
   const roleBreakdown = useMemo(() => {
     const breakdown = new Map<string, number>();
     for (const unit of army) {
@@ -381,14 +402,13 @@ export default function Army() {
     return breakdown;
   }, [army, datasheetLookup]);
 
-  // If no mode selected, redirect to home
   if (!mode) {
     return (
-      <div className="min-h-screen bg-[#faf6f0] flex flex-col items-center justify-center px-4">
-        <p className="text-[#8b7355] mb-4">No mode selected yet.</p>
+      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center px-4">
+        <p className="text-[#8a8690] mb-4">No mode selected yet.</p>
         <button
           onClick={() => navigate('/')}
-          className="px-6 py-2 bg-[#b8860b] text-[#faf6f0] rounded-lg hover:bg-[#9a7209] transition-colors"
+          className="px-6 py-2 bg-[#c9a84c] text-[#0a0a0f] rounded-lg hover:bg-[#b8960f] transition-colors"
         >
           Go to Home
         </button>
@@ -401,30 +421,27 @@ export default function Army() {
   const hasCap = mode === 'crusade' ? supplyLimit > 0 : pointsCap > 0;
   const totalPoints = army.reduce((sum, u) => sum + u.points_cost, 0);
   const pointsRatio = cap > 0 ? totalPoints / cap : 0;
-  const pointsColor = pointsRatio > 1 ? 'text-red-700' : pointsRatio > 0.9 ? 'text-amber-700' : 'text-green-700';
+  const pointsColor = pointsRatio > 1 ? 'text-red-500' : pointsRatio > 0.9 ? 'text-amber-500' : 'text-green-500';
 
-  // Step 1: Faction selection
   if (!factionId) {
     return (
-      <div className="min-h-screen bg-[#faf6f0] px-4 pt-8 pb-24">
+      <div className="min-h-screen bg-[#0a0a0f] px-4 pt-8 pb-24">
         <FactionGrid onSelect={(id) => setFaction(id)} />
       </div>
     );
   }
 
-  // Step 2: Detachment selection
   if (!detachmentName && detachmentName !== '') {
     return (
-      <div className="min-h-screen bg-[#faf6f0] px-4 pt-8 pb-24">
+      <div className="min-h-screen bg-[#0a0a0f] px-4 pt-8 pb-24">
         <DetachmentPicker factionId={factionId} onSelect={(name) => setDetachment(name)} />
       </div>
     );
   }
 
-  // Step 3: Points cap selection
   if (!hasCap || (mode === 'standard' && pointsCap === 0)) {
     return (
-      <div className="min-h-screen bg-[#faf6f0] px-4 pt-16 pb-24 flex items-start justify-center">
+      <div className="min-h-screen bg-[#0a0a0f] px-4 pt-16 pb-24 flex items-start justify-center">
         <PointsSelector
           mode={mode}
           onSelect={(pts) => mode === 'crusade' ? setSupplyLimit(pts) : setPointsCap(pts)}
@@ -436,66 +453,79 @@ export default function Army() {
   const isOverBudget = totalPoints > cap;
   const overBy = totalPoints - cap;
 
-  // Step 4: Army builder
+  // Faction art header
+  const factionArt = factionId ? getFactionArt(factionId) : '';
+
   return (
-    <div className="min-h-screen bg-[#faf6f0] px-4 pt-6 pb-24">
-      {/* Army name header */}
-      {activeArmy && (
-        <div className="flex items-center gap-2 mb-2">
-          {editingName ? (
-            <div className="flex items-center gap-2 flex-1">
-              <input
-                type="text"
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveName(); }}
-                className="flex-1 px-2 py-1 text-lg font-bold font-serif bg-[#faf6f0] border border-[#d4c5a9] rounded text-[#2c2416] focus:outline-none focus:border-[#b8860b]"
-                autoFocus
-              />
-              <button onClick={handleSaveName} className="text-[#b8860b] hover:text-[#9a7209]">
-                <Check className="w-5 h-5" />
+    <div className="min-h-screen bg-[#0a0a0f] px-4 pt-0 pb-24">
+      {/* Faction header with art */}
+      <div className="relative -mx-4 mb-6 overflow-hidden">
+        {factionArt && (
+          <>
+            <img src={factionArt} alt="" className="w-full h-32 object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/70 to-[#0a0a0f]" />
+          </>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-3">
+          {/* Army name header */}
+          {activeArmy && (
+            <div className="flex items-center gap-2 mb-1">
+              {editingName ? (
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    type="text"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleSaveName(); }}
+                    className="flex-1 px-2 py-1 text-lg font-bold font-serif bg-[#0a0a0f] border border-[#2a2a35] rounded text-[#e8e4de] focus:outline-none focus:border-[#c9a84c]"
+                    autoFocus
+                  />
+                  <button onClick={handleSaveName} className="text-[#c9a84c] hover:text-[#b8960f]">
+                    <Check className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <h2 className="font-serif text-lg font-bold text-[#c9a84c] tracking-wide">{activeArmy.name}</h2>
+                  <button
+                    onClick={() => { setEditingName(true); setNameInput(activeArmy.name); }}
+                    className="text-[#8a8690] hover:text-[#c9a84c] transition-colors"
+                    aria-label="Rename army"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Faction & mode */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-serif text-xl font-bold text-[#e8e4de] flex items-center gap-2">
+                {factionMeta && <span>{factionMeta.icon}</span>}
+                {factionMeta?.name ?? factionId}
+              </h1>
+              <p className="text-sm text-[#8a8690]">
+                {mode === 'crusade' ? 'Crusade' : 'Matched Play'}
+                {detachmentName ? ` \u2014 ${detachmentName}` : ''}
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={() => setFaction(null)}
+                className="text-xs text-[#8a8690] hover:text-[#e8e4de] underline"
+              >
+                Change Faction
+              </button>
+              <button
+                onClick={() => setDetachment(null)}
+                className="text-xs text-[#8a8690] hover:text-[#e8e4de] underline"
+              >
+                Change Detachment
               </button>
             </div>
-          ) : (
-            <>
-              <h2 className="font-serif text-lg font-bold text-[#b8860b] tracking-wide">{activeArmy.name}</h2>
-              <button
-                onClick={() => { setEditingName(true); setNameInput(activeArmy.name); }}
-                className="text-[#8b7355] hover:text-[#b8860b] transition-colors"
-                aria-label="Rename army"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Faction & mode header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-serif text-xl font-bold text-[#2c2416] flex items-center gap-2">
-            {factionMeta && <span>{factionMeta.icon}</span>}
-            {factionMeta?.name ?? factionId}
-          </h1>
-          <p className="text-sm text-[#8b7355]">
-            {mode === 'crusade' ? 'Crusade' : 'Matched Play'}
-            {detachmentName ? ` \u2014 ${detachmentName}` : ''}
-          </p>
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <button
-            onClick={() => setFaction(null)}
-            className="text-xs text-[#8b7355] hover:text-[#5c4a32] underline"
-          >
-            Change Faction
-          </button>
-          <button
-            onClick={() => setDetachment(null)}
-            className="text-xs text-[#8b7355] hover:text-[#5c4a32] underline"
-          >
-            Change Detachment
-          </button>
+          </div>
         </div>
       </div>
 
@@ -504,40 +534,60 @@ export default function Army() {
 
       {/* Action buttons row */}
       {army.length > 0 && (
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => navigate('/weapon-compare')}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
-                       text-sm font-medium text-[#b8860b] hover:border-[#b8860b] hover:bg-[#e8dfd3] transition-colors"
-          >
-            <Scale className="w-4 h-4" />
-            Compare Weapons
-          </button>
-          <button
-            onClick={() => navigate('/army-export')}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#f5efe6] border border-[#d4c5a9] rounded-lg
-                       text-sm font-medium text-[#b8860b] hover:border-[#b8860b] hover:bg-[#e8dfd3] transition-colors"
-          >
-            <Share2 className="w-4 h-4" />
-            Export
-          </button>
+        <div className="space-y-2 mb-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate('/game-tracker')}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                         text-sm font-medium text-[#c9a84c] hover:border-[#c9a84c] hover:bg-[#22222e] transition-colors"
+            >
+              <Target className="w-4 h-4" />
+              Track Game
+            </button>
+            <button
+              onClick={() => navigate('/match-mode')}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                         text-sm font-medium text-[#c9a84c] hover:border-[#c9a84c] hover:bg-[#22222e] transition-colors"
+            >
+              <Users className="w-4 h-4" />
+              Match Mode
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate('/weapon-compare')}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                         text-sm font-medium text-[#c9a84c] hover:border-[#c9a84c] hover:bg-[#22222e] transition-colors"
+            >
+              <Scale className="w-4 h-4" />
+              Compare Weapons
+            </button>
+            <button
+              onClick={() => navigate('/army-export')}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+                         text-sm font-medium text-[#c9a84c] hover:border-[#c9a84c] hover:bg-[#22222e] transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+              Export
+            </button>
+          </div>
         </div>
       )}
 
       {/* Army Composition Breakdown */}
       {army.length > 0 && (
-        <div className="mb-4 border border-[#d4c5a9] bg-[#f5efe6] rounded-lg overflow-hidden">
+        <div className="mb-4 border border-[#2a2a35] bg-[#1a1a24] rounded-lg overflow-hidden">
           <button
             onClick={() => setCompositionOpen(!compositionOpen)}
-            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#efe9de] transition-colors"
+            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#22222e] transition-colors"
           >
-            <span className="text-sm font-semibold text-[#2c2416]">Army Composition</span>
+            <span className="text-sm font-semibold text-[#e8e4de]">Army Composition</span>
             <ChevronDown
-              className={`w-4 h-4 text-[#8b7355] transition-transform ${compositionOpen ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 text-[#8a8690] transition-transform ${compositionOpen ? 'rotate-180' : ''}`}
             />
           </button>
           {compositionOpen && (
-            <div className="px-4 pb-4 border-t border-[#d4c5a9] pt-3 space-y-2">
+            <div className="px-4 pb-4 border-t border-[#2a2a35] pt-3 space-y-2">
               {[...roleBreakdown.entries()]
                 .sort((a, b) => b[1] - a[1])
                 .map(([role, pts]) => {
@@ -552,10 +602,10 @@ export default function Army() {
                   return (
                     <div key={role}>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="font-medium text-[#2c2416]">{displayName}</span>
-                        <span className="text-[#8b7355]">{pts}pts ({pct}%)</span>
+                        <span className="font-medium text-[#e8e4de]">{displayName}</span>
+                        <span className="text-[#8a8690]">{pts}pts ({pct}%)</span>
                       </div>
-                      <div className="w-full h-3 bg-[#e8dfd3] rounded-full overflow-hidden">
+                      <div className="w-full h-3 bg-[#12121a] rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all"
                           style={{ width: `${pct}%`, backgroundColor: color }}
@@ -571,9 +621,9 @@ export default function Army() {
 
       {/* Over budget banner */}
       {isOverBudget && army.length > 0 && (
-        <div className="mb-4 flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-300 rounded-lg">
-          <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-          <span className="text-sm font-semibold text-red-700">
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+          <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
+          <span className="text-sm font-semibold text-red-400">
             Over budget by {overBy.toLocaleString()} pts
           </span>
         </div>
@@ -582,10 +632,10 @@ export default function Army() {
       {/* Unit list */}
       {army.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-[#8b7355] mb-4">No units yet — browse the Codex to add units</p>
+          <p className="text-[#8a8690] mb-4">No units yet — browse the Codex to add units</p>
           <button
             onClick={() => navigate(`/codex/${factionId as FactionId}`)}
-            className="inline-flex items-center gap-1 text-[#b8860b] font-medium hover:underline"
+            className="inline-flex items-center gap-1 text-[#c9a84c] font-medium hover:underline"
           >
             Open Codex <ChevronRight className="w-4 h-4" />
           </button>
@@ -593,12 +643,11 @@ export default function Army() {
       ) : (
         <div className="space-y-2">
           {army.map(unit => {
-            // Show "over" indicator if removing this unit would bring total under cap
             const wouldFix = isOverBudget && (totalPoints - unit.points_cost) <= cap;
             return mode === 'crusade' ? (
               <CrusadeUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} wouldFixOver={wouldFix} />
             ) : (
-              <StandardUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} wouldFixOver={wouldFix} />
+              <StandardUnitCard key={unit.id} unit={unit} onRemove={() => removeUnit(unit.id)} wouldFixOver={wouldFix} datasheetLookup={datasheetLookup} />
             );
           })}
         </div>
@@ -606,9 +655,9 @@ export default function Army() {
 
       {/* Points footer */}
       <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
-        <div className={`max-w-md mx-auto rounded-lg px-4 py-2 flex items-center justify-between shadow-sm ${isOverBudget ? 'bg-red-50 border border-red-300' : 'bg-[#f5efe6] border border-[#d4c5a9]'}`}>
-          <span className={`text-sm ${isOverBudget ? 'text-red-600' : 'text-[#8b7355]'}`}>Total</span>
-          <span className={`text-sm font-bold ${isOverBudget ? 'text-red-700' : pointsColor}`}>
+        <div className={`max-w-md mx-auto rounded-lg px-4 py-2 flex items-center justify-between shadow-lg ${isOverBudget ? 'bg-red-500/10 border border-red-500/30' : 'bg-[#1a1a24] border border-[#c9a84c]/30'}`}>
+          <span className={`text-sm ${isOverBudget ? 'text-red-400' : 'text-[#8a8690]'}`}>Total</span>
+          <span className={`text-sm font-bold ${isOverBudget ? 'text-red-400' : pointsColor}`}>
             {totalPoints.toLocaleString()} / {cap.toLocaleString()} pts
           </span>
         </div>
@@ -617,9 +666,9 @@ export default function Army() {
       {/* FAB */}
       <button
         onClick={() => navigate('/add-unit')}
-        className="fixed bottom-28 right-4 w-14 h-14 bg-[#b8860b] text-[#faf6f0] rounded-full shadow-lg
-                   flex items-center justify-center hover:bg-[#9a7209] transition-colors
-                   focus:outline-none focus:ring-2 focus:ring-[#b8860b] focus:ring-offset-2"
+        className="fixed bottom-28 right-4 w-14 h-14 bg-[#c9a84c] text-[#0a0a0f] rounded-full shadow-lg shadow-amber-900/30
+                   flex items-center justify-center hover:bg-[#b8960f] transition-colors
+                   focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
         aria-label="Add unit"
       >
         <Plus className="w-6 h-6" />
