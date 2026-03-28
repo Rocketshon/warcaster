@@ -17,6 +17,13 @@ import GameTracker from './pages/GameTracker';
 import MatchMode from './pages/MatchMode';
 import Collection from './pages/Collection';
 import Settings from './pages/Settings';
+import CrusadeHome from './pages/CrusadeHome';
+import CrusadeSetup from './pages/CrusadeSetup';
+import OrderOfBattle from './pages/OrderOfBattle';
+import CrusadeUnitDetail from './pages/CrusadeUnitDetail';
+import PostBattle from './pages/PostBattle';
+import BattleHistory from './pages/BattleHistory';
+import CrusadeSettings from './pages/CrusadeSettings';
 
 const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
 
@@ -43,6 +50,13 @@ export const router = createBrowserRouter([
       { path: "settings", Component: Settings },
       { path: "rules", Component: RulesBrowser },
       { path: "rule/:ruleId", Component: RuleDetail },
+      { path: "crusade", Component: CrusadeHome },
+      { path: "crusade/new", Component: CrusadeSetup },
+      { path: "crusade/order-of-battle", Component: OrderOfBattle },
+      { path: "crusade/unit/:unitId", Component: CrusadeUnitDetail },
+      { path: "crusade/post-battle", Component: PostBattle },
+      { path: "crusade/history", Component: BattleHistory },
+      { path: "crusade/settings", Component: CrusadeSettings },
       { path: "*", lazy: () => import('./pages/NotFound').then(m => ({ Component: m.default })) },
     ],
   },
