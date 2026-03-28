@@ -23,12 +23,12 @@ export default function DatasheetView() {
 
   if (!datasheet) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden">
         <div className="relative z-10 w-full max-w-md mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
             <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back</span>
           </button>
-          <div className="text-center"><h1 className="text-xl font-bold text-[#8a8690] mb-2">Datasheet Not Found</h1></div>
+          <div className="text-center"><h1 className="text-xl font-bold text-[var(--text-secondary)] mb-2">Datasheet Not Found</h1></div>
         </div>
       </div>
     );
@@ -47,24 +47,24 @@ export default function DatasheetView() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
           <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back to Codex</span>
         </button>
 
         {/* Unit Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-[#e8e4de] tracking-wider mb-2">{datasheet.name}</h1>
-          <p className="text-[#c9a84c] text-sm mb-3">{datasheet.faction}</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-wider mb-2">{datasheet.name}</h1>
+          <p className="text-[var(--accent-gold)] text-sm mb-3">{datasheet.faction}</p>
 
           {/* Points Costs */}
           {datasheet.points.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {datasheet.points.map((tier, idx) => (
-                <div key={idx} className="px-3 py-1.5 rounded-lg border border-[#2a2a35] bg-[#1a1a24]">
-                  <span className="text-[#8a8690] text-xs">{tier.models} models:</span>
-                  <span className="text-[#c9a84c] text-sm font-bold ml-2 font-mono">{tier.cost} pts</span>
+                <div key={idx} className="px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)]">
+                  <span className="text-[var(--text-secondary)] text-xs">{tier.models} models:</span>
+                  <span className="text-[var(--accent-gold)] text-sm font-bold ml-2 font-mono">{tier.cost} pts</span>
                 </div>
               ))}
             </div>
@@ -72,15 +72,15 @@ export default function DatasheetView() {
 
           {/* Stats - gold header row */}
           {datasheet.stats && Object.keys(datasheet.stats).length > 0 && (
-            <div className="rounded-lg border border-[#c9a84c]/30 overflow-hidden mb-2">
-              <div className="grid gap-px bg-[#c9a84c]/20" style={{ gridTemplateColumns: `repeat(${Object.keys(datasheet.stats).length}, 1fr)` }}>
+            <div className="rounded-lg border border-[var(--accent-gold)]/30 overflow-hidden mb-2">
+              <div className="grid gap-px bg-[var(--accent-gold)]/20" style={{ gridTemplateColumns: `repeat(${Object.keys(datasheet.stats).length}, 1fr)` }}>
                 {Object.entries(datasheet.stats).map(([stat, value]) => (
-                  <div key={stat} className="bg-[#1a1a24]">
-                    <div className="text-center px-2 py-1 bg-[#c9a84c]/10 border-b border-[#c9a84c]/20">
-                      <div className="text-[10px] text-[#c9a84c] font-semibold uppercase">{stat}</div>
+                  <div key={stat} className="bg-[var(--bg-card)]">
+                    <div className="text-center px-2 py-1 bg-[var(--accent-gold)]/10 border-b border-[var(--accent-gold)]/20">
+                      <div className="text-[10px] text-[var(--accent-gold)] font-semibold uppercase">{stat}</div>
                     </div>
                     <div className="text-center px-2 py-2">
-                      <div className="text-lg font-bold text-[#e8e4de]">{value}</div>
+                      <div className="text-lg font-bold text-[var(--text-primary)]">{value}</div>
                     </div>
                   </div>
                 ))}
@@ -92,7 +92,7 @@ export default function DatasheetView() {
           {datasheet.invuln && (
             <div className="flex items-center gap-2 mt-2">
               <Shield className="w-4 h-4 text-blue-400" />
-              <span className="text-sm text-[#8a8690]">Invulnerable Save:</span>
+              <span className="text-sm text-[var(--text-secondary)]">Invulnerable Save:</span>
               <span className="text-base font-bold text-blue-400">{datasheet.invuln}</span>
             </div>
           )}
@@ -103,16 +103,16 @@ export default function DatasheetView() {
 
         {/* Abilities */}
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-[#e8e4de] mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-500" />Abilities
           </h2>
 
           {datasheet.abilities.core.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-[#8a8690] mb-2 uppercase tracking-wider">Core</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Core</h3>
               <div className="flex flex-wrap gap-2">
                 {datasheet.abilities.core.map((ability: string, idx: number) => (
-                  <span key={idx} className="px-3 py-1 rounded-full border border-[#c9a84c]/30 bg-[#c9a84c]/10 text-[#c9a84c] text-xs font-semibold">{ability}</span>
+                  <span key={idx} className="px-3 py-1 rounded-full border border-[var(--accent-gold)]/30 bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] text-xs font-semibold">{ability}</span>
                 ))}
               </div>
             </div>
@@ -120,18 +120,18 @@ export default function DatasheetView() {
 
           {datasheet.abilities.faction.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-[#8a8690] mb-2 uppercase tracking-wider">Faction</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Faction</h3>
               <div className="flex flex-wrap gap-2">
                 {datasheet.abilities.faction.map((factionAbility: string, idx: number) => (
-                  <span key={idx} className="px-3 py-1 rounded-full border border-[#2a2a35] bg-[#1a1a24] text-[#c9a84c] text-xs font-semibold">{factionAbility}</span>
+                  <span key={idx} className="px-3 py-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--accent-gold)] text-xs font-semibold">{factionAbility}</span>
                 ))}
               </div>
             </div>
           )}
 
           {datasheet.abilities.other.map((ability: [string, string], idx: number) => (
-            <div key={idx} className="mb-3 rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
-              <h3 className="text-sm font-bold text-[#c9a84c] mb-2">{ability[0]}</h3>
+            <div key={idx} className="mb-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
+              <h3 className="text-sm font-bold text-[var(--accent-gold)] mb-2">{ability[0]}</h3>
               <FormattedRuleText text={ability[1]} className="text-xs" />
             </div>
           ))}
@@ -139,18 +139,18 @@ export default function DatasheetView() {
 
         {datasheet.unit_composition && (
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Unit Composition</h2>
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
-              <p className="text-sm text-[#a09ca6] whitespace-pre-line">{datasheet.unit_composition}</p>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Unit Composition</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
+              <p className="text-sm text-[var(--text-tertiary)] whitespace-pre-line">{datasheet.unit_composition}</p>
             </div>
           </div>
         )}
 
         {datasheet.wargear_options.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Wargear Options</h2>
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
-              <ul className="list-disc list-inside space-y-1 text-sm text-[#a09ca6]">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Wargear Options</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
+              <ul className="list-disc list-inside space-y-1 text-sm text-[var(--text-tertiary)]">
                 {datasheet.wargear_options.map((opt: string, idx: number) => <li key={idx}>{opt}</li>)}
               </ul>
             </div>
@@ -159,14 +159,14 @@ export default function DatasheetView() {
 
         {datasheet.wargear_abilities.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Wargear Abilities</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Wargear Abilities</h2>
             <div className="space-y-2">
               {datasheet.wargear_abilities.map((ability, idx: number) => {
-                if (typeof ability === 'string') return <p key={idx} className="text-xs text-[#a09ca6]">{ability}</p>;
+                if (typeof ability === 'string') return <p key={idx} className="text-xs text-[var(--text-tertiary)]">{ability}</p>;
                 return (
-                  <div key={idx} className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-3">
-                    <h3 className="text-sm font-bold text-[#c9a84c] mb-1">{ability[0]}</h3>
-                    <p className="text-xs text-[#a09ca6]">{ability[1]}</p>
+                  <div key={idx} className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-3">
+                    <h3 className="text-sm font-bold text-[var(--accent-gold)] mb-1">{ability[0]}</h3>
+                    <p className="text-xs text-[var(--text-tertiary)]">{ability[1]}</p>
                   </div>
                 );
               })}
@@ -176,8 +176,8 @@ export default function DatasheetView() {
 
         {datasheet.damaged && (
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Damaged Profile</h2>
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Damaged Profile</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
               <FormattedRuleText text={datasheet.damaged} className="text-sm text-amber-400" />
             </div>
           </div>
@@ -185,16 +185,16 @@ export default function DatasheetView() {
 
         {/* Keywords */}
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Keywords</h2>
+          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Keywords</h2>
           <div className="flex flex-wrap gap-2">
             {datasheet.keywords.map((keyword: string, idx: number) => (
-              <span key={idx} className="px-3 py-1.5 rounded-lg border border-[#2a2a35] bg-[#1a1a24] text-[#a09ca6] text-xs font-semibold">{toTitleCase(keyword)}</span>
+              <span key={idx} className="px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-tertiary)] text-xs font-semibold">{toTitleCase(keyword)}</span>
             ))}
           </div>
           {datasheet.faction_keywords.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {datasheet.faction_keywords.map((keyword: string, idx: number) => (
-                <span key={idx} className="px-3 py-1.5 rounded-lg border border-[#c9a84c]/20 bg-[#c9a84c]/5 text-[#c9a84c] text-xs font-semibold">{toTitleCase(keyword)}</span>
+                <span key={idx} className="px-3 py-1.5 rounded-lg border border-[var(--accent-gold)]/20 bg-[var(--accent-gold)]/5 text-[var(--accent-gold)] text-xs font-semibold">{toTitleCase(keyword)}</span>
               ))}
             </div>
           )}
@@ -202,8 +202,8 @@ export default function DatasheetView() {
 
         {datasheet.leader && (
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-[#e8e4de] mb-3">Leader</h2>
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Leader</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
               <FormattedRuleText text={datasheet.leader} className="text-sm text-purple-400" />
             </div>
           </div>
@@ -217,8 +217,8 @@ export default function DatasheetView() {
           disabled={showAddSuccess || !mode}
           className={`w-full py-4 rounded-lg font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
             showAddSuccess
-              ? "bg-[#c9a84c] text-[#0a0a0f]"
-              : "bg-gradient-to-r from-[#c9a84c] to-[#d4a017] text-[#0a0a0f] hover:from-[#d4a017] hover:to-[#c9a84c]"
+              ? "bg-[var(--accent-gold)] text-[var(--bg-primary)]"
+              : "bg-gradient-to-r from-[var(--accent-gold)] to-[#d4a017] text-[var(--bg-primary)] hover:from-[#d4a017] hover:to-[#c9a84c]"
           }`}
         >
           {showAddSuccess ? (

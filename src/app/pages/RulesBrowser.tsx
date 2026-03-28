@@ -88,14 +88,14 @@ export default function RulesBrowser() {
         <button
           key={rule.id}
           onClick={() => handleRuleClick(rule.id)}
-          className={`w-full p-3 pl-4 text-left hover:bg-[#c9a84c]/5 transition-all ${idx !== rules.length - 1 ? "border-b border-[#2a2a35]/60" : ""}`}
+          className={`w-full p-3 pl-4 text-left hover:bg-[#c9a84c]/5 transition-all ${idx !== rules.length - 1 ? "border-b border-[var(--border-color)]/60" : ""}`}
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <span className="text-sm text-[#e8e4de]">{rule.title}</span>
-              {rule.subtitle && <span className="text-xs text-[#8a8690] ml-2">{rule.subtitle}</span>}
+              <span className="text-sm text-[var(--text-primary)]">{rule.title}</span>
+              {rule.subtitle && <span className="text-xs text-[var(--text-secondary)] ml-2">{rule.subtitle}</span>}
             </div>
-            <ChevronRight className="w-4 h-4 text-[#8a8690] flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
           </div>
         </button>
       ))}
@@ -103,90 +103,90 @@ export default function RulesBrowser() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-md mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
           <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back</span>
         </button>
 
         <div className="text-center mb-6">
           <div className="flex items-center justify-center mb-3">
-            <BookOpen className="w-12 h-12 text-[#c9a84c]/80" strokeWidth={1.5} />
+            <BookOpen className="w-12 h-12 text-[var(--accent-gold)]/80" strokeWidth={1.5} />
           </div>
-          <h1 className="text-2xl font-bold text-[#e8e4de] mb-2 tracking-wider">Rules Browser</h1>
-          <p className="text-[#8a8690] text-sm">Quick reference for all game rules</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2 tracking-wider">Rules Browser</h1>
+          <p className="text-[var(--text-secondary)] text-sm">Quick reference for all game rules</p>
         </div>
 
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#c9a84c]/50" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent-gold)]/50" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search rules..."
-              className="w-full bg-[#1a1a24] border border-[#2a2a35] rounded-lg pl-11 pr-4 py-3 text-[#e8e4de] placeholder:text-[#8a8690] focus:border-[#c9a84c]/50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/20 transition-all"
+              className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg pl-11 pr-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--accent-gold)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/20 transition-all"
             />
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Core Rules */}
-          <div className="relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24]">
+          <div className="relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)]">
             <button onClick={() => toggleSection("core")} className="w-full p-4 flex items-center justify-between hover:bg-[#c9a84c]/5 transition-all">
               <div className="flex items-center gap-3">
-                <BookOpen className="w-5 h-5 text-[#c9a84c]" strokeWidth={2} />
+                <BookOpen className="w-5 h-5 text-[var(--accent-gold)]" strokeWidth={2} />
                 <div className="text-left">
-                  <h2 className="text-base font-semibold text-[#e8e4de]">Core Rules</h2>
-                  <p className="text-xs text-[#8a8690]">{filteredCoreRules.length} sections</p>
+                  <h2 className="text-base font-semibold text-[var(--text-primary)]">Core Rules</h2>
+                  <p className="text-xs text-[var(--text-secondary)]">{filteredCoreRules.length} sections</p>
                 </div>
               </div>
-              {expandedSections.includes("core") ? <ChevronDown className="w-5 h-5 text-[#c9a84c]" /> : <ChevronRight className="w-5 h-5 text-[#c9a84c]" />}
+              {expandedSections.includes("core") ? <ChevronDown className="w-5 h-5 text-[var(--accent-gold)]" /> : <ChevronRight className="w-5 h-5 text-[var(--accent-gold)]" />}
             </button>
 
             {expandedSections.includes("core") && (
-              <div className="border-t border-[#c9a84c]/10">
+              <div className="border-t border-[var(--accent-gold)]/10">
                 {coreRuleGroups.map(group => (
                   <div key={group.label}>
-                    <div className="px-4 py-2 bg-[#12121a] border-b border-[#2a2a35]/40">
-                      <span className="text-[11px] font-bold text-[#c9a84c]/80 uppercase tracking-widest">{group.label}</span>
+                    <div className="px-4 py-2 bg-[#12121a] border-b border-[var(--border-color)]/40">
+                      <span className="text-[11px] font-bold text-[var(--accent-gold)]/80 uppercase tracking-widest">{group.label}</span>
                     </div>
                     {renderRuleList(group.items)}
                   </div>
                 ))}
-                {filteredCoreRules.length === 0 && <div className="p-4 text-center text-sm text-[#8a8690]">No rules found</div>}
+                {filteredCoreRules.length === 0 && <div className="p-4 text-center text-sm text-[var(--text-secondary)]">No rules found</div>}
               </div>
             )}
           </div>
 
           {/* Crusade Rules */}
-          <div className="relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24]">
+          <div className="relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)]">
             <button onClick={() => toggleSection("crusade")} className="w-full p-4 flex items-center justify-between hover:bg-[#c9a84c]/5 transition-all">
               <div className="flex items-center gap-3">
-                <BookOpen className="w-5 h-5 text-[#c9a84c]" strokeWidth={2} />
+                <BookOpen className="w-5 h-5 text-[var(--accent-gold)]" strokeWidth={2} />
                 <div className="text-left">
-                  <h2 className="text-base font-semibold text-[#e8e4de]">Crusade Rules</h2>
-                  <p className="text-xs text-[#8a8690]">{filteredCrusadeRules.length} sections</p>
+                  <h2 className="text-base font-semibold text-[var(--text-primary)]">Crusade Rules</h2>
+                  <p className="text-xs text-[var(--text-secondary)]">{filteredCrusadeRules.length} sections</p>
                 </div>
               </div>
-              {expandedSections.includes("crusade") ? <ChevronDown className="w-5 h-5 text-[#c9a84c]" /> : <ChevronRight className="w-5 h-5 text-[#c9a84c]" />}
+              {expandedSections.includes("crusade") ? <ChevronDown className="w-5 h-5 text-[var(--accent-gold)]" /> : <ChevronRight className="w-5 h-5 text-[var(--accent-gold)]" />}
             </button>
 
             {expandedSections.includes("crusade") && (
-              <div className="border-t border-[#c9a84c]/10">
+              <div className="border-t border-[var(--accent-gold)]/10">
                 {filteredCrusadeRules.map((rule, idx) => (
                   <button
                     key={rule.id}
                     onClick={() => handleRuleClick(rule.id)}
-                    className={`w-full p-3 text-left hover:bg-[#c9a84c]/5 transition-all ${idx !== filteredCrusadeRules.length - 1 ? "border-b border-[#2a2a35]/60" : ""}`}
+                    className={`w-full p-3 text-left hover:bg-[#c9a84c]/5 transition-all ${idx !== filteredCrusadeRules.length - 1 ? "border-b border-[var(--border-color)]/60" : ""}`}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm text-[#e8e4de]">{rule.title}</span>
-                      <ChevronRight className="w-4 h-4 text-[#8a8690]" />
+                      <span className="text-sm text-[var(--text-primary)]">{rule.title}</span>
+                      <ChevronRight className="w-4 h-4 text-[var(--text-secondary)]" />
                     </div>
                   </button>
                 ))}
-                {filteredCrusadeRules.length === 0 && <div className="p-4 text-center text-sm text-[#8a8690]">No rules found</div>}
+                {filteredCrusadeRules.length === 0 && <div className="p-4 text-center text-sm text-[var(--text-secondary)]">No rules found</div>}
               </div>
             )}
           </div>
@@ -194,8 +194,8 @@ export default function RulesBrowser() {
 
         {filteredCoreRules.length === 0 && filteredCrusadeRules.length === 0 && searchQuery.trim() && (
           <div className="text-center py-12 mt-6">
-            <BookOpen className="w-16 h-16 text-[#c9a84c]/30 mx-auto mb-4" strokeWidth={1} />
-            <p className="text-[#8a8690] text-sm">No rules found matching "{searchQuery}"</p>
+            <BookOpen className="w-16 h-16 text-[var(--accent-gold)]/30 mx-auto mb-4" strokeWidth={1} />
+            <p className="text-[var(--text-secondary)] text-sm">No rules found matching "{searchQuery}"</p>
           </div>
         )}
       </div>

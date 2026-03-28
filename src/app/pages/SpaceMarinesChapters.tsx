@@ -41,7 +41,7 @@ export default function SpaceMarinesChapters() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
 
       <div className="relative z-10 w-full max-w-md mx-auto">
         {/* Back button */}

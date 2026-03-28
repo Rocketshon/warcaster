@@ -16,6 +16,7 @@ import WeaponCompare from './pages/WeaponCompare';
 import GameTracker from './pages/GameTracker';
 import MatchMode from './pages/MatchMode';
 import Collection from './pages/Collection';
+import Settings from './pages/Settings';
 
 const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
 
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "space-marines-chapters", Component: SpaceMarinesChapters },
       { path: "battle-aid", Component: PhaseNavigator },
       { path: "collection", Component: Collection },
+      { path: "settings", Component: Settings },
       { path: "rules", Component: RulesBrowser },
       { path: "rule/:ruleId", Component: RuleDetail },
       { path: "*", lazy: () => import('./pages/NotFound').then(m => ({ Component: m.default })) },

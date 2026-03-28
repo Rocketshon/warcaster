@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Sword, ScrollText, Plus, X, Pencil, Check, Users } from 'lucide-react';
+import { Sword, ScrollText, Plus, X, Pencil, Check, Users, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { useArmy, type SavedArmy } from '../../lib/ArmyContext';
 import { FACTIONS } from '../../lib/factions';
@@ -37,13 +37,13 @@ function ArmyListCard({
   return (
     <div
       className={`relative overflow-hidden rounded-xl transition-all ${
-        isActive ? 'ring-2 ring-[#c9a84c]/40 border-[#c9a84c]' : 'border-[#2a2a35]'
+        isActive ? 'ring-2 ring-[var(--accent-gold)]/40 border-[var(--accent-gold)]' : 'border-[var(--border-color)]'
       } border`}
     >
       {/* Background art */}
       <div className="absolute inset-0">
         <img src={artSrc} alt="" className="w-full h-full object-cover opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/90 to-[#0a0a0f]/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/90 to-[var(--bg-primary)]/70" />
       </div>
 
       <div className="relative p-4">
@@ -58,7 +58,7 @@ function ArmyListCard({
               setTimeout(() => setConfirmDelete(false), 3000);
             }
           }}
-          className="absolute top-2 right-2 p-1 text-[#8a8690] hover:text-red-500 transition-colors"
+          className="absolute top-2 right-2 p-1 text-[var(--text-secondary)] hover:text-red-500 transition-colors"
           aria-label="Delete army"
         >
           <X className="w-4 h-4" />
@@ -79,21 +79,21 @@ function ArmyListCard({
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleSaveName(); }}
-                className="flex-1 px-2 py-1 text-sm bg-[#0a0a0f] border border-[#2a2a35] rounded text-[#e8e4de] focus:outline-none focus:border-[#c9a84c]"
+                className="flex-1 px-2 py-1 text-sm bg-[var(--bg-primary)] border border-[var(--border-color)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
                 autoFocus
               />
-              <button onClick={handleSaveName} className="text-[#c9a84c] hover:text-[#b8960f]">
+              <button onClick={handleSaveName} className="text-[var(--accent-gold)] hover:text-[#b8960f]">
                 <Check className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <>
               <button onClick={onSwitch} className="flex-1 text-left">
-                <span className="font-semibold text-[#e8e4de] text-sm">{army.name}</span>
+                <span className="font-semibold text-[var(--text-primary)] text-sm">{army.name}</span>
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); setEditing(true); setEditName(army.name); }}
-                className="text-[#8a8690] hover:text-[#c9a84c] transition-colors"
+                className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
                 aria-label="Rename army"
               >
                 <Pencil className="w-3.5 h-3.5" />
@@ -109,14 +109,14 @@ function ArmyListCard({
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
               army.mode === 'crusade'
                 ? 'bg-purple-500/20 text-purple-400'
-                : 'bg-[#c9a84c]/15 text-[#c9a84c]'
+                : 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
             }`}>
               {army.mode === 'crusade' ? 'Crusade' : 'Standard'}
             </span>
 
             {/* Faction */}
             {factionMeta && (
-              <span className="text-xs text-[#8a8690] flex items-center gap-1">
+              <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
                 <span>{factionMeta.icon}</span>
                 {factionMeta.name}
               </span>
@@ -124,7 +124,7 @@ function ArmyListCard({
           </div>
 
           {/* Stats row */}
-          <div className="mt-2 flex items-center gap-3 text-xs text-[#8a8690]">
+          <div className="mt-2 flex items-center gap-3 text-xs text-[var(--text-secondary)]">
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               {army.units.length} unit{army.units.length !== 1 ? 's' : ''}
@@ -134,7 +134,7 @@ function ArmyListCard({
         </button>
 
         {isActive && (
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c9a84c] rounded-b-xl" />
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-gold)] rounded-b-xl" />
         )}
       </div>
     </div>
@@ -172,7 +172,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col items-center relative overflow-hidden">
       {/* Hero background artwork */}
       <div className="absolute inset-0 z-0">
         <img
@@ -180,14 +180,24 @@ export default function Home() {
           alt=""
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[#0a0a0f]/85 to-[#0a0a0f]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[var(--bg-primary)]/85 to-[var(--bg-primary)]" />
       </div>
 
       <div className="relative z-10 w-full flex flex-col items-center px-4 pt-16 pb-24">
         {/* Header */}
-        <h1 className="font-serif text-4xl font-black text-[#c9a84c] tracking-[0.2em] text-center uppercase drop-shadow-[0_0_30px_rgba(201,168,76,0.3)]">
-          WARCASTER
-        </h1>
+        <div className="flex items-center justify-between mb-0">
+          <div className="w-8" /> {/* Spacer */}
+          <h1 className="font-serif text-4xl font-black text-[var(--accent-gold)] tracking-[0.2em] text-center uppercase drop-shadow-[0_0_30px_rgba(201,168,76,0.3)] flex-1">
+            WARCASTER
+          </h1>
+          <button
+            onClick={() => navigate('/settings')}
+            className="w-8 h-8 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
+            aria-label="Settings"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
         {/* Edition badge */}
         <button
           onClick={() => {
@@ -197,16 +207,16 @@ export default function Home() {
               toast.info(`${other.name} data coming ${other.releaseDate.slice(0, 7).replace('-', ' ')}`);
             }
           }}
-          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-[#1a1a24] border border-[#2a2a35] rounded-full
-                     hover:border-[#c9a84c] transition-colors cursor-pointer"
+          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-full
+                     hover:border-[var(--accent-gold)] transition-colors cursor-pointer"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-          <span className="text-xs font-medium text-[#8a8690]">
+          <span className="text-xs font-medium text-[var(--text-secondary)]">
             {getActiveEdition().name}
           </span>
         </button>
 
-        <p className="mt-2 text-[#8a8690] text-center text-sm tracking-wider">
+        <p className="mt-2 text-[var(--text-secondary)] text-center text-sm tracking-wider">
           Choose your mode to begin
         </p>
 
@@ -215,13 +225,13 @@ export default function Home() {
           {/* Standard Mode */}
           <button
             onClick={() => handleSelectMode('standard')}
-            className="group relative overflow-hidden flex flex-col items-center gap-3 p-6 bg-black/60 backdrop-blur-sm border border-[#2a2a35] rounded-xl
-                       transition-all hover:border-[#c9a84c] hover:shadow-lg hover:shadow-amber-900/20
-                       focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
+            className="group relative overflow-hidden flex flex-col items-center gap-3 p-6 bg-black/60 backdrop-blur-sm border border-[var(--border-color)] rounded-xl
+                       transition-all hover:border-[var(--accent-gold)] hover:shadow-lg hover:shadow-amber-900/20
+                       focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
           >
-            <Sword className="w-10 h-10 text-[#c9a84c] group-hover:scale-110 transition-transform" />
-            <span className="font-serif text-lg font-semibold text-[#e8e4de]">Matched Play</span>
-            <span className="text-sm text-[#8a8690] text-center leading-snug">
+            <Sword className="w-10 h-10 text-[var(--accent-gold)] group-hover:scale-110 transition-transform" />
+            <span className="font-serif text-lg font-semibold text-[var(--text-primary)]">Matched Play</span>
+            <span className="text-sm text-[var(--text-secondary)] text-center leading-snug">
               Build an army list with points limits
             </span>
           </button>
@@ -229,13 +239,13 @@ export default function Home() {
           {/* Crusade Mode */}
           <button
             onClick={() => handleSelectMode('crusade')}
-            className="group relative overflow-hidden flex flex-col items-center gap-3 p-6 bg-black/60 backdrop-blur-sm border border-[#2a2a35] rounded-xl
-                       transition-all hover:border-[#c9a84c] hover:shadow-lg hover:shadow-amber-900/20
-                       focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
+            className="group relative overflow-hidden flex flex-col items-center gap-3 p-6 bg-black/60 backdrop-blur-sm border border-[var(--border-color)] rounded-xl
+                       transition-all hover:border-[var(--accent-gold)] hover:shadow-lg hover:shadow-amber-900/20
+                       focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
           >
-            <ScrollText className="w-10 h-10 text-[#c9a84c] group-hover:scale-110 transition-transform" />
-            <span className="font-serif text-lg font-semibold text-[#e8e4de]">Crusade</span>
-            <span className="text-sm text-[#8a8690] text-center leading-snug">
+            <ScrollText className="w-10 h-10 text-[var(--accent-gold)] group-hover:scale-110 transition-transform" />
+            <span className="font-serif text-lg font-semibold text-[var(--text-primary)]">Crusade</span>
+            <span className="text-sm text-[var(--text-secondary)] text-center leading-snug">
               Track your force with XP, honours &amp; scars
             </span>
           </button>
@@ -246,8 +256,8 @@ export default function Home() {
           <div className="mt-8 flex flex-col items-center gap-2">
             <button
               onClick={() => navigate('/army')}
-              className="px-6 py-2.5 bg-[#c9a84c] text-[#0a0a0f] font-semibold rounded-lg
-                         hover:bg-[#b8960f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
+              className="px-6 py-2.5 bg-[var(--accent-gold)] text-[var(--bg-primary)] font-semibold rounded-lg
+                         hover:bg-[var(--accent-gold-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] focus:ring-offset-2 focus:ring-offset-[#0a0a0f]"
             >
               Continue Building
             </button>
@@ -255,7 +265,7 @@ export default function Home() {
               onClick={() => {
                 clearArmy();
               }}
-              className="text-sm text-[#8a8690] hover:text-[#e8e4de] underline underline-offset-2 transition-colors"
+              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline underline-offset-2 transition-colors"
             >
               Start Over
             </button>
@@ -265,7 +275,7 @@ export default function Home() {
         {/* Saved Army Lists */}
         {savedArmies.length > 0 && (
           <div className="mt-12 w-full max-w-md">
-            <h2 className="font-serif text-lg font-bold text-[#c9a84c] tracking-wider uppercase mb-4">
+            <h2 className="font-serif text-lg font-bold text-[var(--accent-gold)] tracking-wider uppercase mb-4">
               Your Army Lists
             </h2>
             <div className="space-y-3">
@@ -282,29 +292,29 @@ export default function Home() {
 
               {/* New Army input */}
               {showNewArmyInput ? (
-                <div className="p-4 bg-[#1a1a24] border border-dashed border-[#c9a84c] rounded-xl space-y-3">
+                <div className="p-4 bg-[var(--bg-card)] border border-dashed border-[var(--accent-gold)] rounded-xl space-y-3">
                   <input
                     type="text"
                     value={newArmyName}
                     onChange={(e) => setNewArmyName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleCreateArmy(); }}
                     placeholder="Army name..."
-                    className="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a35] rounded-lg text-sm text-[#e8e4de]
-                               placeholder:text-[#8a8690]/40 focus:outline-none focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/20"
+                    className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)]
+                               placeholder:text-[var(--text-secondary)]/40 focus:outline-none focus:border-[var(--accent-gold)] focus:ring-2 focus:ring-[var(--accent-gold)]/20"
                     autoFocus
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => { setShowNewArmyInput(false); setNewArmyName(''); }}
-                      className="flex-1 px-4 py-2 text-sm text-[#8a8690] border border-[#2a2a35] rounded-lg hover:border-[#c9a84c] transition-colors"
+                      className="flex-1 px-4 py-2 text-sm text-[var(--text-secondary)] border border-[var(--border-color)] rounded-lg hover:border-[var(--accent-gold)] transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleCreateArmy}
                       disabled={!newArmyName.trim()}
-                      className="flex-1 px-4 py-2 text-sm font-semibold text-[#0a0a0f] bg-[#c9a84c] rounded-lg
-                                 hover:bg-[#b8960f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-2 text-sm font-semibold text-[var(--bg-primary)] bg-[var(--accent-gold)] rounded-lg
+                                 hover:bg-[var(--accent-gold-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Create
                     </button>
@@ -313,8 +323,8 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => setShowNewArmyInput(true)}
-                  className="w-full flex items-center justify-center gap-2 p-4 bg-[#1a1a24] border border-dashed border-[#2a2a35] rounded-xl
-                             text-[#8a8690] hover:border-[#c9a84c] hover:text-[#c9a84c] transition-all"
+                  className="w-full flex items-center justify-center gap-2 p-4 bg-[var(--bg-card)] border border-dashed border-[var(--border-color)] rounded-xl
+                             text-[var(--text-secondary)] hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-all"
                 >
                   <Plus className="w-5 h-5" />
                   <span className="text-sm font-medium">New Army List</span>

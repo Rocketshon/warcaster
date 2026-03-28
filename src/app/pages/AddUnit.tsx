@@ -84,28 +84,28 @@ export default function AddUnit() {
   const wargearOptions = selectedUnit?.wargear_options ?? [];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-md mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
           <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back to Army</span>
         </button>
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[#e8e4de] tracking-wider mb-1">Add Unit</h1>
-          <p className="text-[#8a8690] text-sm">{factionName}</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-wider mb-1">Add Unit</h1>
+          <p className="text-[var(--text-secondary)] text-sm">{factionName}</p>
         </div>
 
         {!selectedUnit ? (
           <>
             <div className="mb-5">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#c9a84c]/50" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent-gold)]/50" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search units or keywords..."
-                  className="w-full bg-[#1a1a24] border border-[#2a2a35] rounded-lg pl-11 pr-4 py-3 text-[#e8e4de] placeholder:text-[#8a8690] focus:border-[#c9a84c]/40 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/20 transition-all"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg pl-11 pr-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--accent-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/20 transition-all"
                 />
               </div>
             </div>
@@ -118,40 +118,40 @@ export default function AddUnit() {
                   <button
                     key={`${unit.name}-${idx}`}
                     onClick={() => handleUnitSelect(unit)}
-                    className="w-full text-left relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24] hover:border-[#c9a84c] transition-all group"
+                    className="w-full text-left relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent-gold)] transition-all group"
                   >
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="flex-1">
-                          <h3 className="text-sm font-semibold text-[#e8e4de] mb-1 group-hover:text-[#c9a84c] transition-colors">{unit.name}</h3>
+                          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent-gold)] transition-colors">{unit.name}</h3>
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {displayKeywords.map((kw, kidx) => (
-                              <span key={kidx} className="text-xs text-[#8a8690] bg-[#12121a] px-2 py-0.5 rounded">{toTitleCase(kw)}</span>
+                              <span key={kidx} className="text-xs text-[var(--text-secondary)] bg-[#12121a] px-2 py-0.5 rounded">{toTitleCase(kw)}</span>
                             ))}
                           </div>
                         </div>
-                        <div className="text-sm font-bold text-[#c9a84c] font-mono">{baseCost} pts</div>
+                        <div className="text-sm font-bold text-[var(--accent-gold)] font-mono">{baseCost} pts</div>
                       </div>
                     </div>
                   </button>
                 );
               })}
-              {filteredUnits.length === 0 && <div className="text-center py-12"><p className="text-[#8a8690] text-sm">No units found</p></div>}
+              {filteredUnits.length === 0 && <div className="text-center py-12"><p className="text-[var(--text-secondary)] text-sm">No units found</p></div>}
             </div>
           </>
         ) : (
           <div className="space-y-5">
-            <div className="relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
+            <div className="relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div>
-                  <h3 className="text-base font-semibold text-[#e8e4de] mb-1">{selectedUnit.name}</h3>
+                  <h3 className="text-base font-semibold text-[var(--text-primary)] mb-1">{selectedUnit.name}</h3>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {selectedUnit.keywords.filter(k => !["IMPERIUM", "CHAOS", "XENOS"].includes(k.toUpperCase())).slice(0, 4).map((kw, idx) => (
-                      <span key={idx} className="text-xs text-[#8a8690] bg-[#12121a] px-2 py-0.5 rounded">{toTitleCase(kw)}</span>
+                      <span key={idx} className="text-xs text-[var(--text-secondary)] bg-[#12121a] px-2 py-0.5 rounded">{toTitleCase(kw)}</span>
                     ))}
                   </div>
                 </div>
-                <button onClick={handleCancel} aria-label="Deselect unit" className="text-[#8a8690] hover:text-[#e8e4de] transition-colors">
+                <button onClick={handleCancel} aria-label="Deselect unit" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -161,18 +161,18 @@ export default function AddUnit() {
             <WeaponStatTable weapons={selectedUnit.melee_weapons} type="melee" compact />
 
             {selectedUnit.unit_composition && (
-              <div className="rounded-lg border border-[#2a2a35]/40 bg-[#1a1a24] p-3">
-                <h4 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-[#8a8690]" />Unit Composition
+              <div className="rounded-lg border border-[var(--border-color)]/40 bg-[var(--bg-card)] p-3">
+                <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-[var(--text-secondary)]" />Unit Composition
                 </h4>
-                <p className="text-xs text-[#a09ca6] leading-relaxed">{selectedUnit.unit_composition}</p>
+                <p className="text-xs text-[var(--text-tertiary)] leading-relaxed">{selectedUnit.unit_composition}</p>
               </div>
             )}
 
             {selectedUnit.points.length > 1 && (
               <div>
-                <label className="block text-sm font-medium text-[#a09ca6] mb-2 tracking-wide flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-[#c9a84c]/70" />Unit Size
+                <label className="block text-sm font-medium text-[var(--text-tertiary)] mb-2 tracking-wide flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-[var(--accent-gold)]/70" />Unit Size
                 </label>
                 <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(selectedUnit.points.length, 3)}, 1fr)` }}>
                   {selectedUnit.points.map((tier, idx) => (
@@ -182,13 +182,13 @@ export default function AddUnit() {
                       onClick={() => handleModelTierChange(idx)}
                       className={`relative overflow-hidden rounded-lg border p-3 text-center transition-all ${
                         selectedModelTier === idx
-                          ? "border-[#c9a84c]/50 bg-[#c9a84c]/10"
-                          : "border-[#2a2a35] bg-[#1a1a24] hover:border-[#c9a84c]"
+                          ? "border-[var(--accent-gold)]/50 bg-[var(--accent-gold)]/10"
+                          : "border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent-gold)]"
                       }`}
                     >
-                      <div className="text-sm font-bold text-[#e8e4de] font-mono mb-0.5">{tier.models}</div>
-                      <div className={`text-xs font-mono ${selectedModelTier === idx ? "text-[#c9a84c]" : "text-[#8a8690]"}`}>{tier.cost} pts</div>
-                      {selectedModelTier === idx && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c9a84c]" />}
+                      <div className="text-sm font-bold text-[var(--text-primary)] font-mono mb-0.5">{tier.models}</div>
+                      <div className={`text-xs font-mono ${selectedModelTier === idx ? "text-[var(--accent-gold)]" : "text-[var(--text-secondary)]"}`}>{tier.cost} pts</div>
+                      {selectedModelTier === idx && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-gold)]" />}
                     </button>
                   ))}
                 </div>
@@ -196,25 +196,25 @@ export default function AddUnit() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-[#a09ca6] mb-2 tracking-wide">Custom Name</label>
+              <label className="block text-sm font-medium text-[var(--text-tertiary)] mb-2 tracking-wide">Custom Name</label>
               <input type="text" value={customName} onChange={(e) => setCustomName(e.target.value)} placeholder="Enter custom unit name"
-                className="w-full bg-[#1a1a24] border border-[#2a2a35] rounded-lg px-4 py-3 text-[#e8e4de] placeholder:text-[#8a8690] focus:border-[#c9a84c]/40 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/20 transition-all" />
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--accent-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/20 transition-all" />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#a09ca6] mb-2 tracking-wide">Base Points</label>
+              <label className="block text-sm font-medium text-[var(--text-tertiary)] mb-2 tracking-wide">Base Points</label>
               <input type="number" inputMode="numeric" value={customPoints} onChange={(e) => setCustomPoints(Number(e.target.value))} min="0"
-                className="w-full bg-[#1a1a24] border border-[#2a2a35] rounded-lg px-4 py-3 text-[#e8e4de] placeholder:text-[#8a8690] focus:border-[#c9a84c]/40 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/20 transition-all" />
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--accent-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/20 transition-all" />
             </div>
 
             {wargearOptions.length > 0 && (
-              <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-3">
-                <h4 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-2">Wargear Options</h4>
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-3">
+                <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Wargear Options</h4>
                 <ul className="space-y-1">
                   {wargearOptions.map((opt: string, idx: number) => (
                     <li key={idx} className="flex items-start gap-2">
                       <input type="checkbox" checked={selectedEquipment.includes(opt)} onChange={() => handleEquipmentToggle(opt)} className="mt-1" />
-                      <span className="text-xs text-[#a09ca6]">{opt}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">{opt}</span>
                     </li>
                   ))}
                 </ul>
@@ -222,15 +222,15 @@ export default function AddUnit() {
             )}
 
             {selectedUnit.wargear_abilities.length > 0 && (
-              <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-3">
-                <h4 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-2">Wargear Abilities</h4>
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-3">
+                <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Wargear Abilities</h4>
                 <div className="space-y-2">
                   {selectedUnit.wargear_abilities.map((ability, idx: number) => {
-                    if (typeof ability === 'string') return <p key={idx} className="text-xs text-[#a09ca6]">{ability}</p>;
+                    if (typeof ability === 'string') return <p key={idx} className="text-xs text-[var(--text-tertiary)]">{ability}</p>;
                     return (
                       <div key={idx}>
-                        <span className="text-xs font-bold text-[#c9a84c]">{ability[0]}: </span>
-                        <span className="text-xs text-[#a09ca6]">{ability[1]}</span>
+                        <span className="text-xs font-bold text-[var(--accent-gold)]">{ability[0]}: </span>
+                        <span className="text-xs text-[var(--text-tertiary)]">{ability[1]}</span>
                       </div>
                     );
                   })}
@@ -238,10 +238,10 @@ export default function AddUnit() {
               </div>
             )}
 
-            <div className="relative overflow-hidden rounded-lg border border-[#c9a84c]/30 bg-[#1a1a24] p-4">
+            <div className="relative overflow-hidden rounded-lg border border-[var(--accent-gold)]/30 bg-[var(--bg-card)] p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[#a09ca6] uppercase tracking-wider">Total Points</span>
-                <span className="text-2xl font-bold text-[#c9a84c] font-mono">{customPoints}</span>
+                <span className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Total Points</span>
+                <span className="text-2xl font-bold text-[var(--accent-gold)] font-mono">{customPoints}</span>
               </div>
             </div>
 
@@ -250,12 +250,12 @@ export default function AddUnit() {
             </div>
 
             <div className="flex gap-3">
-              <button onClick={handleCancel} className="flex-1 px-6 py-3 rounded-lg border border-[#2a2a35] bg-[#1a1a24] text-[#a09ca6] font-semibold hover:border-[#c9a84c] transition-all">Cancel</button>
+              <button onClick={handleCancel} className="flex-1 px-6 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-tertiary)] font-semibold hover:border-[var(--accent-gold)] transition-all">Cancel</button>
               <button onClick={handleSubmit} className="flex-1 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#c9a84c] to-[#d4a017] rounded-lg transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(201,168,76,0.4)]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent-gold)] to-[#d4a017] rounded-lg transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(201,168,76,0.4)]" />
                 <div className="relative px-6 py-3 flex items-center justify-center gap-2">
-                  <Plus className="w-5 h-5 text-[#0a0a0f]" strokeWidth={2.5} />
-                  <span className="text-base font-bold text-[#0a0a0f] tracking-wide">Add to Army</span>
+                  <Plus className="w-5 h-5 text-[var(--bg-primary)]" strokeWidth={2.5} />
+                  <span className="text-base font-bold text-[var(--bg-primary)] tracking-wide">Add to Army</span>
                 </div>
               </button>
             </div>

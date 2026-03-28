@@ -15,7 +15,7 @@ function getAccentColor(color: string): string {
     stone: 'bg-stone-400', emerald: 'bg-emerald-400', violet: 'bg-violet-400',
     sky: 'bg-sky-500', indigo: 'bg-indigo-400',
   };
-  return map[color] ?? 'bg-[#c9a84c]';
+  return map[color] ?? 'bg-[var(--accent-gold)]';
 }
 
 export default function FactionCodex() {
@@ -41,14 +41,14 @@ export default function FactionCodex() {
 
   if (!factionMeta) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden">
         <div className="relative z-10 w-full max-w-md mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
             <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back</span>
           </button>
           <div className="text-center">
-            <BookOpen className="w-16 h-16 text-[#8a8690] mx-auto mb-4" strokeWidth={1.5} />
-            <h1 className="text-xl font-bold text-[#8a8690] mb-2">Codex Not Found</h1>
+            <BookOpen className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" strokeWidth={1.5} />
+            <h1 className="text-xl font-bold text-[var(--text-secondary)] mb-2">Codex Not Found</h1>
           </div>
         </div>
       </div>
@@ -72,14 +72,14 @@ export default function FactionCodex() {
   const tabClasses = (isActive: boolean) =>
     `px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
       isActive
-        ? "bg-gradient-to-r from-[#c9a84c] to-[#d4a017] text-[#0a0a0f]"
-        : "border border-[#2a2a35] bg-[#1a1a24] text-[#a09ca6] hover:border-[#c9a84c]"
+        ? "bg-gradient-to-r from-[var(--accent-gold)] to-[#d4a017] text-[var(--bg-primary)]"
+        : "border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:border-[var(--accent-gold)]"
     }`;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
           <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back</span>
         </button>
 
@@ -88,8 +88,8 @@ export default function FactionCodex() {
           <div className="flex items-center gap-3 mb-3">
             <div className="text-4xl">{factionMeta.icon}</div>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-[#e8e4de] tracking-wider">{factionMeta.name}</h1>
-              <p className="text-[#8a8690] text-sm">Codex: {rules?.faction ?? factionMeta.name}</p>
+              <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-wider">{factionMeta.name}</h1>
+              <p className="text-[var(--text-secondary)] text-sm">Codex: {rules?.faction ?? factionMeta.name}</p>
             </div>
           </div>
           <div className={`h-1 w-full ${accentColor} rounded-full`} />
@@ -114,14 +114,14 @@ export default function FactionCodex() {
         {/* Army Rule Tab */}
         {activeTab === "army" && (
           <div className="space-y-4">
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-6">
-              <h2 className="text-xl font-bold text-[#c9a84c] mb-4">Army Rules</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-6">
+              <h2 className="text-xl font-bold text-[var(--accent-gold)] mb-4">Army Rules</h2>
               {rules?.army_rules && rules.army_rules.length > 0 ? (
                 rules.army_rules.map((rule, idx) => (
                   <div key={idx} className="mb-4 last:mb-0"><FormattedRuleText text={rule} /></div>
                 ))
               ) : (
-                <p className="text-[#8a8690] italic">No army rules available for this faction.</p>
+                <p className="text-[var(--text-secondary)] italic">No army rules available for this faction.</p>
               )}
             </div>
           </div>
@@ -132,29 +132,29 @@ export default function FactionCodex() {
           <div className="space-y-4">
             {rules?.detachments && rules.detachments.length > 0 ? (
               rules.detachments.map((detachment: DetachmentData) => (
-                <div key={detachment.name} className="rounded-lg border border-[#2a2a35] bg-[#1a1a24]">
+                <div key={detachment.name} className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)]">
                   <button
                     onClick={() => toggleDetachment(detachment.name)}
-                    className="w-full p-4 flex items-center justify-between hover:bg-[#c9a84c]/5 transition-all"
+                    className="w-full p-4 flex items-center justify-between hover:bg-[var(--accent-gold)]/5 transition-all"
                   >
-                    <h2 className="text-lg font-bold text-[#e8e4de]">{detachment.name}</h2>
+                    <h2 className="text-lg font-bold text-[var(--text-primary)]">{detachment.name}</h2>
                     {expandedDetachments.includes(detachment.name)
-                      ? <ChevronDown className="w-5 h-5 text-[#c9a84c]" />
-                      : <ChevronRight className="w-5 h-5 text-[#c9a84c]" />}
+                      ? <ChevronDown className="w-5 h-5 text-[var(--accent-gold)]" />
+                      : <ChevronRight className="w-5 h-5 text-[var(--accent-gold)]" />}
                   </button>
 
                   {expandedDetachments.includes(detachment.name) && (
-                    <div className="border-t border-[#c9a84c]/10 p-4 space-y-4">
+                    <div className="border-t border-[var(--accent-gold)]/10 p-4 space-y-4">
                       <div>
-                        <h3 className="text-sm font-semibold text-[#c9a84c] mb-2">{detachment.rule.name}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--accent-gold)] mb-2">{detachment.rule.name}</h3>
                         <FormattedRuleText text={detachment.rule.text} />
                       </div>
 
                       {detachment.enhancements.length > 0 && (
                         <div>
                           <button onClick={() => toggleEnhancements(detachment.name)} className="flex items-center justify-between w-full mb-2">
-                            <h3 className="text-sm font-semibold text-[#a09ca6] uppercase tracking-wider">Enhancements ({detachment.enhancements.length})</h3>
-                            {expandedEnhancements.includes(detachment.name) ? <ChevronDown className="w-4 h-4 text-[#c9a84c]" /> : <ChevronRight className="w-4 h-4 text-[#c9a84c]" />}
+                            <h3 className="text-sm font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Enhancements ({detachment.enhancements.length})</h3>
+                            {expandedEnhancements.includes(detachment.name) ? <ChevronDown className="w-4 h-4 text-[var(--accent-gold)]" /> : <ChevronRight className="w-4 h-4 text-[var(--accent-gold)]" />}
                           </button>
                           {expandedEnhancements.includes(detachment.name) && (
                             <div className="space-y-2">
@@ -175,13 +175,13 @@ export default function FactionCodex() {
                       {detachment.stratagems.length > 0 && (
                         <div>
                           <button onClick={() => toggleStratagems(detachment.name)} className="flex items-center justify-between w-full mb-2">
-                            <h3 className="text-sm font-semibold text-[#a09ca6] uppercase tracking-wider">Stratagems ({detachment.stratagems.length})</h3>
-                            {expandedStratagems.includes(detachment.name) ? <ChevronDown className="w-4 h-4 text-[#c9a84c]" /> : <ChevronRight className="w-4 h-4 text-[#c9a84c]" />}
+                            <h3 className="text-sm font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Stratagems ({detachment.stratagems.length})</h3>
+                            {expandedStratagems.includes(detachment.name) ? <ChevronDown className="w-4 h-4 text-[var(--accent-gold)]" /> : <ChevronRight className="w-4 h-4 text-[var(--accent-gold)]" />}
                           </button>
                           {expandedStratagems.includes(detachment.name) && (
                             <div className="space-y-2">
                               {detachment.stratagems.map((strat, idx) => (
-                                <div key={idx} className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-3">
+                                <div key={idx} className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-3">
                                   <div className="flex items-start justify-between gap-3 mb-1">
                                     <div className="flex items-center gap-2">
                                       <Zap className="w-3 h-3 text-purple-400" />
@@ -192,9 +192,9 @@ export default function FactionCodex() {
                                   <div className="mb-1">
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStratagemTypeColor(strat.type)}`}>{strat.type}</span>
                                   </div>
-                                  {strat.when && <div className="text-xs text-[#8a8690] leading-relaxed mb-1"><span className="font-semibold text-[#a09ca6]">When: </span>{strat.when}</div>}
-                                  {strat.target && <div className="text-xs text-[#8a8690] leading-relaxed mb-1"><span className="font-semibold text-[#a09ca6]">Target: </span>{strat.target}</div>}
-                                  {strat.effect && <div className="text-xs text-[#8a8690] leading-relaxed"><span className="font-semibold text-[#a09ca6]">Effect: </span>{strat.effect}</div>}
+                                  {strat.when && <div className="text-xs text-[var(--text-secondary)] leading-relaxed mb-1"><span className="font-semibold text-[var(--text-tertiary)]">When: </span>{strat.when}</div>}
+                                  {strat.target && <div className="text-xs text-[var(--text-secondary)] leading-relaxed mb-1"><span className="font-semibold text-[var(--text-tertiary)]">Target: </span>{strat.target}</div>}
+                                  {strat.effect && <div className="text-xs text-[var(--text-secondary)] leading-relaxed"><span className="font-semibold text-[var(--text-tertiary)]">Effect: </span>{strat.effect}</div>}
                                   {strat.restrictions && <div className="text-xs text-amber-400/70 leading-relaxed mt-1"><span className="font-semibold">Restrictions: </span>{strat.restrictions}</div>}
                                 </div>
                               ))}
@@ -207,7 +207,7 @@ export default function FactionCodex() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-8 text-[#8a8690] text-sm">No detachments available for this faction.</div>
+              <div className="text-center py-8 text-[var(--text-secondary)] text-sm">No detachments available for this faction.</div>
             )}
           </div>
         )}
@@ -216,41 +216,41 @@ export default function FactionCodex() {
         {activeTab === "datasheets" && (
           <div className="space-y-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#c9a84c]/50" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent-gold)]/50" />
               <input
                 type="text"
                 value={datasheetSearch}
                 onChange={(e) => setDatasheetSearch(e.target.value)}
                 placeholder="Search datasheets..."
-                className="w-full bg-[#1a1a24] border border-[#2a2a35] rounded-lg pl-11 pr-4 py-3 text-[#e8e4de] placeholder:text-[#8a8690] focus:border-[#c9a84c]/40 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/20 transition-all"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg pl-11 pr-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--accent-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/20 transition-all"
               />
             </div>
 
             <div className="space-y-2">
               {filteredDatasheets.map((unit) => (
-                <button key={unit.name} onClick={() => handleDatasheetClick(unit)} className="w-full rounded-lg border border-[#2a2a35] bg-[#1a1a24] hover:border-[#c9a84c] transition-all group">
+                <button key={unit.name} onClick={() => handleDatasheetClick(unit)} className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent-gold)] transition-all group">
                   <div className="p-3 flex items-center justify-between gap-3">
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold text-[#e8e4de]">{unit.name}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--text-primary)]">{unit.name}</h3>
                         {unit.legends && <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">Legends</span>}
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {unit.keywords.slice(0, 4).map((kw, kwIdx) => (
-                          <span key={kwIdx} className="px-1.5 py-0.5 rounded bg-[#12121a] text-[10px] text-[#8a8690] border border-[#2a2a35]/50">{toTitleCase(kw)}</span>
+                          <span key={kwIdx} className="px-1.5 py-0.5 rounded bg-[#12121a] text-[10px] text-[var(--text-secondary)] border border-[var(--border-color)]/50">{toTitleCase(kw)}</span>
                         ))}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {unit.points.length > 0 && <span className="text-sm font-bold text-[#c9a84c] font-mono">{unit.points[0].cost} pts</span>}
-                      <ChevronRight className="w-4 h-4 text-[#8a8690] group-hover:text-[#c9a84c] transition-colors" />
+                      {unit.points.length > 0 && <span className="text-sm font-bold text-[var(--accent-gold)] font-mono">{unit.points[0].cost} pts</span>}
+                      <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[var(--accent-gold)] transition-colors" />
                     </div>
                   </div>
                 </button>
               ))}
             </div>
 
-            {filteredDatasheets.length === 0 && <div className="text-center py-8 text-[#8a8690] text-sm">No datasheets found</div>}
+            {filteredDatasheets.length === 0 && <div className="text-center py-8 text-[var(--text-secondary)] text-sm">No datasheets found</div>}
           </div>
         )}
 
@@ -258,18 +258,18 @@ export default function FactionCodex() {
         {activeTab === "crusade" && (
           <div className="space-y-4">
             {rules?.crusade_rules && rules.crusade_rules.length > 0 ? (
-              <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-6">
-                <h2 className="text-xl font-bold text-[#c9a84c] mb-4">Crusade Rules</h2>
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-6">
+                <h2 className="text-xl font-bold text-[var(--accent-gold)] mb-4">Crusade Rules</h2>
                 {rules.crusade_rules.map((cr, idx) => (
                   <div key={idx} className="mb-4 last:mb-0">
-                    {cr.name && <h3 className="text-base font-semibold text-[#e8e4de] mb-2">{cr.name}</h3>}
+                    {cr.name && <h3 className="text-base font-semibold text-[var(--text-primary)] mb-2">{cr.name}</h3>}
                     {cr.text && <FormattedRuleText text={cr.text} />}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-6">
-                <div className="text-center py-4"><p className="text-[#8a8690] italic">No crusade rules available for this faction.</p></div>
+              <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-6">
+                <div className="text-center py-4"><p className="text-[var(--text-secondary)] italic">No crusade rules available for this faction.</p></div>
               </div>
             )}
           </div>

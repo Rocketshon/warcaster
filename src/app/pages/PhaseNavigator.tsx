@@ -23,7 +23,7 @@ interface CoreStratagem {
 }
 
 const PHASE_LIST: { key: GamePhase; label: string; color: string; activeColor: string }[] = [
-  { key: 'command', label: 'Command', color: 'border-[#c9a84c]/50 text-[#c9a84c]', activeColor: 'bg-[#c9a84c] text-[#0a0a0f] border-[#c9a84c]' },
+  { key: 'command', label: 'Command', color: 'border-[var(--accent-gold)]/50 text-[var(--accent-gold)]', activeColor: 'bg-[#c9a84c] text-[var(--bg-primary)] border-[var(--accent-gold)]' },
   { key: 'movement', label: 'Movement', color: 'border-blue-500/50 text-blue-400', activeColor: 'bg-blue-600 text-white border-blue-600' },
   { key: 'shooting', label: 'Shooting', color: 'border-red-500/50 text-red-400', activeColor: 'bg-red-600 text-white border-red-600' },
   { key: 'charge', label: 'Charge', color: 'border-orange-500/50 text-orange-400', activeColor: 'bg-orange-600 text-white border-orange-600' },
@@ -99,37 +99,37 @@ function StratagemCard({ strat, badge, phase }: {
   return (
     <button
       onClick={() => setExpanded(!expanded)}
-      className={`w-full text-left p-4 bg-[#1a1a24] border-2 border-[#2a2a35] border-t-4 ${borderClass} rounded-lg
-                 hover:border-[#c9a84c]/40 transition-all`}
+      className={`w-full text-left p-4 bg-[var(--bg-card)] border-2 border-[var(--border-color)] border-t-4 ${borderClass} rounded-lg
+                 hover:border-[var(--accent-gold)]/40 transition-all`}
     >
       <div className="flex items-start justify-between gap-2 mb-1">
-        <h4 className="text-sm font-bold text-[#e8e4de]">{strat.name}</h4>
+        <h4 className="text-sm font-bold text-[var(--text-primary)]">{strat.name}</h4>
         <div className="flex items-center gap-1.5 shrink-0">
           {badge && (
-            <span className="text-[10px] px-1.5 py-0.5 bg-[#8a8690]/20 text-[#8a8690] rounded font-semibold uppercase">
+            <span className="text-[10px] px-1.5 py-0.5 bg-[#8a8690]/20 text-[var(--text-secondary)] rounded font-semibold uppercase">
               {badge}
             </span>
           )}
           {strat.cp && (
-            <span className="text-xs px-2 py-0.5 bg-[#c9a84c]/15 text-[#c9a84c] font-bold rounded border border-[#c9a84c]/30">
+            <span className="text-xs px-2 py-0.5 bg-[#c9a84c]/15 text-[var(--accent-gold)] font-bold rounded border border-[var(--accent-gold)]/30">
               {strat.cp}
             </span>
           )}
         </div>
       </div>
       {strat.type && (
-        <p className="text-[10px] text-[#8a8690] uppercase tracking-wider mb-1">{strat.type}</p>
+        <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">{strat.type}</p>
       )}
       {expanded && (
-        <div className="mt-2 space-y-1.5 text-xs text-[#a09ca6]">
-          {strat.when && <div><span className="font-semibold text-[#8a8690]">When: </span>{strat.when}</div>}
-          {strat.target && <div><span className="font-semibold text-[#8a8690]">Target: </span>{strat.target}</div>}
-          {strat.effect && <div><span className="font-semibold text-[#8a8690]">Effect: </span>{strat.effect}</div>}
-          {strat.restrictions && <div><span className="font-semibold text-[#8a8690]">Restrictions: </span>{strat.restrictions}</div>}
+        <div className="mt-2 space-y-1.5 text-xs text-[var(--text-tertiary)]">
+          {strat.when && <div><span className="font-semibold text-[var(--text-secondary)]">When: </span>{strat.when}</div>}
+          {strat.target && <div><span className="font-semibold text-[var(--text-secondary)]">Target: </span>{strat.target}</div>}
+          {strat.effect && <div><span className="font-semibold text-[var(--text-secondary)]">Effect: </span>{strat.effect}</div>}
+          {strat.restrictions && <div><span className="font-semibold text-[var(--text-secondary)]">Restrictions: </span>{strat.restrictions}</div>}
         </div>
       )}
       {!expanded && strat.effect && (
-        <p className="text-xs text-[#8a8690] mt-1 line-clamp-2">{strat.effect}</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-1 line-clamp-2">{strat.effect}</p>
       )}
     </button>
   );
@@ -144,15 +144,15 @@ function UnitAbilityRow({ unitName, abilityName, abilityText }: {
   return (
     <button
       onClick={() => setExpanded(!expanded)}
-      className="w-full text-left px-3 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded
-                 hover:border-[#c9a84c]/40 transition-all"
+      className="w-full text-left px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded
+                 hover:border-[var(--accent-gold)]/40 transition-all"
     >
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-[#c9a84c] shrink-0">{unitName}</span>
-        <span className="text-xs text-[#e8e4de]">{abilityName}</span>
+        <span className="text-xs font-semibold text-[var(--accent-gold)] shrink-0">{unitName}</span>
+        <span className="text-xs text-[var(--text-primary)]">{abilityName}</span>
       </div>
       {expanded && (
-        <p className="text-xs text-[#a09ca6] mt-1 leading-relaxed">{abilityText}</p>
+        <p className="text-xs text-[var(--text-tertiary)] mt-1 leading-relaxed">{abilityText}</p>
       )}
     </button>
   );
@@ -209,24 +209,24 @@ export default function PhaseNavigator() {
 
   if (!factionId) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center px-4">
-        <p className="text-[#8a8690] mb-4">Set up your army first to use Battle Aid.</p>
-        <button onClick={() => navigate('/army')} className="px-6 py-2 bg-[#c9a84c] text-[#0a0a0f] rounded-lg hover:bg-[#b8960f] transition-colors">Go to Army</button>
+      <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col items-center justify-center px-4">
+        <p className="text-[var(--text-secondary)] mb-4">Set up your army first to use Battle Aid.</p>
+        <button onClick={() => navigate('/army')} className="px-6 py-2 bg-[#c9a84c] text-[var(--bg-primary)] rounded-lg hover:bg-[#b8960f] transition-colors">Go to Army</button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col pb-24">
       {/* Header */}
       <div className="px-4 pt-6 pb-3">
         <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => navigate('/army')} className="text-[#8a8690] hover:text-[#c9a84c] transition-colors" aria-label="Back to Army">
+          <button onClick={() => navigate('/army')} className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors" aria-label="Back to Army">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-serif text-xl font-bold text-[#e8e4de]">Battle Aid</h1>
-            {detachmentName && <p className="text-xs text-[#8a8690]">{detachmentName}</p>}
+            <h1 className="font-serif text-xl font-bold text-[var(--text-primary)]">Battle Aid</h1>
+            {detachmentName && <p className="text-xs text-[var(--text-secondary)]">{detachmentName}</p>}
           </div>
         </div>
 
@@ -237,7 +237,7 @@ export default function PhaseNavigator() {
               key={phase.key}
               onClick={() => setActivePhase(phase.key)}
               className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border transition-all shrink-0 ${
-                activePhase === phase.key ? phase.activeColor : `bg-[#1a1a24] ${phase.color}`
+                activePhase === phase.key ? phase.activeColor : `bg-[var(--bg-card)] ${phase.color}`
               }`}
             >
               {phase.label}
@@ -250,7 +250,7 @@ export default function PhaseNavigator() {
       <div className="flex-1 px-4 space-y-6 mt-4">
         {detachmentStratagems.length > 0 && (
           <section>
-            <h3 className="text-xs font-semibold text-[#c9a84c] uppercase tracking-wider mb-2">Your Stratagems</h3>
+            <h3 className="text-xs font-semibold text-[var(--accent-gold)] uppercase tracking-wider mb-2">Your Stratagems</h3>
             <div className="space-y-2">
               {detachmentStratagems.map((strat, idx) => <StratagemCard key={`det-${idx}`} strat={strat} phase={activePhase} />)}
             </div>
@@ -259,7 +259,7 @@ export default function PhaseNavigator() {
 
         {coreStratagems.length > 0 && (
           <section>
-            <h3 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-2">Core Stratagems</h3>
+            <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Core Stratagems</h3>
             <div className="space-y-2">
               {coreStratagems.map((strat, idx) => <StratagemCard key={`core-${idx}`} strat={strat} badge="Core" phase={activePhase} />)}
             </div>
@@ -268,7 +268,7 @@ export default function PhaseNavigator() {
 
         {unitAbilities.length > 0 && (
           <section>
-            <h3 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-2">Your Units' Abilities</h3>
+            <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Your Units' Abilities</h3>
             <div className="space-y-1.5">
               {unitAbilities.map((ability, idx) => <UnitAbilityRow key={`ability-${idx}`} unitName={ability.unitName} abilityName={ability.abilityName} abilityText={ability.abilityText} />)}
             </div>
@@ -276,7 +276,7 @@ export default function PhaseNavigator() {
         )}
 
         {detachmentStratagems.length === 0 && coreStratagems.length === 0 && unitAbilities.length === 0 && (
-          <div className="text-center py-12"><p className="text-[#8a8690] text-sm">No content for this phase.</p></div>
+          <div className="text-center py-12"><p className="text-[var(--text-secondary)] text-sm">No content for this phase.</p></div>
         )}
       </div>
 

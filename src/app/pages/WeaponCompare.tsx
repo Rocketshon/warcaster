@@ -51,14 +51,14 @@ function WeaponPicker({ label, weapons, selected, onSelect }: {
       <p className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-1">{label}</p>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-1 px-3 py-2 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+        className="w-full flex items-center justify-between gap-1 px-3 py-2 bg-[var(--bg-card)] border border-[#2a2a35] rounded-lg
                    text-left text-sm text-[#e8e4de] hover:border-[#c9a84c] transition-colors truncate"
       >
         <span className="truncate">{selected ? selected.weapon.name : 'Select Weapon'}</span>
         <ChevronDown className={`w-4 h-4 shrink-0 text-[#8a8690] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="mt-1 max-h-64 overflow-y-auto bg-[#0a0a0f] border border-[#2a2a35] rounded-lg shadow-lg z-10 relative">
+        <div className="mt-1 max-h-64 overflow-y-auto bg-[var(--bg-primary)] border border-[#2a2a35] rounded-lg shadow-lg z-10 relative">
           {weapons.length === 0 && <p className="px-3 py-2 text-xs text-[#8a8690]">No weapons available</p>}
           {weapons.map((w, i) => (
             <button
@@ -125,7 +125,7 @@ export default function WeaponCompare() {
   const bothSelected = weapon1 !== null && weapon2 !== null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] px-4 pt-6 pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] px-4 pt-6 pb-24">
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => navigate(-1)} className="text-[#8a8690] hover:text-[#e8e4de] transition-colors" aria-label="Go back">
           <ArrowLeft className="w-5 h-5" />

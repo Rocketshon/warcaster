@@ -24,7 +24,7 @@ export default function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-md border-t border-[#2a2a35]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--bg-primary)]/95 backdrop-blur-md border-t border-[var(--border-color)]">
       <div className="flex items-center justify-around px-2 pt-0 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {tabs.map((tab) => {
           const active = isActiveTab(location.pathname, tab.path);
@@ -37,13 +37,13 @@ export default function BottomNav() {
               aria-current={active ? 'page' : undefined}
               className={`relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-lg transition-colors ${
                 active
-                  ? 'text-[#c9a84c]'
-                  : 'text-[#8a8690] active:text-[#e8e4de]'
+                  ? 'text-[var(--accent-gold)]'
+                  : 'text-[var(--text-secondary)] active:text-[var(--text-primary)]'
               }`}
             >
               {/* Active indicator bar */}
               {active && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#c9a84c] rounded-full" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[var(--accent-gold)] rounded-full" />
               )}
               <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
               <span className={`text-[10px] tracking-wide ${active ? 'font-bold' : 'font-normal'}`}>

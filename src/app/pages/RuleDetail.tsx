@@ -79,15 +79,15 @@ export default function RuleDetail() {
 
   if (!rule) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden">
         <div className="relative z-10 w-full max-w-md mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
             <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back</span>
           </button>
           <div className="text-center">
-            <BookOpen className="w-16 h-16 text-[#8a8690] mx-auto mb-4" strokeWidth={1.5} />
-            <h1 className="text-xl font-bold text-[#8a8690] mb-2">Rule Not Found</h1>
-            <p className="text-[#8a8690] text-sm">The requested rule could not be found.</p>
+            <BookOpen className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" strokeWidth={1.5} />
+            <h1 className="text-xl font-bold text-[var(--text-secondary)] mb-2">Rule Not Found</h1>
+            <p className="text-[var(--text-secondary)] text-sm">The requested rule could not be found.</p>
           </div>
         </div>
       </div>
@@ -105,10 +105,10 @@ export default function RuleDetail() {
 
   const getSourceColor = () => {
     switch (rule.sourceType) {
-      case "core": return "bg-[#c9a84c]/10 border-[#c9a84c]/30 text-[#c9a84c]";
+      case "core": return "bg-[#c9a84c]/10 border-[var(--accent-gold)]/30 text-[var(--accent-gold)]";
       case "crusade": return "bg-amber-500/10 border-amber-500/30 text-amber-500";
       case "faction": return "bg-blue-500/10 border-blue-500/30 text-blue-500";
-      default: return "bg-[#c9a84c]/10 border-[#c9a84c]/30 text-[#c9a84c]";
+      default: return "bg-[#c9a84c]/10 border-[var(--accent-gold)]/30 text-[var(--accent-gold)]";
     }
   };
 
@@ -119,21 +119,21 @@ export default function RuleDetail() {
         ? section.subsections.map(sub => ({ title: sub, text: extractSubsectionText(section.text, sub) || '' }))
         : [{ title: section.name, text: (section.text || '').replace(/\[TABLE:\s*\[[\s\S]*?\]\]\s*/g, '').replace(/\[[A-Za-z][^\]]*\]/g, '').trim() }];
     const validItems = items.filter(item => item.text && item.text.trim().length > 0);
-    if (validItems.length === 0) return <div className="text-center py-8 text-[#8a8690]">No content available for this section.</div>;
+    if (validItems.length === 0) return <div className="text-center py-8 text-[var(--text-secondary)]">No content available for this section.</div>;
 
     return (
-      <div className="relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24]">
+      <div className="relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)]">
         {validItems.map((item, idx) => {
           const key = `acc-${idx}`;
           const isExpanded = expandedSubsections.has(key);
           return (
-            <div key={idx} className={idx !== validItems.length - 1 ? "border-b border-[#2a2a35]/60" : ""}>
+            <div key={idx} className={idx !== validItems.length - 1 ? "border-b border-[var(--border-color)]/60" : ""}>
               <button onClick={() => toggleSubsection(key)} className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#c9a84c]/5 transition-all">
-                <span className="text-sm text-[#c9a84c] font-medium text-left">{item.title}</span>
-                {isExpanded ? <ChevronDown className="w-4 h-4 text-[#c9a84c] flex-shrink-0" /> : <ChevronRight className="w-4 h-4 text-[#8a8690] flex-shrink-0" />}
+                <span className="text-sm text-[var(--accent-gold)] font-medium text-left">{item.title}</span>
+                {isExpanded ? <ChevronDown className="w-4 h-4 text-[var(--accent-gold)] flex-shrink-0" /> : <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />}
               </button>
               {isExpanded && (
-                <div className="px-4 pb-3 border-t border-[#2a2a35]/30">
+                <div className="px-4 pb-3 border-t border-[var(--border-color)]/30">
                   <div className="pt-3"><FormattedRuleText text={item.text} className="text-sm" /></div>
                 </div>
               )}
@@ -150,7 +150,7 @@ export default function RuleDetail() {
       return (
         <div className="space-y-4">
           {rule.factionData.rules.map((ruleText: string, idx: number) => (
-            <div key={idx} className="relative overflow-hidden rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4">
+            <div key={idx} className="relative overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4">
               <FormattedRuleText text={ruleText} />
             </div>
           ))}
@@ -162,12 +162,12 @@ export default function RuleDetail() {
       return (
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-bold text-[#e8e4de] tracking-wide mb-3">{det.rule.name}</h2>
-            <div className="rounded-lg border border-[#2a2a35] bg-[#1a1a24] p-4"><FormattedRuleText text={det.rule.text} /></div>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-wide mb-3">{det.rule.name}</h2>
+            <div className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-4"><FormattedRuleText text={det.rule.text} /></div>
           </div>
           {det.enhancements.length > 0 && (
             <div>
-              <h2 className="text-xl font-bold text-[#e8e4de] tracking-wide mb-3">Enhancements</h2>
+              <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-wide mb-3">Enhancements</h2>
               <div className="space-y-3">
                 {det.enhancements.map((enh: DetachmentEnhancement, idx: number) => {
                   const enhColors = getEnhancementCardColors('emerald');
@@ -186,7 +186,7 @@ export default function RuleDetail() {
           )}
           {det.stratagems.length > 0 && (
             <div>
-              <h2 className="text-xl font-bold text-[#e8e4de] tracking-wide mb-3">Stratagems</h2>
+              <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-wide mb-3">Stratagems</h2>
               <div className="space-y-3">
                 {det.stratagems.map((strat: DetachmentStratagem, idx: number) => (
                   <div key={idx} className="rounded-lg border border-purple-500/20 bg-purple-500/5 p-4">
@@ -195,10 +195,10 @@ export default function RuleDetail() {
                       <span className="text-xs font-bold text-purple-500 font-mono">{strat.cp} CP</span>
                     </div>
                     <div className="mb-2"><span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStratagemTypeColor(strat.type)}`}>{strat.type}</span></div>
-                    {strat.when && <p className="text-[#a09ca6] text-sm leading-relaxed mb-1"><span className="font-semibold">When: </span>{strat.when}</p>}
-                    {strat.target && <p className="text-[#a09ca6] text-sm leading-relaxed mb-1"><span className="font-semibold">Target: </span>{strat.target}</p>}
-                    {strat.effect && <p className="text-[#a09ca6] text-sm leading-relaxed"><span className="font-semibold">Effect: </span>{strat.effect}</p>}
-                    {strat.restrictions && <div><span className="text-red-500 font-semibold text-xs">Restrictions: </span><span className="text-xs text-[#8a8690]">{strat.restrictions}</span></div>}
+                    {strat.when && <p className="text-[var(--text-tertiary)] text-sm leading-relaxed mb-1"><span className="font-semibold">When: </span>{strat.when}</p>}
+                    {strat.target && <p className="text-[var(--text-tertiary)] text-sm leading-relaxed mb-1"><span className="font-semibold">Target: </span>{strat.target}</p>}
+                    {strat.effect && <p className="text-[var(--text-tertiary)] text-sm leading-relaxed"><span className="font-semibold">Effect: </span>{strat.effect}</p>}
+                    {strat.restrictions && <div><span className="text-red-500 font-semibold text-xs">Restrictions: </span><span className="text-xs text-[var(--text-secondary)]">{strat.restrictions}</span></div>}
                   </div>
                 ))}
               </div>
@@ -211,15 +211,15 @@ export default function RuleDetail() {
       return (
         <div className="space-y-4">
           {rule.factionData.rules?.map((cr: CrusadeRule, idx: number) => (
-            <div key={idx} className="rounded-lg border border-amber-500/20 bg-[#1a1a24] p-4">
-              {cr.name && <h3 className="text-base font-bold text-[#c9a84c] mb-2">{cr.name}</h3>}
+            <div key={idx} className="rounded-lg border border-amber-500/20 bg-[var(--bg-card)] p-4">
+              {cr.name && <h3 className="text-base font-bold text-[var(--accent-gold)] mb-2">{cr.name}</h3>}
               {cr.sub_sections && cr.sub_sections.length > 0 ? (
                 <div className="space-y-4">
                   {cr.text && <div className="mb-3"><FormattedRuleText text={cr.text} /></div>}
                   {cr.sub_sections.map((sub: { name: string; text: string }, subIdx: number) => (
                     <div key={subIdx}>
                       {subIdx > 0 && <div className="border-t border-amber-500/10 my-3" />}
-                      <h3 className="text-sm font-bold text-[#c9a84c] mb-2 tracking-wide">{sub.name}</h3>
+                      <h3 className="text-sm font-bold text-[var(--accent-gold)] mb-2 tracking-wide">{sub.name}</h3>
                       <FormattedRuleText text={sub.text} />
                     </div>
                   ))}
@@ -243,7 +243,7 @@ export default function RuleDetail() {
         {sections.map((section, idx) => (
           <div key={idx}>
             {idx > 0 && section.header && <div className="border-t border-amber-500/10 my-3" />}
-            {section.header && <h3 className="text-sm font-bold text-[#c9a84c] mb-2 tracking-wide">{section.header}</h3>}
+            {section.header && <h3 className="text-sm font-bold text-[var(--accent-gold)] mb-2 tracking-wide">{section.header}</h3>}
             {section.text && <FormattedRuleText text={section.text} />}
           </div>
         ))}
@@ -252,9 +252,9 @@ export default function RuleDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col p-6 relative overflow-hidden pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col p-6 relative overflow-hidden pb-24">
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-6">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-6">
           <ArrowLeft className="w-5 h-5" /><span className="text-sm">Back to Rules</span>
         </button>
 
@@ -264,7 +264,7 @@ export default function RuleDetail() {
               {getSourceIcon()}{rule.source}
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-[#e8e4de] tracking-wider mb-4">{rule.title}</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-wider mb-4">{rule.title}</h1>
         </div>
 
         <div className="space-y-6">

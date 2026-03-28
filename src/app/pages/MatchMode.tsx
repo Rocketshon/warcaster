@@ -27,7 +27,7 @@ function YourArmyTab() {
   if (!factionId || army.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-[#8a8690] mb-2">No army loaded.</p>
+        <p className="text-[var(--text-secondary)] mb-2">No army loaded.</p>
         <p className="text-xs text-[#555]">Go to the Army tab to build a list first.</p>
       </div>
     );
@@ -36,15 +36,15 @@ function YourArmyTab() {
   return (
     <div className="space-y-3">
       {/* Army info header */}
-      <div className="bg-[#1a1a24] border border-[#2a2a35] rounded-lg p-4 mb-2">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-4 mb-2">
         <div className="flex items-center gap-2 mb-1">
           {factionMeta && <span className="text-lg">{factionMeta.icon}</span>}
-          <h3 className="font-serif text-lg font-bold text-[#e8e4de]">{factionMeta?.name ?? factionId}</h3>
+          <h3 className="font-serif text-lg font-bold text-[var(--text-primary)]">{factionMeta?.name ?? factionId}</h3>
         </div>
         {detachmentName && (
-          <p className="text-xs text-[#c9a84c]">{detachmentName}</p>
+          <p className="text-xs text-[var(--accent-gold)]">{detachmentName}</p>
         )}
-        <p className="text-xs text-[#8a8690] mt-1">
+        <p className="text-xs text-[var(--text-secondary)] mt-1">
           {army.length} unit{army.length !== 1 ? 's' : ''} &middot;{' '}
           {army.reduce((s, u) => s + u.points_cost, 0).toLocaleString()} pts
         </p>
@@ -56,11 +56,11 @@ function YourArmyTab() {
         return (
           <div
             key={unit.id}
-            className="bg-[#1a1a24] border border-[#2a2a35] rounded-lg p-4"
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-4"
           >
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-semibold text-[#e8e4de]">{unit.custom_name}</h4>
-              <span className="text-xs font-semibold text-[#c9a84c]">{unit.points_cost} pts</span>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">{unit.custom_name}</h4>
+              <span className="text-xs font-semibold text-[var(--accent-gold)]">{unit.points_cost} pts</span>
             </div>
             {ds && (
               <>
@@ -69,8 +69,8 @@ function YourArmyTab() {
                   <div className="flex gap-2 mb-2">
                     {Object.entries(ds.stats).map(([stat, value]) => (
                       <div key={stat} className="text-center px-2 py-1 bg-[#12121a] rounded">
-                        <div className="text-[10px] text-[#8a8690] uppercase">{stat}</div>
-                        <div className="text-xs font-bold text-[#e8e4de] font-mono">{value}</div>
+                        <div className="text-[10px] text-[var(--text-secondary)] uppercase">{stat}</div>
+                        <div className="text-xs font-bold text-[var(--text-primary)] font-mono">{value}</div>
                       </div>
                     ))}
                   </div>
@@ -86,7 +86,7 @@ function YourArmyTab() {
                 {ds.abilities.core.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {ds.abilities.core.map((a, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-full border border-[#c9a84c]/30 text-[#c9a84c] bg-[#c9a84c]/10">
+                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-full border border-[var(--accent-gold)]/30 text-[var(--accent-gold)] bg-[#c9a84c]/10">
                         {a}
                       </span>
                     ))}
@@ -110,7 +110,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
     <div className="space-y-4">
       <button
         onClick={onBack}
-        className="flex items-center gap-1 text-sm text-[#8a8690] hover:text-[#c9a84c] transition-colors mb-2"
+        className="flex items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors mb-2"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to units
@@ -118,15 +118,15 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
 
       {/* Unit Header */}
       <div>
-        <h2 className="text-xl font-bold text-[#e8e4de] font-serif">{datasheet.name}</h2>
-        <p className="text-xs text-[#c9a84c]">{datasheet.faction}</p>
+        <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif">{datasheet.name}</h2>
+        <p className="text-xs text-[var(--accent-gold)]">{datasheet.faction}</p>
 
         {/* Points */}
         {datasheet.points.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {datasheet.points.map((tier, idx) => (
-              <span key={idx} className="px-2 py-1 text-xs rounded bg-[#12121a] border border-[#2a2a35] text-[#e8e4de]">
-                {tier.models}: <span className="text-[#c9a84c] font-bold">{tier.cost} pts</span>
+              <span key={idx} className="px-2 py-1 text-xs rounded bg-[#12121a] border border-[var(--border-color)] text-[var(--text-primary)]">
+                {tier.models}: <span className="text-[var(--accent-gold)] font-bold">{tier.cost} pts</span>
               </span>
             ))}
           </div>
@@ -137,9 +137,9 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
       {datasheet.stats && Object.keys(datasheet.stats).length > 0 && (
         <div className="flex flex-wrap gap-2">
           {Object.entries(datasheet.stats).map(([stat, value]) => (
-            <div key={stat} className="flex-1 min-w-[60px] text-center px-3 py-2 bg-[#12121a] border border-[#2a2a35] rounded-lg">
-              <div className="text-[10px] text-[#8a8690] font-semibold uppercase">{stat}</div>
-              <div className="text-lg font-bold text-[#e8e4de] font-mono">{value}</div>
+            <div key={stat} className="flex-1 min-w-[60px] text-center px-3 py-2 bg-[#12121a] border border-[var(--border-color)] rounded-lg">
+              <div className="text-[10px] text-[var(--text-secondary)] font-semibold uppercase">{stat}</div>
+              <div className="text-lg font-bold text-[var(--text-primary)] font-mono">{value}</div>
             </div>
           ))}
         </div>
@@ -149,7 +149,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
       {datasheet.invuln && (
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-blue-400" />
-          <span className="text-sm text-[#8a8690]">Invulnerable Save:</span>
+          <span className="text-sm text-[var(--text-secondary)]">Invulnerable Save:</span>
           <span className="text-base font-bold text-blue-400">{datasheet.invuln}</span>
         </div>
       )}
@@ -164,7 +164,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
 
       {/* Abilities */}
       <div>
-        <h3 className="text-sm font-semibold text-[#e8e4de] mb-2 flex items-center gap-1">
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2 flex items-center gap-1">
           <Zap className="w-4 h-4 text-amber-500" />
           Abilities
         </h3>
@@ -172,7 +172,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
         {datasheet.abilities.core.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {datasheet.abilities.core.map((a, i) => (
-              <span key={i} className="px-2 py-0.5 rounded-full border border-[#c9a84c]/30 text-[#c9a84c] bg-[#c9a84c]/10 text-xs font-semibold">
+              <span key={i} className="px-2 py-0.5 rounded-full border border-[var(--accent-gold)]/30 text-[var(--accent-gold)] bg-[#c9a84c]/10 text-xs font-semibold">
                 {a}
               </span>
             ))}
@@ -182,7 +182,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
         {datasheet.abilities.faction.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {datasheet.abilities.faction.map((a, i) => (
-              <span key={i} className="px-2 py-0.5 rounded-full border border-[#c9a84c]/20 text-[#8a8690] bg-[#12121a] text-xs">
+              <span key={i} className="px-2 py-0.5 rounded-full border border-[var(--accent-gold)]/20 text-[var(--text-secondary)] bg-[#12121a] text-xs">
                 {a}
               </span>
             ))}
@@ -190,8 +190,8 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
         )}
 
         {datasheet.abilities.other.map((ability, idx) => (
-          <div key={idx} className="mb-2 bg-[#12121a] border border-[#2a2a35] rounded-lg p-3">
-            <h4 className="text-xs font-bold text-[#c9a84c] mb-1">{ability[0]}</h4>
+          <div key={idx} className="mb-2 bg-[#12121a] border border-[var(--border-color)] rounded-lg p-3">
+            <h4 className="text-xs font-bold text-[var(--accent-gold)] mb-1">{ability[0]}</h4>
             <FormattedRuleText text={ability[1]} className="text-xs" />
           </div>
         ))}
@@ -199,10 +199,10 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
 
       {/* Keywords */}
       <div>
-        <h3 className="text-sm font-semibold text-[#e8e4de] mb-2">Keywords</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Keywords</h3>
         <div className="flex flex-wrap gap-1">
           {datasheet.keywords.map((kw, i) => (
-            <span key={i} className="px-2 py-1 rounded bg-[#12121a] border border-[#2a2a35] text-[#e8e4de] text-xs">
+            <span key={i} className="px-2 py-1 rounded bg-[#12121a] border border-[var(--border-color)] text-[var(--text-primary)] text-xs">
               {toTitleCase(kw)}
             </span>
           ))}
@@ -210,7 +210,7 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
         {datasheet.faction_keywords.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {datasheet.faction_keywords.map((kw, i) => (
-              <span key={i} className="px-2 py-1 rounded bg-[#12121a] border border-[#2a2a35] text-[#c9a84c] text-xs">
+              <span key={i} className="px-2 py-1 rounded bg-[#12121a] border border-[var(--border-color)] text-[var(--accent-gold)] text-xs">
                 {toTitleCase(kw)}
               </span>
             ))}
@@ -221,8 +221,8 @@ function OpponentDatasheetDetail({ datasheet, onBack }: { datasheet: Datasheet; 
       {/* Leader */}
       {datasheet.leader && (
         <div>
-          <h3 className="text-sm font-semibold text-[#e8e4de] mb-2">Leader</h3>
-          <div className="bg-[#12121a] border border-[#2a2a35] rounded-lg p-3">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Leader</h3>
+          <div className="bg-[#12121a] border border-[var(--border-color)] rounded-lg p-3">
             <FormattedRuleText text={datasheet.leader} className="text-xs" />
           </div>
         </div>
@@ -276,23 +276,23 @@ function OpponentArmyTab() {
   if (!selectedFaction) {
     return (
       <div className="space-y-6">
-        <p className="text-sm text-[#8a8690] text-center">
+        <p className="text-sm text-[var(--text-secondary)] text-center">
           Pick your opponent's faction to look up their units.
         </p>
         {categories.map((cat) => (
           <div key={cat.label}>
-            <h3 className="text-xs font-semibold text-[#8a8690] uppercase tracking-wider mb-2">{cat.label}</h3>
+            <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">{cat.label}</h3>
             <div className="grid grid-cols-2 gap-2">
               {cat.factions.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setSelectedFaction(f.id)}
-                  className="flex items-center gap-2 p-3 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
-                             hover:border-[#c9a84c] transition-colors text-left
-                             focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
+                  className="flex items-center gap-2 p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg
+                             hover:border-[var(--accent-gold)] transition-colors text-left
+                             focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
                 >
                   <span className="text-lg">{f.icon}</span>
-                  <span className="text-sm font-medium text-[#e8e4de] truncate">{f.name}</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)] truncate">{f.name}</span>
                 </button>
               ))}
             </div>
@@ -311,27 +311,27 @@ function OpponentArmyTab() {
       <div className="flex items-center gap-3 mb-2">
         <button
           onClick={() => { setSelectedFaction(null); setSearch(''); }}
-          className="flex items-center gap-1 text-sm text-[#8a8690] hover:text-[#c9a84c] transition-colors"
+          className="flex items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           Factions
         </button>
         <div className="flex items-center gap-2">
           {factionMeta && <span className="text-lg">{factionMeta.icon}</span>}
-          <h3 className="font-serif text-lg font-bold text-[#e8e4de]">{factionMeta?.name}</h3>
+          <h3 className="font-serif text-lg font-bold text-[var(--text-primary)]">{factionMeta?.name}</h3>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8690]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search units..."
-          className="w-full pl-9 pr-4 py-2.5 bg-[#1a1a24] border border-[#2a2a35] rounded-lg text-[#e8e4de] text-sm
-                     placeholder:text-[#555] focus:outline-none focus:border-[#c9a84c] transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] text-sm
+                     placeholder:text-[#555] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
         />
       </div>
 
@@ -348,17 +348,17 @@ function OpponentArmyTab() {
             <button
               key={unit.name}
               onClick={() => setSelectedUnit(unit)}
-              className="w-full text-left p-3 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
-                         hover:border-[#c9a84c] transition-colors"
+              className="w-full text-left p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg
+                         hover:border-[var(--accent-gold)] transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[#e8e4de]">{unit.name}</span>
-                <span className="text-xs font-semibold text-[#c9a84c]">{pts} pts</span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">{unit.name}</span>
+                <span className="text-xs font-semibold text-[var(--accent-gold)]">{pts} pts</span>
               </div>
               {/* Quick keywords preview */}
               <div className="flex flex-wrap gap-1 mt-1">
                 {unit.keywords.slice(0, 4).map((kw, i) => (
-                  <span key={i} className="text-[10px] text-[#8a8690]">{toTitleCase(kw)}</span>
+                  <span key={i} className="text-[10px] text-[var(--text-secondary)]">{toTitleCase(kw)}</span>
                 ))}
                 {unit.keywords.length > 4 && (
                   <span className="text-[10px] text-[#555]">+{unit.keywords.length - 4} more</span>
@@ -383,20 +383,20 @@ export default function MatchMode() {
   const [activeTab, setActiveTab] = useState<Tab>('opponent');
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] px-4 pt-6 pb-24">
+    <div className="min-h-screen bg-[var(--bg-primary)] px-4 pt-6 pb-24">
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-[#8a8690] hover:text-[#c9a84c] transition-colors"
+          className="flex items-center gap-1 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="font-serif text-xl font-bold text-[#c9a84c]">Match Mode</h1>
+        <h1 className="font-serif text-xl font-bold text-[var(--accent-gold)]">Match Mode</h1>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#2a2a35] mb-6">
+      <div className="flex border-b border-[var(--border-color)] mb-6">
         {([
           { key: 'your' as Tab, label: 'Your Army' },
           { key: 'opponent' as Tab, label: "Opponent's Army" },
@@ -406,8 +406,8 @@ export default function MatchMode() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex-1 py-3 text-sm font-semibold text-center transition-colors border-b-2 ${
               activeTab === tab.key
-                ? 'text-[#c9a84c] border-[#c9a84c]'
-                : 'text-[#8a8690] border-transparent hover:text-[#e8e4de]'
+                ? 'text-[var(--accent-gold)] border-[var(--accent-gold)]'
+                : 'text-[var(--text-secondary)] border-transparent hover:text-[var(--text-primary)]'
             }`}
           >
             {tab.label}

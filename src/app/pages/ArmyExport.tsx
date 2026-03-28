@@ -367,7 +367,7 @@ export default function ArmyExport() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#0a0a0f] px-4 pt-6 pb-24">
+      <div className="min-h-screen bg-[var(--bg-primary)] px-4 pt-6 pb-24">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
@@ -383,7 +383,7 @@ export default function ArmyExport() {
         {/* Tournament format toggle */}
         <button
           onClick={() => setTournamentFormat(!tournamentFormat)}
-          className="flex items-center gap-2 mb-6 px-4 py-2.5 bg-[#1a1a24] border border-[#2a2a35] rounded-lg
+          className="flex items-center gap-2 mb-6 px-4 py-2.5 bg-[var(--bg-card)] border border-[#2a2a35] rounded-lg
                      hover:border-[#c9a84c] transition-colors w-full"
         >
           {tournamentFormat ? (
@@ -407,21 +407,21 @@ export default function ArmyExport() {
           </button>
           <button
             onClick={handleShare}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1a24] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
           >
             <Share2 className="w-4 h-4" />
             Share
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1a24] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
           >
             <Printer className="w-4 h-4" />
             Print
           </button>
           <button
             onClick={handleGenerateImage}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1a24] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-[var(--bg-card)] border border-[#2a2a35] text-[#e8e4de] font-semibold rounded-lg hover:border-[#c9a84c] transition-colors"
           >
             <Image className="w-4 h-4" />
             Save Image
@@ -429,7 +429,7 @@ export default function ArmyExport() {
         </div>
 
         {/* Export text preview */}
-        <div id="print-area" className="bg-[#1a1a24] border border-[#2a2a35] rounded-lg p-4 overflow-x-auto">
+        <div id="print-area" className="bg-[var(--bg-card)] border border-[#2a2a35] rounded-lg p-4 overflow-x-auto">
           <pre
             ref={textRef}
             className="text-xs text-[#e8e4de] font-mono whitespace-pre-wrap leading-relaxed"

@@ -3,11 +3,13 @@ import { Toaster } from 'sonner';
 import { router } from './routes';
 import { ArmyProvider } from '../lib/ArmyContext';
 import { CollectionProvider } from '../lib/CollectionContext';
+import { ThemeProvider } from '../lib/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <ErrorBoundary>
+      <ThemeProvider>
       <ArmyProvider>
       <CollectionProvider>
         <RouterProvider router={router} />
@@ -15,14 +17,15 @@ export default function App() {
           position="top-center"
           toastOptions={{
             style: {
-              background: '#f5efe6',
-              border: '1px solid #d4c5a9',
-              color: '#2c2416',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-primary)',
             },
           }}
         />
       </CollectionProvider>
       </ArmyProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }
