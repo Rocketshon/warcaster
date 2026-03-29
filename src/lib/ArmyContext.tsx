@@ -387,7 +387,7 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
     setArmy(prev => prev.map(u => {
       if (u.id !== unitId) return u;
       const newXP = u.experience_points + xp;
-      return { ...u, experience_points: newXP, rank: getRankFromXP(newXP), crusade_points: u.crusade_points + xp };
+      return { ...u, experience_points: newXP, rank: getRankFromXP(newXP) };
     }));
   }, []);
 
@@ -408,7 +408,7 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
       return {
         ...u,
         battle_honours: u.battle_honours.filter(h => h.id !== honourId),
-        crusade_points: Math.max(0, u.crusade_points - 1),
+        crusade_points: u.crusade_points - 1,
       };
     }));
   }, []);
@@ -419,7 +419,7 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
       return {
         ...u,
         battle_scars: [...u.battle_scars, { id: crypto.randomUUID(), ...scar }],
-        crusade_points: Math.max(0, u.crusade_points - 1),
+        crusade_points: u.crusade_points - 1,
       };
     }));
   }, []);
@@ -495,7 +495,6 @@ export function ArmyProvider({ children }: { children: ReactNode }) {
         ...u,
         experience_points: newXP,
         rank: getRankFromXP(newXP),
-        crusade_points: u.crusade_points + totalXP,
         battles_played: u.battles_played + 1,
         battles_survived: u.battles_survived + (result.survived ? 1 : 0),
         total_kills: newKills,

@@ -49,18 +49,27 @@ function UnitResultRow({
             <p className="text-[10px] text-[var(--text-secondary)]">{unit.datasheet_name}</p>
           )}
         </div>
-        {/* MFG star */}
-        <button
-          onClick={onToggleMFG}
-          title="Marked for Greatness (+3 XP)"
-          className={`flex-shrink-0 w-7 h-7 rounded border flex items-center justify-center transition-colors ${
-            isMFG
-              ? 'border-[var(--accent-gold)] bg-[var(--accent-gold)]/20 text-[var(--accent-gold)]'
-              : 'border-[var(--border-color)] text-[var(--text-secondary)]'
-          }`}
-        >
-          ★
-        </button>
+        {/* MFG star — blocked for Disgraced / Mark of Shame */}
+        {(() => {
+          const blockedScars = ['Disgraced', 'Mark of Shame'];
+          const blocked = unit.battle_scars.some(s => blockedScars.includes(s.name));
+          return (
+            <button
+              onClick={blocked ? undefined : onToggleMFG}
+              title={blocked ? 'Cannot be Marked for Greatness (Disgraced or Mark of Shame)' : 'Marked for Greatness (+3 XP)'}
+              disabled={blocked}
+              className={`flex-shrink-0 w-7 h-7 rounded border flex items-center justify-center transition-colors ${
+                blocked
+                  ? 'border-[var(--border-color)] text-[var(--border-color)] opacity-30 cursor-not-allowed'
+                  : isMFG
+                  ? 'border-[var(--accent-gold)] bg-[var(--accent-gold)]/20 text-[var(--accent-gold)]'
+                  : 'border-[var(--border-color)] text-[var(--text-secondary)]'
+              }`}
+            >
+              ★
+            </button>
+          );
+        })()}
       </div>
 
       <div className="flex items-center gap-3">
@@ -161,18 +170,29 @@ function OutOfActionSection({
                   </div>
                   <span className="text-xs text-[var(--text-secondary)]">{state.roll === 1 ? 'Failed — choose consequence' : 'Passed — no effect'}</span>
                 </div>
-                {state.roll === 1 && state.outcome === null && (
-                  <div className="flex gap-2">
-                    <button onClick={() => onChooseOutcome(unit.id, 'devastating_blow')}
-                      className="flex-1 py-2 text-xs rounded border border-amber-500/40 bg-amber-500/10 text-amber-400 font-semibold">
-                      Devastating Blow<br/><span className="font-normal">Lose a Battle Honour</span>
-                    </button>
-                    <button onClick={() => onChooseOutcome(unit.id, 'battle_scar')}
-                      className="flex-1 py-2 text-xs rounded border border-red-500/40 bg-red-500/10 text-red-400 font-semibold">
-                      Battle Scar<br/><span className="font-normal">Gain a Battle Scar</span>
-                    </button>
-                  </div>
-                )}
+                {state.roll === 1 && state.outcome === null && (() => {
+                  const mustDevBlow = unit.battle_scars.length >= 3;
+                  return mustDevBlow ? (
+                    <div>
+                      <p className="text-[10px] text-amber-400 mb-1.5">Unit already has 3 scars — must take Devastating Blow.</p>
+                      <button onClick={() => onChooseOutcome(unit.id, 'devastating_blow')}
+                        className="w-full py-2 text-xs rounded border border-amber-500/40 bg-amber-500/10 text-amber-400 font-semibold">
+                        Devastating Blow — Lose a Battle Honour
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button onClick={() => onChooseOutcome(unit.id, 'devastating_blow')}
+                        className="flex-1 py-2 text-xs rounded border border-amber-500/40 bg-amber-500/10 text-amber-400 font-semibold">
+                        Devastating Blow<br/><span className="font-normal">Lose a Battle Honour</span>
+                      </button>
+                      <button onClick={() => onChooseOutcome(unit.id, 'battle_scar')}
+                        className="flex-1 py-2 text-xs rounded border border-red-500/40 bg-red-500/10 text-red-400 font-semibold">
+                        Battle Scar<br/><span className="font-normal">Gain a Battle Scar</span>
+                      </button>
+                    </div>
+                  );
+                })()}
                 {state.roll === 1 && state.outcome === 'battle_scar' && state.selectedScar === null && (
                   <div className="space-y-1.5 mt-1">
                     <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">Choose Battle Scar</p>

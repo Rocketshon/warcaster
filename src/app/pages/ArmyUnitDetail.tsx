@@ -245,7 +245,7 @@ export default function ArmyUnitDetail() {
   const { unitId } = useParams<{ unitId: string }>();
   const navigate = useNavigate();
   const {
-    army, factionId,
+    army, factionId, crusade,
     awardXP, addBattleHonour, removeBattleHonour, addBattleScar, removeBattleScar,
     setWarlord, buyLegendaryVeterans, updateUnit, removeUnit, spendRP,
   } = useArmy();
@@ -325,8 +325,15 @@ export default function ArmyUnitDetail() {
             <div className="mb-3">
               <textarea value={wargearInput} onChange={e => setWargearInput(e.target.value)} rows={2}
                 className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--accent-gold)] rounded text-sm text-[var(--text-primary)] resize-none focus:outline-none" />
+              {crusade && (
+                <p className="text-[10px] text-amber-400 mt-1">Rearm &amp; Resupply — costs 1 RP ({crusade.rp} available)</p>
+              )}
               <div className="flex gap-2 mt-1">
-                <button onClick={() => { updateUnit(unit.id, { wargear_notes: wargearInput.trim() }); setEditingWargear(false); }} className="text-xs text-[var(--accent-gold)]">Save</button>
+                <button onClick={() => {
+                  updateUnit(unit.id, { wargear_notes: wargearInput.trim() });
+                  if (crusade) spendRP(1);
+                  setEditingWargear(false);
+                }} className="text-xs text-[var(--accent-gold)]">Save (−1 RP)</button>
                 <button onClick={() => setEditingWargear(false)} className="text-xs text-[var(--text-secondary)]">Cancel</button>
               </div>
             </div>
