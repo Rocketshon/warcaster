@@ -1,29 +1,18 @@
 import { createBrowserRouter, redirect } from 'react-router';
 import AppLayout from './components/AppLayout';
-import Home from './pages/Home';
-import Army from './pages/Army';
-import AddUnit from './pages/AddUnit';
-import UnitDetail from './pages/UnitDetail';
+import ArmyBuilder from './pages/ArmyBuilder';
+import ArmyCrusadeSetup from './pages/ArmyCrusadeSetup';
+import ArmyUnitDetail from './pages/ArmyUnitDetail';
+import PostBattle from './pages/PostBattle';
+import BattleHistory from './pages/BattleHistory';
+import ModeSelect from './pages/ModeSelect';
+import MyModels from './pages/MyModels';
 import CodexHome from './pages/CodexHome';
 import FactionCodex from './pages/FactionCodex';
 import DatasheetView from './pages/DatasheetView';
 import SpaceMarinesChapters from './pages/SpaceMarinesChapters';
-import RulesBrowser from './pages/RulesBrowser';
-import RuleDetail from './pages/RuleDetail';
 import PhaseNavigator from './pages/PhaseNavigator';
-import ArmyExport from './pages/ArmyExport';
-import WeaponCompare from './pages/WeaponCompare';
-import GameTracker from './pages/GameTracker';
-import MatchMode from './pages/MatchMode';
-import Collection from './pages/Collection';
 import Settings from './pages/Settings';
-import CrusadeHome from './pages/CrusadeHome';
-import CrusadeSetup from './pages/CrusadeSetup';
-import OrderOfBattle from './pages/OrderOfBattle';
-import CrusadeUnitDetail from './pages/CrusadeUnitDetail';
-import PostBattle from './pages/PostBattle';
-import BattleHistory from './pages/BattleHistory';
-import CrusadeSettings from './pages/CrusadeSettings';
 
 const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
 
@@ -32,31 +21,27 @@ export const router = createBrowserRouter([
     path: "/",
     Component: AppLayout,
     children: [
-      { index: true, loader: () => redirect("/home") },
-      { path: "home", Component: Home },
-      { path: "army", Component: Army },
-      { path: "add-unit", Component: AddUnit },
-      { path: "army-export", Component: ArmyExport },
-      { path: "weapon-compare", Component: WeaponCompare },
-      { path: "game-tracker", Component: GameTracker },
-      { path: "match-mode", Component: MatchMode },
-      { path: "unit/:unitId", Component: UnitDetail },
+      { index: true, loader: () => redirect("/army") },
+      // Mode picker
+      { path: "mode-select", Component: ModeSelect },
+      // Army
+      { path: "army", Component: ArmyBuilder },
+      { path: "army/crusade-setup", Component: ArmyCrusadeSetup },
+      { path: "army/unit/:unitId", Component: ArmyUnitDetail },
+      { path: "army/post-battle", Component: PostBattle },
+      { path: "army/history", Component: BattleHistory },
+      // My Models (collection)
+      { path: "models", Component: MyModels },
+      // Battle Aid
+      { path: "battle-aid", Component: PhaseNavigator },
+      // Codex
       { path: "codex", Component: CodexHome },
       { path: "codex/:factionId", Component: FactionCodex },
       { path: "datasheet/:factionId/:datasheetName", Component: DatasheetView },
       { path: "space-marines-chapters", Component: SpaceMarinesChapters },
-      { path: "battle-aid", Component: PhaseNavigator },
-      { path: "collection", Component: Collection },
+      // Settings
       { path: "settings", Component: Settings },
-      { path: "rules", Component: RulesBrowser },
-      { path: "rule/:ruleId", Component: RuleDetail },
-      { path: "crusade", Component: CrusadeHome },
-      { path: "crusade/new", Component: CrusadeSetup },
-      { path: "crusade/order-of-battle", Component: OrderOfBattle },
-      { path: "crusade/unit/:unitId", Component: CrusadeUnitDetail },
-      { path: "crusade/post-battle", Component: PostBattle },
-      { path: "crusade/history", Component: BattleHistory },
-      { path: "crusade/settings", Component: CrusadeSettings },
+      // 404
       { path: "*", lazy: () => import('./pages/NotFound').then(m => ({ Component: m.default })) },
     ],
   },
