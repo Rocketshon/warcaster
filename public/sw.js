@@ -1,4 +1,4 @@
-const CACHE_NAME = 'warcaster-v1';
+const CACHE_NAME = 'warcaster-v2';
 
 // Assets to precache on install
 const PRECACHE_URLS = [
@@ -46,17 +46,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: cache-first
+  // Static assets: network-first (Vite content-hashes filenames, so stale cache = stale app)
   if (url.pathname.match(/\.(js|css|svg|png|jpg|jpeg|webp|woff2?)$/)) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
+      fetch(request)
+        .then((response) => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
-        });
-      })
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
