@@ -28,7 +28,7 @@ export default function FactionCodex() {
   const [datasheetSearch, setDatasheetSearch] = useState("");
 
   const factionMeta = factionId ? getFaction(factionId as FactionId) : undefined;
-  const dataFaction = factionId ? getDataFactionId(factionId as FactionId) : (factionId as FactionId);
+  const dataFaction = factionId ? getDataFactionId(factionId as FactionId) : undefined;
   const rules = dataFaction ? getRulesForFaction(dataFaction) : undefined;
   const units = dataFaction ? getUnitsForFaction(dataFaction) : [];
 

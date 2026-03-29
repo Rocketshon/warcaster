@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Sun, Moon, Trash2, Info, Database, AlertTriangle } from 'lucide-react';
 import { useTheme } from '../../lib/ThemeContext';
@@ -18,10 +18,22 @@ export default function Settings() {
   const [confirmClearCollection, setConfirmClearCollection] = useState(false);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
 
+  const clearArmiesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearCollectionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resetAllTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (clearArmiesTimer.current) clearTimeout(clearArmiesTimer.current);
+      if (clearCollectionTimer.current) clearTimeout(clearCollectionTimer.current);
+      if (resetAllTimer.current) clearTimeout(resetAllTimer.current);
+    };
+  }, []);
+
   const handleClearArmies = () => {
     if (!confirmClearArmies) {
       setConfirmClearArmies(true);
-      setTimeout(() => setConfirmClearArmies(false), 3000);
+      clearArmiesTimer.current = setTimeout(() => setConfirmClearArmies(false), 3000);
       return;
     }
     clearArmy();
@@ -32,7 +44,7 @@ export default function Settings() {
   const handleClearCollection = () => {
     if (!confirmClearCollection) {
       setConfirmClearCollection(true);
-      setTimeout(() => setConfirmClearCollection(false), 3000);
+      clearCollectionTimer.current = setTimeout(() => setConfirmClearCollection(false), 3000);
       return;
     }
     // Clear collection from localStorage
@@ -44,7 +56,7 @@ export default function Settings() {
   const handleResetAll = () => {
     if (!confirmResetAll) {
       setConfirmResetAll(true);
-      setTimeout(() => setConfirmResetAll(false), 3000);
+      resetAllTimer.current = setTimeout(() => setConfirmResetAll(false), 3000);
       return;
     }
     const keysToKeep = ['warcaster_theme'];

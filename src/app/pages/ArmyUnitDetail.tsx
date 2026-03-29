@@ -179,10 +179,11 @@ function WeaponEnhancementPicker({
 // Add honour modal (non-weapon-enhancement types)
 // ---------------------------------------------------------------------------
 
-function AddHonourModal({ onAdd, onClose, isCharacter }: {
+function AddHonourModal({ onAdd, onClose, isCharacter, existingHonourNames }: {
   onAdd: (h: Omit<BattleHonour, 'id'>) => void;
   onClose: () => void;
   isCharacter: boolean;
+  existingHonourNames: string[];
 }) {
   const [type, setType] = useState<string>('battle_trait');
   const [name, setName] = useState('');
@@ -191,6 +192,7 @@ function AddHonourModal({ onAdd, onClose, isCharacter }: {
   const availableTypes = BATTLE_HONOUR_TYPES.filter(t =>
     t.id !== 'weapon_enhancement' && (t.id !== 'crusade_relic' || isCharacter)
   );
+  const isDuplicate = existingHonourNames.includes(name.trim());
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-end">
       <div className="w-full bg-[var(--bg-primary)] rounded-t-xl border-t border-[var(--border-color)] p-5">
@@ -216,7 +218,8 @@ function AddHonourModal({ onAdd, onClose, isCharacter }: {
           <div>
             <label className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Name</label>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Never Give Ground"
-              className="mt-1 w-full px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-gold)]" />
+              className={`mt-1 w-full px-3 py-2 bg-[var(--bg-card)] border rounded text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none transition-colors ${isDuplicate ? 'border-red-500 focus:border-red-500' : 'border-[var(--border-color)] focus:border-[var(--accent-gold)]'}`} />
+            {isDuplicate && <p className="text-xs text-red-400 mt-1">This unit already has a Battle Honour with that name.</p>}
           </div>
           <div>
             <label className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Effect / Notes <span className="normal-case">(optional)</span></label>
@@ -226,8 +229,8 @@ function AddHonourModal({ onAdd, onClose, isCharacter }: {
         </div>
         <div className="flex gap-3">
           <button onClick={onClose} className="flex-1 py-2.5 text-sm border border-[var(--border-color)] text-[var(--text-secondary)] rounded">Cancel</button>
-          <button onClick={() => { if (name.trim()) { onAdd({ type, name: name.trim() }); onClose(); } }}
-            disabled={!name.trim()}
+          <button onClick={() => { if (name.trim() && !isDuplicate) { onAdd({ type, name: name.trim() }); onClose(); } }}
+            disabled={!name.trim() || isDuplicate}
             className="flex-1 py-2.5 text-sm border border-[var(--accent-gold)] bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] font-semibold rounded disabled:opacity-40">
             Add Honour
           </button>
@@ -516,7 +519,7 @@ export default function ArmyUnitDetail() {
       </div>
 
       {showAddHonour && (
-        <AddHonourModal onAdd={h => addBattleHonour(unit.id, h)} onClose={() => setShowAddHonour(false)} isCharacter={unit.is_character} />
+        <AddHonourModal onAdd={h => addBattleHonour(unit.id, h)} onClose={() => setShowAddHonour(false)} isCharacter={unit.is_character} existingHonourNames={unit.battle_honours.map(h => h.name)} />
       )}
       {showWeaponEnhancement && (
         <WeaponEnhancementPicker

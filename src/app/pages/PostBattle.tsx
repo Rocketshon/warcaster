@@ -208,7 +208,7 @@ function OutOfActionSection({
                 {state.roll === 1 && state.outcome !== null && (state.outcome !== 'battle_scar' || state.selectedScar !== null) && (
                   <div className="flex items-center gap-1.5 text-xs text-green-400">
                     <Check className="w-3 h-3" />
-                    {state.outcome === 'devastating_blow' ? 'Devastating Blow noted' : `Battle Scar: ${OFFICIAL_BATTLE_SCARS.find(s => s.id === state.selectedScar)?.name}`}
+                    {state.outcome === 'devastating_blow' ? 'Devastating Blow noted' : `Battle Scar: ${OFFICIAL_BATTLE_SCARS.find(s => s.id === state.selectedScar)?.name ?? 'Unknown'}`}
                   </div>
                 )}
               </div>

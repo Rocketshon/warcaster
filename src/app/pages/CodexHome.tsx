@@ -85,7 +85,7 @@ export default function CodexHome() {
     } else {
       navigate(`/codex/${faction.id}`);
     }
-  }, [navigate, factionList]);
+  }, [navigate]);
 
   const imperiumFactions = useMemo(() => factionList.filter((f) => f.category === "imperium"), [factionList]);
   const chaosFactions = useMemo(() => factionList.filter((f) => f.category === "chaos"), [factionList]);
