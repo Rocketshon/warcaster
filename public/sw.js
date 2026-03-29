@@ -1,4 +1,4 @@
-const CACHE_NAME = 'warcaster-v2';
+const CACHE_NAME = 'warcaster-v3';
 
 // Assets to precache on install
 const PRECACHE_URLS = [
