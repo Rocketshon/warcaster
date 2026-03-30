@@ -3,7 +3,6 @@ import type { FactionId, FactionMeta } from '../types';
 export const FACTIONS: FactionMeta[] = [
   // --- Imperium ---
   { id: 'space_marines', name: 'Space Marines', icon: '⚔️', category: 'imperium', color: 'blue', hasChapters: true },
-  { id: 'space_wolves', name: 'Space Wolves', icon: '🐺', category: 'imperium', color: 'cyan' },
   { id: 'grey_knights', name: 'Grey Knights', icon: '🛡️', category: 'imperium', color: 'slate' },
   { id: 'adepta_sororitas', name: 'Adepta Sororitas', icon: '🔥', category: 'imperium', color: 'red' },
   { id: 'adeptus_custodes', name: 'Adeptus Custodes', icon: '👑', category: 'imperium', color: 'amber' },
