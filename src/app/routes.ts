@@ -16,7 +16,7 @@ import RulesBrowser from './pages/RulesBrowser';
 import RuleDetail from './pages/RuleDetail';
 import Settings from './pages/Settings';
 
-const base = import.meta.env.GITHUB_PAGES ? '/crusade-command/' : '/';
+const base = import.meta.env.BASE_URL;
 
 export const router = createBrowserRouter([
   {
