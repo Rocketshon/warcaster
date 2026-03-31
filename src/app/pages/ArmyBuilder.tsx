@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Plus, Trash2, Search, X, ChevronRight, Star, Shield,
-  Skull, Swords, AlertTriangle, Check, Edit2,
+  Skull, Swords, AlertTriangle, Check, Edit2, Settings,
 } from 'lucide-react';
 import { useArmy, type ArmyUnit } from '../../lib/ArmyContext';
 import { useCollection } from '../../lib/CollectionContext';
@@ -572,6 +572,9 @@ export default function ArmyBuilder() {
             </span>
             <button onClick={() => setShowArmySwitcher(v => !v)} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors text-xs border border-[var(--border-color)] px-2 py-1 rounded">
               Switch
+            </button>
+            <button onClick={() => navigate('/settings')} className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)]">
+              <Settings className="w-5 h-5" />
             </button>
           </div>
         </div>

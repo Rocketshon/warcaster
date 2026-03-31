@@ -3,8 +3,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { GameDataProvider } from './src/contexts/GameDataContext';
+import { AuthProvider } from './src/contexts/AuthContext';
 import { ArmyProvider } from './src/contexts/ArmyContext';
 import { CollectionProvider } from './src/contexts/CollectionContext';
+import { MarketProvider } from './src/contexts/MarketContext';
 import TabNavigator from './src/navigation/TabNavigator';
 
 function AppInner() {
@@ -39,11 +41,15 @@ export default function App() {
     <SafeAreaProvider>
       <ThemeProvider>
         <GameDataProvider>
-          <ArmyProvider>
-            <CollectionProvider>
-              <AppInner />
-            </CollectionProvider>
-          </ArmyProvider>
+          <AuthProvider>
+            <ArmyProvider>
+              <CollectionProvider>
+                <MarketProvider>
+                  <AppInner />
+                </MarketProvider>
+              </CollectionProvider>
+            </ArmyProvider>
+          </AuthProvider>
         </GameDataProvider>
       </ThemeProvider>
     </SafeAreaProvider>

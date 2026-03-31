@@ -19,6 +19,15 @@ import News from './pages/News';
 import DiceCalculator from './pages/DiceCalculator';
 import LoreQuiz from './pages/LoreQuiz';
 import GameSelector from './pages/GameSelector';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import MarketHome from './pages/market/MarketHome';
+import ListingDetail from './pages/market/ListingDetail';
+import CreateListing from './pages/market/CreateListing';
+import MyListings from './pages/market/MyListings';
+import BitsINeed from './pages/market/BitsINeed';
+import MessagesInbox from './pages/market/MessagesInbox';
+import Chat from './pages/market/Chat';
 
 const base = import.meta.env.BASE_URL;
 
@@ -54,6 +63,18 @@ export const router = createBrowserRouter([
       { path: "lore-quiz", Component: LoreQuiz },
       // Game selector
       { path: "games", Component: GameSelector },
+      // Auth
+      { path: "login", Component: Login },
+      { path: "signup", Component: Signup },
+      // Market
+      { path: "market", Component: MarketHome },
+      { path: "market/listing/:listingId", Component: ListingDetail },
+      { path: "market/create", Component: CreateListing },
+      { path: "market/edit/:listingId", Component: CreateListing },
+      { path: "market/my-listings", Component: MyListings },
+      { path: "market/bits-i-need", Component: BitsINeed },
+      { path: "market/messages", Component: MessagesInbox },
+      { path: "market/chat/:listingId/:otherUserId", Component: Chat },
       // Settings
       { path: "settings", Component: Settings },
       // 404

@@ -5,6 +5,8 @@ import { ArmyProvider } from '../lib/ArmyContext';
 import { CollectionProvider } from '../lib/CollectionContext';
 import { ThemeProvider } from '../lib/ThemeContext';
 import { GameDataProvider } from '../lib/GameDataContext';
+import { AuthProvider } from '../lib/AuthContext';
+import { MarketProvider } from '../lib/MarketContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
@@ -12,8 +14,10 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
       <GameDataProvider>
+      <AuthProvider>
       <ArmyProvider>
       <CollectionProvider>
+      <MarketProvider>
         <RouterProvider router={router} />
         <Toaster
           position="top-center"
@@ -25,8 +29,10 @@ export default function App() {
             },
           }}
         />
+      </MarketProvider>
       </CollectionProvider>
       </ArmyProvider>
+      </AuthProvider>
       </GameDataProvider>
       </ThemeProvider>
     </ErrorBoundary>

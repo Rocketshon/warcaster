@@ -24,6 +24,19 @@ import NewsScreen from '../screens/NewsScreen';
 import DiceCalculatorScreen from '../screens/DiceCalculatorScreen';
 import LoreQuizScreen from '../screens/LoreQuizScreen';
 
+// Auth screens
+import LoginScreen from '../screens/auth/LoginScreen';
+import SignupScreen from '../screens/auth/SignupScreen';
+
+// Market screens
+import MarketHomeScreen from '../screens/market/MarketHomeScreen';
+import ListingDetailScreen from '../screens/market/ListingDetailScreen';
+import CreateListingScreen from '../screens/market/CreateListingScreen';
+import MyListingsScreen from '../screens/market/MyListingsScreen';
+import BitsINeedScreen from '../screens/market/BitsINeedScreen';
+import MessagesInboxScreen from '../screens/market/MessagesInboxScreen';
+import ChatScreen from '../screens/market/ChatScreen';
+
 const Tab = createBottomTabNavigator();
 
 // --- Army Stack ---
@@ -37,6 +50,8 @@ function ArmyStackScreen() {
       <ArmyStack.Screen name="UnitDetail" component={ArmyUnitDetailScreen} />
       <ArmyStack.Screen name="PostBattle" component={PostBattleScreen} />
       <ArmyStack.Screen name="BattleHistory" component={BattleHistoryScreen} />
+      <ArmyStack.Screen name="Settings" component={SettingsScreen} />
+      <ArmyStack.Screen name="GameSelector" component={GameSelectorScreen} />
     </ArmyStack.Navigator>
   );
 }
@@ -88,14 +103,21 @@ function ModelsStackScreen() {
   );
 }
 
-// --- Settings Stack ---
-const SettingsStack = createNativeStackNavigator();
-function SettingsStackScreen() {
+// --- Market Stack ---
+const MarketStack = createNativeStackNavigator();
+function MarketStackScreen() {
   return (
-    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
-      <SettingsStack.Screen name="Settings" component={SettingsScreen} />
-      <SettingsStack.Screen name="GameSelector" component={GameSelectorScreen} />
-    </SettingsStack.Navigator>
+    <MarketStack.Navigator screenOptions={{ headerShown: false }}>
+      <MarketStack.Screen name="MarketHome" component={MarketHomeScreen} />
+      <MarketStack.Screen name="ListingDetail" component={ListingDetailScreen} />
+      <MarketStack.Screen name="CreateListing" component={CreateListingScreen} />
+      <MarketStack.Screen name="MyListings" component={MyListingsScreen} />
+      <MarketStack.Screen name="BitsINeed" component={BitsINeedScreen} />
+      <MarketStack.Screen name="MessagesInbox" component={MessagesInboxScreen} />
+      <MarketStack.Screen name="Chat" component={ChatScreen} />
+      <MarketStack.Screen name="Login" component={LoginScreen} />
+      <MarketStack.Screen name="Signup" component={SignupScreen} />
+    </MarketStack.Navigator>
   );
 }
 
@@ -106,7 +128,7 @@ const TAB_ICONS: Record<string, { focused: keyof typeof Ionicons.glyphMap; defau
   CodexTab: { focused: 'book', default: 'book-outline' },
   RulesTab: { focused: 'document-text', default: 'document-text-outline' },
   ModelsTab: { focused: 'cube', default: 'cube-outline' },
-  SettingsTab: { focused: 'settings', default: 'settings-outline' },
+  MarketTab: { focused: 'cart', default: 'cart-outline' },
 };
 
 export default function TabNavigator() {
@@ -142,7 +164,7 @@ export default function TabNavigator() {
       <Tab.Screen name="CodexTab" component={CodexStackScreen} options={{ tabBarLabel: 'Codex' }} />
       <Tab.Screen name="RulesTab" component={RulesStackScreen} options={{ tabBarLabel: 'Rules' }} />
       <Tab.Screen name="ModelsTab" component={ModelsStackScreen} options={{ tabBarLabel: 'My Models' }} />
-      <Tab.Screen name="SettingsTab" component={SettingsStackScreen} options={{ tabBarLabel: 'Settings' }} />
+      <Tab.Screen name="MarketTab" component={MarketStackScreen} options={{ tabBarLabel: 'Market' }} />
     </Tab.Navigator>
   );
 }

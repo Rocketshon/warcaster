@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router';
-import { Swords, Crosshair, BookOpen, Package, Settings, ScrollText } from 'lucide-react';
+import { Swords, Crosshair, BookOpen, Package, ShoppingBag, ScrollText } from 'lucide-react';
 
 const tabs = [
   { path: '/army',      label: 'Army',      icon: Swords },
@@ -7,7 +7,7 @@ const tabs = [
   { path: '/codex',     label: 'Codex',     icon: BookOpen },
   { path: '/rules',     label: 'Rules',     icon: ScrollText },
   { path: '/models',    label: 'My Models', icon: Package },
-  { path: '/settings',  label: 'Settings',  icon: Settings },
+  { path: '/market',    label: 'Market',    icon: ShoppingBag },
 ] as const;
 
 function isActiveTab(pathname: string, tabPath: string): boolean {
@@ -25,6 +25,9 @@ function isActiveTab(pathname: string, tabPath: string): boolean {
   }
   if (tabPath === '/codex') {
     return pathname === '/codex' || pathname.startsWith('/codex/') || pathname.startsWith('/datasheet/') || pathname.startsWith('/space-marines-chapters');
+  }
+  if (tabPath === '/market') {
+    return pathname === '/market' || pathname.startsWith('/market/');
   }
   return pathname.startsWith(tabPath);
 }
