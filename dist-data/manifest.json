@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-03-31T04:37:16.850Z",
+  "games": [
+    {
+      "id": "wh40k-10e",
+      "name": "Warhammer 40,000",
+      "edition": "10th Edition",
+      "icon": "⚔️",
+      "version": "2026.03.30",
+      "description": "26 factions, 1400+ datasheets, full rules and stratagems",
+      "files": {
+        "units": "https://raw.githubusercontent.com/Rocketshon/warcaster-data/main/wh40k-10e/units.json",
+        "rules": "https://raw.githubusercontent.com/Rocketshon/warcaster-data/main/wh40k-10e/rules.json",
+        "general": "https://raw.githubusercontent.com/Rocketshon/warcaster-data/main/wh40k-10e/general.json"
+      }
+    }
+  ]
+}
