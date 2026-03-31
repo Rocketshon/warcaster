@@ -10,8 +10,7 @@ import type {
   FactionId,
 } from '../types';
 import { getDataFactionId } from './factions';
-import { FACTION_RULES } from '../data';
-import { UNITS } from '../data';
+import { getFACTION_RULES, getUNITS } from '../data';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -127,8 +126,8 @@ export function buildCheatSheet(
 ): PhaseSection[] {
   const entries: CheatSheetEntry[] = [];
   const dataFactionId = getDataFactionId(factionId);
-  const factionRules = FACTION_RULES[dataFactionId] ?? null;
-  const allDatasheets = UNITS[dataFactionId] ?? [];
+  const factionRules = getFACTION_RULES()[dataFactionId] ?? null;
+  const allDatasheets = getUNITS()[dataFactionId] ?? [];
 
   // 1. Detachment stratagems
   if (factionRules && detachmentId) {

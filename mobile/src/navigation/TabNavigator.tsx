@@ -19,6 +19,7 @@ import RulesBrowserScreen from '../screens/RulesBrowserScreen';
 import RuleDetailScreen from '../screens/RuleDetailScreen';
 import MyModelsScreen from '../screens/MyModelsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import GameSelectorScreen from '../screens/GameSelectorScreen';
 import NewsScreen from '../screens/NewsScreen';
 import DiceCalculatorScreen from '../screens/DiceCalculatorScreen';
 import LoreQuizScreen from '../screens/LoreQuizScreen';
@@ -93,6 +94,7 @@ function SettingsStackScreen() {
   return (
     <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
       <SettingsStack.Screen name="Settings" component={SettingsScreen} />
+      <SettingsStack.Screen name="GameSelector" component={GameSelectorScreen} />
     </SettingsStack.Navigator>
   );
 }

@@ -4,12 +4,14 @@ import { router } from './routes';
 import { ArmyProvider } from '../lib/ArmyContext';
 import { CollectionProvider } from '../lib/CollectionContext';
 import { ThemeProvider } from '../lib/ThemeContext';
+import { GameDataProvider } from '../lib/GameDataContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
+      <GameDataProvider>
       <ArmyProvider>
       <CollectionProvider>
         <RouterProvider router={router} />
@@ -25,6 +27,7 @@ export default function App() {
         />
       </CollectionProvider>
       </ArmyProvider>
+      </GameDataProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

@@ -18,6 +18,7 @@ import Settings from './pages/Settings';
 import News from './pages/News';
 import DiceCalculator from './pages/DiceCalculator';
 import LoreQuiz from './pages/LoreQuiz';
+import GameSelector from './pages/GameSelector';
 
 const base = import.meta.env.BASE_URL;
 
@@ -51,6 +52,8 @@ export const router = createBrowserRouter([
       { path: "news", Component: News },
       { path: "dice-calculator", Component: DiceCalculator },
       { path: "lore-quiz", Component: LoreQuiz },
+      // Game selector
+      { path: "games", Component: GameSelector },
       // Settings
       { path: "settings", Component: Settings },
       // 404

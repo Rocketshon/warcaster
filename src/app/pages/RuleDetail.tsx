@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, BookOpen, Shield, Award, ChevronDown, ChevronRight, Globe, Loader2 } from "lucide-react";
-import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
-import { getRulesForFaction } from '../../data';
+import { getRulesForFaction, getCORE_RULES, getCRUSADE_RULES } from '../../data';
 import { getFaction, getFactionName, getDataFactionId } from '../../lib/factions';
 import { FormattedRuleText, getStratagemTypeColor, getEnhancementCardColors } from '../../lib/formatText';
 import { translateText, SUPPORTED_LANGUAGES } from '../../lib/apiServices';
@@ -18,16 +17,18 @@ function lookupRule(
   ruleId: string,
   factionId?: string
 ): { title: string; source: string; sourceType: string; section: RulesSection | null; factionData?: FactionData } | null {
-  if (ruleId.startsWith('core-') && CORE_RULES) {
+  const coreRules = getCORE_RULES();
+  if (ruleId.startsWith('core-') && coreRules) {
     const idx = parseInt(ruleId.replace('core-', ''), 10);
     if (isNaN(idx)) return null;
-    const section = CORE_RULES.sections[idx];
+    const section = coreRules.sections[idx];
     if (section) return { title: section.name, source: 'Core Rules', sourceType: 'core', section };
   }
-  if (ruleId.startsWith('crusade-') && CRUSADE_RULES) {
+  const crusadeRules = getCRUSADE_RULES();
+  if (ruleId.startsWith('crusade-') && crusadeRules) {
     const idx = parseInt(ruleId.replace('crusade-', ''), 10);
     if (isNaN(idx)) return null;
-    const section = CRUSADE_RULES.sections[idx];
+    const section = crusadeRules.sections[idx];
     if (section) return { title: section.name, source: 'Crusade Rules', sourceType: 'crusade', section };
   }
   if (ruleId.startsWith('faction-') && factionId) {

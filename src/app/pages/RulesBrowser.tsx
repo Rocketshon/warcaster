@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Search, BookOpen, ChevronDown, ChevronRight, Shield } from "lucide-react";
-import { CORE_RULES, CRUSADE_RULES } from '../../data/general';
-import { getRulesForFaction } from '../../data';
+import { getRulesForFaction, getCORE_RULES, getCRUSADE_RULES } from '../../data';
 import { getFactionName, getDataFactionId } from '../../lib/factions';
 import type { RulesSection, FactionId } from '../../types';
 
@@ -65,8 +64,10 @@ export default function RulesBrowser() {
     try { sessionStorage.setItem('rules_expanded_sections', JSON.stringify(expandedSections)); } catch { /* ignore */ }
   }, [expandedSections]);
 
-  const coreRuleItems = useMemo(() => CORE_RULES ? buildRuleItems(CORE_RULES.sections, "core") : [], []);
-  const crusadeRuleItems = useMemo(() => CRUSADE_RULES ? buildRuleItems(CRUSADE_RULES.sections, "crusade") : [], []);
+  const coreRules = getCORE_RULES();
+  const crusadeRules = getCRUSADE_RULES();
+  const coreRuleItems = useMemo(() => coreRules ? buildRuleItems(coreRules.sections, "core") : [], [coreRules]);
+  const crusadeRuleItems = useMemo(() => crusadeRules ? buildRuleItems(crusadeRules.sections, "crusade") : [], [crusadeRules]);
 
   const toggleSection = (section: string) => setExpandedSections(prev => prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]);
 

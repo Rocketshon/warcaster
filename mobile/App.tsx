@@ -2,6 +2,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
+import { GameDataProvider } from './src/contexts/GameDataContext';
 import { ArmyProvider } from './src/contexts/ArmyContext';
 import { CollectionProvider } from './src/contexts/CollectionContext';
 import TabNavigator from './src/navigation/TabNavigator';
@@ -37,11 +38,13 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <ArmyProvider>
-          <CollectionProvider>
-            <AppInner />
-          </CollectionProvider>
-        </ArmyProvider>
+        <GameDataProvider>
+          <ArmyProvider>
+            <CollectionProvider>
+              <AppInner />
+            </CollectionProvider>
+          </ArmyProvider>
+        </GameDataProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

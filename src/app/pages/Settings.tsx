@@ -22,7 +22,7 @@ export default function Settings() {
   // API key states — initialize from localStorage
   const [apiKeys, setApiKeys] = useState(() => {
     const keys: Record<string, string> = {};
-    for (const name of ['gnews', 'wolfram', 'pixelaUser', 'pixelaToken', 'cloudmersive']) {
+    for (const name of ['gnews', 'wolfram', 'pixelaUser', 'pixelaToken', 'cloudmersive', 'manifestUrl']) {
       try { keys[name] = localStorage.getItem(`warcaster_api_${name}`) ?? ''; } catch { keys[name] = ''; }
     }
     return keys;
@@ -226,6 +226,42 @@ export default function Settings() {
                 <p className="text-sm text-[var(--text-primary)]">{storageKB} KB used</p>
                 <p className="text-xs text-[var(--text-secondary)]">localStorage + IndexedDB backup</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Game Data */}
+        <section className="mb-8">
+          <h2 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3">Game Data</h2>
+          <div className="rounded-sm border border-[var(--border-color)] bg-[var(--bg-card)] divide-y divide-[var(--border-color)]">
+            <div className="p-4">
+              <button
+                onClick={() => navigate('/games')}
+                className="w-full flex items-center justify-between py-2"
+              >
+                <div>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">Select Game</p>
+                  <p className="text-[10px] text-[var(--text-secondary)]">Choose a game system and download its data</p>
+                </div>
+                <span className="text-[var(--accent-gold)] text-sm">→</span>
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Key className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+                <div>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">Data Manifest URL</p>
+                  <p className="text-[10px] text-[var(--text-secondary)]">Custom source for game data (advanced)</p>
+                </div>
+              </div>
+              <input
+                type="text"
+                value={apiKeys['manifestUrl'] ?? ''}
+                onChange={e => handleApiKeyChange('manifestUrl', e.target.value)}
+                onBlur={() => handleApiKeySave('manifestUrl')}
+                placeholder="Default: GitHub"
+                className="w-full px-3 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded text-xs text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-gold)] font-mono"
+              />
             </div>
           </div>
         </section>

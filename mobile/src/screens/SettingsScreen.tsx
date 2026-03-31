@@ -18,6 +18,7 @@ import { useArmy } from '../contexts/ArmyContext';
 import { useCollection } from '../contexts/CollectionContext';
 import { getActiveEdition } from '../lib/editionManager';
 import { getApiKey, setApiKey } from '../lib/apiServices';
+import { useGameData } from '../contexts/GameDataContext';
 
 export default function SettingsScreen() {
   const navigation = useNavigation<any>();
@@ -30,6 +31,11 @@ export default function SettingsScreen() {
   const [confirmClearCollection, setConfirmClearCollection] = useState(false);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
 
+  const { activeGame } = useGameData();
+
+  // Manifest URL state
+  const [manifestUrl, setManifestUrl] = useState('');
+
   // API key state
   const [gnewsKey, setGnewsKey] = useState('');
   const [wolframKey, setWolframKey] = useState('');
@@ -39,16 +45,18 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     (async () => {
-      const [g, w, pu, pt, c] = await Promise.all([
+      const [g, w, pu, pt, c, mUrl] = await Promise.all([
         getApiKey('gnews'), getApiKey('wolfram'),
         getApiKey('pixelaUser'), getApiKey('pixelaToken'),
         getApiKey('cloudmersive'),
+        AsyncStorage.getItem('warcaster_api_manifestUrl'),
       ]);
       if (g) setGnewsKey(g);
       if (w) setWolframKey(w);
       if (pu) setPixelaUser(pu);
       if (pt) setPixelaToken(pt);
       if (c) setCloudmersiveKey(c);
+      if (mUrl) setManifestUrl(mUrl);
     })();
   }, []);
 
@@ -286,6 +294,50 @@ export default function SettingsScreen() {
                 </Text>
               </View>
             </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Game Data */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>GAME DATA</Text>
+          <View style={[styles.card, { backgroundColor: colors.bgCard, borderColor: colors.borderColor }]}>
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => navigation.navigate('GameSelector')}
+              activeOpacity={0.7}
+            >
+              <View style={styles.rowLeft}>
+                <Text style={[styles.iconText, { color: colors.accentGold }]}>{'\u{1F3AE}'}</Text>
+                <View>
+                  <Text style={[styles.rowTitle, { color: colors.textPrimary }]}>Select Game</Text>
+                  <Text style={[styles.rowSubtitle, { color: colors.textSecondary }]}>
+                    {activeGame ? `${activeGame.name} (${activeGame.edition})` : 'Using bundled data'}
+                  </Text>
+                </View>
+              </View>
+              <Text style={[styles.rowTitle, { color: colors.textSecondary }]}>{'>'}</Text>
+            </TouchableOpacity>
+
+            <View style={[styles.apiField, { marginTop: 14 }]}>
+              <Text style={[styles.apiLabel, { color: colors.textSecondary }]}>Data Manifest URL</Text>
+              <TextInput
+                value={manifestUrl}
+                onChangeText={setManifestUrl}
+                onBlur={async () => {
+                  if (manifestUrl.trim()) {
+                    await AsyncStorage.setItem('warcaster_api_manifestUrl', manifestUrl.trim());
+                  } else {
+                    await AsyncStorage.removeItem('warcaster_api_manifestUrl');
+                  }
+                }}
+                placeholder="Custom manifest URL (optional)"
+                placeholderTextColor={colors.textSecondary + '66'}
+                style={[styles.apiInput, { backgroundColor: colors.bgPrimary, borderColor: colors.borderColor, color: colors.textPrimary }]}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="url"
+              />
+            </View>
           </View>
         </View>
 
